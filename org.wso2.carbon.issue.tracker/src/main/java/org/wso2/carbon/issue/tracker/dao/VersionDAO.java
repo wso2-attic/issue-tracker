@@ -19,4 +19,5 @@
 package org.wso2.carbon.issue.tracker.dao;
 
 public class VersionDAO {
+
 }
