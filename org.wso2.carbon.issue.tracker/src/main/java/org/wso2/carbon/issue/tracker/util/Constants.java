@@ -16,33 +16,13 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.wso2.carbon.issue.tracker.dao;
+package org.wso2.carbon.issue.tracker.util;
 
-import org.wso2.carbon.issue.tracker.bean.Comment;
-import org.wso2.carbon.issue.tracker.bean.Issue;
-
-public class IssueDAO {
-    /**
-     * Createing a new issue. This adds a new record to the Issue table
-     * @param issue
-     */
-    public void createIssue(Issue issue){
-
-    }
-
-    public void updateIssueStatus(Issue issue, String status){
-
-    }
-
-    public void updateWithComment(Issue issue, Comment comment){
-
-    }
-
-    public void viewIssue(Issue issue){
-
-    }
-
-    public void viewAllIssues(){
-
-    }
+/**
+ * Issue Tracker Project related Constants
+ */
+public class Constants {
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+   static final String DB_URL = "jdbc:mysql://localhost/STUDENTS";
+   //static final String DB_URL = "jdbc:mysql://localhost:3306/issueTrackerDb1";
 }
