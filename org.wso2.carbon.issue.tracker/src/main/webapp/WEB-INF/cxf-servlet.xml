@@ -30,7 +30,14 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
+    <jaxrs:server id="versionService" address="/version">
+        <jaxrs:serviceBeans>
+            <ref bean="versionBean" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
     <bean id="issueBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
     <bean id="commentBean" class="org.wso2.carbon.issue.tracker.internal.CommentService" />
+    <bean id="versionBean" class="org.wso2.carbon.issue.tracker.internal.VersionService" />
 
 </beans>

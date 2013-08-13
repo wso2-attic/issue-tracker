@@ -49,4 +49,10 @@ public class VersionService {
 
         return Response.ok(version).build();
     }
+    @GET
+    @Path("/hello")
+    public String sayHello(){
+        System.out.println("Hellloooooo");
+        return "hello";
+    }
 }
