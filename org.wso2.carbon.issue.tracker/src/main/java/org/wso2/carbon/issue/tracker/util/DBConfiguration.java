@@ -18,46 +18,78 @@
  */
 package org.wso2.carbon.issue.tracker.util;
 
+ 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Logger;
+
+import javax.naming.InitialContext;
+
+ 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 /**
  * Represents Database configuration details
  */
 public class DBConfiguration {
-    private String dbUrl;
-    private String userName;
-    private String password;
-    private String driverName;
+	static Log log = LogFactory.getLog(DBConfiguration.class);
+	private static DataSource dataSource = null;
 
-    public String getDbUrl() {
-        return dbUrl;
-    }
+	private static void Initialize() {
+		// lookup for datasource and intialize datasource var
+		dataSource = lookupDataSource("jdbc/IssueTrackerDB");
 
-    public void setDbUrl(String dbUrl) {
-        this.dbUrl = dbUrl;
-    }
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	/**
+	 * Lookup the data source, this datasource must be declared in the
+	 * master-datasources.xml
+	 * 
+	 * @param dataSourceName
+	 *            - name of the datasource
+	 * @return
+	 */
+	private static DataSource lookupDataSource(String dataSourceName) {
+		try {
+			return (DataSource) InitialContext.doLookup(dataSourceName);
+		} catch (Exception e) {
+			throw new RuntimeException("Error in looking up data source: "
+					+ e.getMessage(), e);
+		}
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	/**
+	 * Returns the db connection for the datasource
+	 * 
+	 * @return
+	 */
+	public static Connection getDBConnection() {
+		Connection result = null;
+		if (dataSource == null) {
+			Initialize();
+			result = doGetConnection();
+		} else {
+		
+			result = doGetConnection();
+		}
+		return result;
 
-    public String getPassword() {
-        return password;
-    }
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
-    }
-
+	private static Connection doGetConnection() {
+		try {
+			return dataSource.getConnection();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			String msg = "Error while getting Connection for Datasource "
+					+ dataSource.getName();
+			log.error(msg + " " + e.getMessage());
+		}
+		return null;
+	}
 
 }
