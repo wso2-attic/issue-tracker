@@ -10,16 +10,13 @@
 	language governing permissions and ~ limitations under the License. -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-	<jaxrs:server id="cnLocationService" address="/locations">
-		<jaxrs:serviceBeans>
-			<ref bean="serviceBean" />
-		</jaxrs:serviceBeans>
-	</jaxrs:server>
+
 
     <jaxrs:server id="commentService" address="/comment">
         <jaxrs:serviceBeans>
@@ -27,7 +24,13 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
-	<bean id="serviceBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
+    <jaxrs:server id="issueService" address="/issue">
+        <jaxrs:serviceBeans>
+            <ref bean="issueBean" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
+    <bean id="issueBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
     <bean id="commentBean" class="org.wso2.carbon.issue.tracker.internal.CommentService" />
 
 </beans>
