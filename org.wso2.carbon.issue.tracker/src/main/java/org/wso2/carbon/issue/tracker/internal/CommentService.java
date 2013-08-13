@@ -47,4 +47,11 @@ public class CommentService {
         // TODO owner of comment can edit
         return null;
     }
+
+    @GET
+    @Path("/hello")
+    public String sayHello(){
+        System.out.println("Hellloooooo");
+        return "hello";
+    }
 }
