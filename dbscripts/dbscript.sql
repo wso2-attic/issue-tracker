@@ -7,103 +7,88 @@ use issueTrackerDb;
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Project`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS Project (
-  `project_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL ,
-  `owner` VARCHAR(45) NULL ,
-  `organization_id` INT NOT NULL ,
-  PRIMARY KEY (`project_id`)
-)ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS PROJECT (
+    PROJECT_ID          INTEGER NOT NULL AUTO_INCREMENT,
+    PROJECT_NAME        VARCHAR(45) NULL,
+    OWNER               VARCHAR(45) NULL,
+    ORGANIZATION_ID     INT NOT NULL,
+    CONSTRAINT PK_PROJECT PRIMARY KEY (PROJECT_ID)
+)  ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Version`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS Version (
-  `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `version` VARCHAR(45) NULL ,
-  `Project_project_id` INT NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_Version_Project1_idx` (`Project_project_id` ASC) ,
-  CONSTRAINT `fk_Version_Project1`
-    FOREIGN KEY (`Project_project_id` )
-    REFERENCES `issueTrackerDb`.`Project` (`project_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS VERSION (
+    VERSION_ID          INTEGER NOT NULL AUTO_INCREMENT,
+    VERSION             VARCHAR(45) NULL,
+    PROJECT_ID          INT NOT NULL,
+    CONSTRAINT PK_VERSION PRIMARY KEY (VERSION_ID)
+)  ENGINE=INNODB;
+ALTER TABLE VERSION ADD CONSTRAINT VERSION_FK_BY_PROJECT_ID FOREIGN KEY (PROJECT_ID) REFERENCES PROJECT (PROJECT_ID);
+CREATE INDEX VERSION_IND_BY_PROJECT_ID USING HASH ON VERSION(PROJECT_ID);
+
 
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Issue`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS Issue (
-  `issue_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `summary` VARCHAR(45) NULL ,
-  `description` VARCHAR(45) NULL ,
-  `type` VARCHAR(45) NULL ,
-  `priority` VARCHAR(45) NULL ,
-  `owner` VARCHAR(45) NULL ,
-  `status` VARCHAR(45) NULL ,
-  `asignee` VARCHAR(45) NULL ,
-  `Version_id` INT NOT NULL ,
-  `created_time` TIMESTAMP NULL ,
-  `updated_time` TIMESTAMP NULL ,
-  `severity` VARCHAR(45) NULL ,
-  PRIMARY KEY (`issue_id`) ,
-  INDEX `fk_Issue_Version1_idx` (`Version_id` ASC) ,
-  CONSTRAINT `fk_Issue_Version1`
-    FOREIGN KEY (`Version_id` )
-    REFERENCES `issueTrackerDb`.`Version` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
+CREATE TABLE IF NOT EXISTS ISSUE (
+    ISSUE_ID            INTEGER NOT NULL AUTO_INCREMENT,
+    SUMMARY             VARCHAR(45) NULL,
+    DESCRIPTION         VARCHAR(45) NULL,
+    ISSUE_TYPE          VARCHAR(45) NULL,
+    PRIORITY            VARCHAR(45) NULL,
+    OWNER               VARCHAR(45) NULL,
+    STATUS              VARCHAR(45) NULL,
+    ASSIGNEE            VARCHAR(45) NULL,
+    VERSION_ID          INT NOT NULL,
+    CREATED_TIME        TIMESTAMP NULL,
+    UPDATED_TIME        TIMESTAMP NULL,
+    SEVERITY            VARCHAR(45) NULL,
+    CONSTRAINT PK_ISSUE PRIMARY KEY (ISSUE_ID)
+)  ENGINE=INNODB;
+ALTER TABLE ISSUE ADD CONSTRAINT ISSUE_FK_BY_VERSION_ID FOREIGN KEY (VERSION_ID) REFERENCES VERSION (VERSION_ID);
+CREATE INDEX ISSUE_IND_BY_VERSION_ID USING HASH ON VERSION(VERSION_ID);
 
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Comment`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS Comment (
-  `comment_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `description` VARCHAR(45) NULL ,
-  `created_time` TIMESTAMP NULL ,
-  `edited_time` TIMESTAMP NULL ,
-  `comment_creater` VARCHAR(45) NULL ,
-  `Issue_issue_id` INT NOT NULL ,
-  PRIMARY KEY (`comment_id`) ,
-  INDEX `fk_Comment_Issue1_idx` (`Issue_issue_id` ASC) ,
-  CONSTRAINT `fk_Comment_Issue1`
-    FOREIGN KEY (`Issue_issue_id` )
-    REFERENCES `issueTrackerDb`.`Issue` (`issue_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS COMMENT (
+    COMMENT_ID          INTEGER NOT NULL AUTO_INCREMENT,
+    COMMENT             TEXT NULL,
+    CREATED_TIME        TIMESTAMP NULL,
+    UPDATED_TIME        TIMESTAMP NULL,
+    COMMENT_CREATOR     VARCHAR(45) NULL,
+    ISSUE_ID            INT NOT NULL,
+    CONSTRAINT PK_COMMENT PRIMARY KEY (COMMENT_ID)
+)  ENGINE INNODB;
+ALTER TABLE COMMENT ADD CONSTRAINT COMMENT_FK_BY_ISSUE_ID FOREIGN KEY (ISSUE_ID) REFERENCES ISSUE (ISSUE_ID);
+CREATE INDEX COMMENT_IND_BY_COMMENT_ID USING HASH ON COMMENT(ISSUE_ID);
+ 
+  
+INSERT INTO PROJECT (PROJECT_NAME,OWNER,ORGANIZATION_ID) VALUES ('UES','Nuwan','1');
+INSERT INTO PROJECT (PROJECT_NAME,OWNER,ORGANIZATION_ID) VALUES ('AF','Dimuthu','1');
+INSERT INTO PROJECT (PROJECT_NAME,OWNER,ORGANIZATION_ID) VALUES ('JSE','Chris','2');
+  
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("1.0.0","1");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("1.0.1","2");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("1.2.0","3");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("1.0.0","4");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("1.1.0","5");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("Windows-XP","6");
+INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("Windows-SERVER","7");
+  
+INSERT INTO ISSUE (SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY) VALUES ("summary1","description1","BUG","HIGHEST","dimuthu","OPEN","punnadi","1",NOW(),NOW(),"BLOCKER");
+INSERT INTO ISSUE (SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY) VALUES ("summary2","description2","BUG","HIGH","evanthika","RESOLVED","asanka","2",NOW(),NOW(),"CRITICAL");
+INSERT INTO ISSUE (SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY) VALUES ("summary3","description3","QUERY","NORMAL","ashansa","INPROGRESS","nuwan","3",NOW(),NOW(),"TRIVIAL");
+INSERT INTO ISSUE (SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY) VALUES ("summary4","description4","FEATURE","LOW","punnadi","OPEN","manisha","1",NOW(),NOW(),"MINOR");
+INSERT INTO ISSUE (SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY) VALUES ("summary5","description5","BUG","HIGHEST","microsoft-qa1","OPEN","microsoft-dev1","6",NOW(),NOW(),"BLOCKER");
 
-
-INSERT INTO Project (name,owner,organization_id) VALUES ('UES','Nuwan','1');
-INSERT INTO Project (name,owner,organization_id) VALUES ('AF','Dimuthu','1');
-INSERT INTO Project (name,owner,organization_id) VALUES ('JSE','Chris','2');
-
-INSERT INTO Version (version,Project_project_id) VALUES ("1.0.0","1");
-INSERT INTO Version (version,Project_project_id) VALUES ("1.0.1","2");
-INSERT INTO Version (version,Project_project_id) VALUES ("1.2.0","3");
-INSERT INTO Version (version,Project_project_id) VALUES ("1.0.0","4");
-INSERT INTO Version (version,Project_project_id) VALUES ("1.1.0","5");
-INSERT INTO Version (version,Project_project_id) VALUES ("Windows-XP","6");
-INSERT INTO Version (version,Project_project_id) VALUES ("Windows-SERVER","7");
-
-INSERT INTO Issue (summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES ("summary1","description1","BUG","HIGHEST","dimuthu","OPEN","punnadi","1",NOW(),NOW(),"BLOCKER");
-INSERT INTO Issue (summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES ("summary2","description2","BUG","HIGH","evanthika","RESOLVED","asanka","2",NOW(),NOW(),"CRITICAL");
-INSERT INTO Issue (summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES ("summary3","description3","QUERY","NORMAL","ashansa","INPROGRESS","nuwan","3",NOW(),NOW(),"TRIVIAL");
-INSERT INTO Issue (summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES ("summary4","description4","FEATURE","LOW","punnadi","OPEN","manisha","1",NOW(),NOW(),"MINOR");
-INSERT INTO Issue (summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES ("summary5","description5","BUG","HIGHEST","microsoft-qa1","OPEN","microsoft-dev1","6",NOW(),NOW(),"BLOCKER");
-
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment1",NOW(),NOW(),"manisha","1");
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment2",NOW(),NOW(),"ashansa","3");
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment3",NOW(),NOW(),"evanthika","2");
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment4",NOW(),NOW(),"asanka","4");
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment5",NOW(),NOW(),"manisha","1");
-INSERT INTO Comment (description,created_time,edited_time,comment_creater,Issue_issue_id) VALUES ("comment6",NOW(),NOW(),"nuwan","6");
-
-
-
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment1",NOW(),NOW(),"manisha","1");
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment2",NOW(),NOW(),"ashansa","3");
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment3",NOW(),NOW(),"evanthika","2");
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment4",NOW(),NOW(),"asanka","4");
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment5",NOW(),NOW(),"manisha","1");
+INSERT INTO COMMENT (COMMENT,CREATED_TIME,UPDATED_TIME,COMMENT_CREATOR,ISSUE_ID) VALUES ("comment6",NOW(),NOW(),"nuwan","6");
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
