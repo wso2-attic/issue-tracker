@@ -13,7 +13,11 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`Organization` (
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`org_id`) )
 ENGINE = InnoDB;
-
+INSERT INTO Organization (org_id,name) VALUES (1,"WSO2");
+INSERT INTO Organization (org_id,name) VALUES (2,"MIT");
+INSERT INTO Organization (org_id,name) VALUES (3,"VIRTUSA");
+INSERT INTO Organization (org_id,name) VALUES (4,"MICROSOFT");
+INSERT INTO Organization (org_id,name) VALUES (5,"IBM");
 
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Project`
@@ -31,6 +35,15 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`Project` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (1,"UES","Nuwan","1");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (2,"AF","Dimuthu","1");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (3,"JSE","Chris","2");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (4,"IronMountain","Punnadi","3");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (5,"Windows","Bill Gates","4");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (6,"WebSphere","Paul","5");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (7,"APIM","Sumedha","1");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (8,"Bench","XXX","3");
+INSERT INTO Project (project_id,name,owner,Organization_org_id) VALUES (9,"MS-Office","Bill Gates","4");
 
 
 -- -----------------------------------------------------
@@ -48,7 +61,16 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`Version` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
+INSERT INTO Version (id,version,Project_project_id) VALUES (1,"1.0.0","1");
+INSERT INTO Version (id,version,Project_project_id) VALUES (2,"1.0.1","1");
+INSERT INTO Version (id,version,Project_project_id) VALUES (3,"1.2.0","1");
+INSERT INTO Version (id,version,Project_project_id) VALUES (4,"1.0.0","2");
+INSERT INTO Version (id,version,Project_project_id) VALUES (5,"1.1.0","2");
+INSERT INTO Version (id,version,Project_project_id) VALUES (6,"Windows-XP","5");
+INSERT INTO Version (id,version,Project_project_id) VALUES (7,"Windows-SERVER","5");
+INSERT INTO Version (id,version,Project_project_id) VALUES (8,"Windows-7","5");
+INSERT INTO Version (id,version,Project_project_id) VALUES (9,"JSE-London","3");
+INSERT INTO Version (id,version,Project_project_id) VALUES (10,"JSE-Joburg","3");
 
 -- -----------------------------------------------------
 -- Table `issueTrackerDb`.`Issue`
@@ -74,6 +96,15 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`Issue` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (1,"summary1","description1","BUG","HIGHEST","dimuthu","OPEN","punnadi","1",NOW(),NOW(),"BLOCKER");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (2,"summary2","description2","BUG","HIGH","evanthika","RESOLVED","asanka","2",NOW(),NOW(),"CRITICAL");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (3,"summary3","description3","QUERY","NORMAL","ashansa","INPROGRESS","nuwan","3",NOW(),NOW(),"TRIVIAL");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (4,"summary4","description4","FEATURE","LOW","punnadi","OPEN","manisha","1",NOW(),NOW(),"MINOR");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (5,"summary5","description5","BUG","HIGHEST","microsoft-qa1","OPEN","microsoft-dev1","6",NOW(),NOW(),"BLOCKER");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (6,"summary6","description6","BUG","HIGH","microsoft-qa2","RESOLVED","microsoft-dev2","8",NOW(),NOW(),"CRITICAL");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (7,"summary7","description7","QUERY","NORMAL","jse-qa1","INPROGRESS","jse-dev1","10",NOW(),NOW(),"TRIVIAL");
+INSERT INTO Issue (issue_id,summary,description,type,priority,owner,status,asignee,Version_id,created_time,updated_time,severity) VALUES (8,"summary8","description8","FEATURE","LOW","jse-qa2","OPEN","jse-dev1","9",NOW(),NOW(),"MINOR");
+
 
 
 -- -----------------------------------------------------
@@ -98,6 +129,17 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`User` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (1,"dimuthu",1,2);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (2,"evanthika",1,2);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (3,"ashansa",1,2);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (4,"manisha",1,2);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (5,"asanka",1,2);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (6,"nuwan",1,1);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (7,"microsoft-qa1",4,6);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (8,"microsoft-qa2",4,7);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (9,"microsoft-dev1",4,8);
+INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (10,"microsoft-dev2",4,7);
+
 
 
 -- -----------------------------------------------------
@@ -125,6 +167,15 @@ CREATE  TABLE IF NOT EXISTS `issueTrackerDb`.`Comment` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (1,"comment1",NOW(),NOW(),"manisha","1","1");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (2,"comment2",NOW(),NOW(),"ashansa","3","3");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (3,"comment3",NOW(),NOW(),"evanthika","2","2");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (4,"comment4",NOW(),NOW(),"asanka","4","5");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (5,"comment5",NOW(),NOW(),"manisha","1","1");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (6,"comment6",NOW(),NOW(),"nuwan","6","6");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (7,"comment7",NOW(),NOW(),"microsoft-qa1","5","7");
+INSERT INTO Comment (comment_id,description,created_time,edited_time,comment_creater,Issue_issue_id,User_user_id) VALUES (8,"comment8",NOW(),NOW(),"microsoft-dev1","6","9");
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
