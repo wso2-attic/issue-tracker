@@ -21,5 +21,13 @@
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
 
+    <jaxrs:server id="commentService" address="/comment">
+        <jaxrs:serviceBeans>
+            <ref bean="commentBean" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
 	<bean id="serviceBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
+    <bean id="commentBean" class="org.wso2.carbon.issue.tracker.internal.CommentService" />
+
 </beans>
