@@ -18,11 +18,6 @@
  */
 package org.wso2.carbon.issue.tracker.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 /**
  * Represents Database configuration details
  */

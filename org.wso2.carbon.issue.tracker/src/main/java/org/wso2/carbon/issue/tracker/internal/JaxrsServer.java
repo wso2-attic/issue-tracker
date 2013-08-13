@@ -16,23 +16,30 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.wso2.carbon.issue.tracker.util;
+package org.wso2.carbon.issue.tracker.internal;
 
-/**
- * Defines the Exceptions
- */
-public class IssueTrackerException extends Exception{
-    private static final long serialVersionUID = 1L;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 
-	public IssueTrackerException(String msg) {
-        super(msg);
+public class JaxrsServer {
+  protected JaxrsServer() throws Exception {
+        JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
+        sf.setResourceClasses(VersionService.class);
+        sf.setResourceProvider(VersionService.class,
+            new SingletonResourceProvider(new VersionService()));
+        sf.setAddress("http://localhost:9000/");
+
+        sf.create();
     }
 
-    public IssueTrackerException(String msg, Throwable e) {
-        super(msg, e);
+    public static void main(String args[]) throws Exception {
+        new JaxrsServer();
+        System.out.println("Server ready...");
+
+        Thread.sleep(5 * 60 * 1000);
+        System.out.println("Server exiting");
+        System.exit(0);
     }
 
-    public IssueTrackerException(Throwable throwable) {
-        super(throwable);
-    }
 }
+

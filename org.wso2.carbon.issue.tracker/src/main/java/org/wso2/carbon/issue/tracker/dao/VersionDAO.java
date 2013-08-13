@@ -18,16 +18,37 @@
  */
 package org.wso2.carbon.issue.tracker.dao;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
+import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
+import org.wso2.carbon.issue.tracker.util.IssueTrackerUtil;
+
+import java.sql.Connection;
+import java.util.List;
 
 public class VersionDAO {
 
-    public void createVersion(Version version){
+    private static final Log log = LogFactory.getLog(VersionDAO.class);
 
+    public String addVersionForProject(Version version) throws IssueTrackerException {
+
+        Connection conn;
+
+        conn = IssueTrackerUtil.getConnection();
+        String sql = "INSERT INTO User (id,version,Project_project_id) " +
+                  "VALUES('"+ version.getProjectVersionId()+"','" + version.getProjectVersion()+"','"+version.getProjectId()+")";
+        IssueTrackerUtil.executeQuery(conn, sql);
+        return null;
     }
 
-    public void viewAllVersions(){
+    public List<Version> viewAllVersions() {
+        return null;
+    }
 
+    private static void handleException(String msg, Throwable t) throws IssueTrackerException {
+        log.error(msg, t);
+        throw new IssueTrackerException(msg, t);
     }
 
 }
