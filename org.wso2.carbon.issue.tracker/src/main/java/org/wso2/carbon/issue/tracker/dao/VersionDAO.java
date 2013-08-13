@@ -18,6 +18,16 @@
  */
 package org.wso2.carbon.issue.tracker.dao;
 
+import org.wso2.carbon.issue.tracker.bean.Version;
+
 public class VersionDAO {
+
+    public void createVersion(Version version){
+
+    }
+
+    public void viewAllVersions(){
+
+    }
 
 }
