@@ -20,112 +20,96 @@ package org.wso2.carbon.issue.tracker.bean;
 
 public class Issue {
 
-    private int issueId;
-    private String issueTitle;
-    private String issueDescription;
-    private String issueType;
-    private String issuePriority;
-    private String issueOwner;
-    private String issueStatus;
-    private String issueAssignee;
-    private String projectVersion;
-    private String issueCreatedTime;
-    private String issueUpdatedTime;
-    private String issueSeverity;
+    private int id;
+    private String Title;
+    private String summary;
+    private String description;
+    private String type;
+    private String priority;
+    private String owner;
+    private String status;
+    private String assignee;
+    private String version;
+    private String createdTime;
+    private String updatedTime;
+    private String severity;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getTitle() {
+		return Title;
+	}
+	public void setTitle(String title) {
+		Title = title;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getPriority() {
+		return priority;
+	}
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getAssignee() {
+		return assignee;
+	}
+	public void setAssignee(String assignee) {
+		this.assignee = assignee;
+	}
+	public String getVersion() {
+		return version;
+	}
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	public String getCreatedTime() {
+		return createdTime;
+	}
+	public void setCreatedTime(String createdTime) {
+		this.createdTime = createdTime;
+	}
+	public String getUpdatedTime() {
+		return updatedTime;
+	}
+	public void setUpdatedTime(String updatedTime) {
+		this.updatedTime = updatedTime;
+	}
+	public String getSeverity() {
+		return severity;
+	}
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public int getIssueId() {
-        return issueId;
-    }
-
-    public void setIssueId(int issueId) {
-        this.issueId = issueId;
-    }
-
-    public String getIssueTitle() {
-        return issueTitle;
-    }
-
-    public void setIssueTitle(String issueTitle) {
-        this.issueTitle = issueTitle;
-    }
-
-    public String getIssueDescription() {
-        return issueDescription;
-    }
-
-    public void setIssueDescription(String issueDescription) {
-        this.issueDescription = issueDescription;
-    }
-
-    public String getIssueType() {
-        return issueType;
-    }
-
-    public void setIssueType(String issueType) {
-        this.issueType = issueType;
-    }
-
-    public String getIssuePriority() {
-        return issuePriority;
-    }
-
-    public void setIssuePriority(String issuePriority) {
-        this.issuePriority = issuePriority;
-    }
-
-    public String getIssueOwner() {
-        return issueOwner;
-    }
-
-    public void setIssueOwner(String issueOwner) {
-        this.issueOwner = issueOwner;
-    }
-
-    public String getIssueStatus() {
-        return issueStatus;
-    }
-
-    public void setIssueStatus(String issueStatus) {
-        this.issueStatus = issueStatus;
-    }
-
-    public String getIssueAssignee() {
-        return issueAssignee;
-    }
-
-    public void setIssueAssignee(String issueAssignee) {
-        this.issueAssignee = issueAssignee;
-    }
-
-    public String getProjectVersion() {
-        return projectVersion;
-    }
-
-    public void setProjectVersion(String projectVersion) {
-        this.projectVersion = projectVersion;
-    }
-
-    public String getIssueCreatedTime() {
-        return issueCreatedTime;
-    }
-
-    public void setIssueCreatedTime(String issueCreatedTime) {
-        this.issueCreatedTime = issueCreatedTime;
-    }
-
-    public String getIssueUpdatedTime() {
-        return issueUpdatedTime;
-    }
-
-    public void setIssueUpdatedTime(String issueUpdatedTime) {
-        this.issueUpdatedTime = issueUpdatedTime;
-    }
-
-    public String getIssueSeverity() {
-        return issueSeverity;
-    }
-
-    public void setIssueSeverity(String issueSeverity) {
-        this.issueSeverity = issueSeverity;
-    }
 }
