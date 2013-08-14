@@ -22,7 +22,5 @@ package org.wso2.carbon.issue.tracker.util;
  * Issue Tracker Project related Constants
  */
 public class Constants {
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-   static final String DB_URL = "jdbc:mysql://localhost/STUDENTS";
-   //static final String DB_URL = "jdbc:mysql://localhost:3306/issueTrackerDb1";
+
 }
