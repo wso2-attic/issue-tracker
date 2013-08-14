@@ -21,8 +21,8 @@ package org.wso2.carbon.issue.tracker.dao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
+import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
-import org.wso2.carbon.issue.tracker.util.IssueTrackerUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -36,22 +36,37 @@ public class VersionDAO {
     private static final Log log = LogFactory.getLog(VersionDAO.class);
 
     public String addVersionForProject(Version version) throws IssueTrackerException {
+         Connection dbConnection = null;
+        Statement statement = null;
+        dbConnection = DBConfiguration.getDBConnection();
+        try {
+                   statement = dbConnection.createStatement();
+               } catch (SQLException e) {
+                   throw new IssueTrackerException("Error while creating SQL statement", e);
+               }
+               String sql = "INSERT INTO User (user_id,name,Organization_org_id,Project_project_id) VALUES (11,\"microsoft-dev3\",4,7)";
+               try {
+                   statement.executeUpdate(sql);
+               } catch (SQLException e) {
+                    throw new IssueTrackerException("Error while executing SQL statement", e);
+               }
 
-        Connection conn;
-
-        conn = IssueTrackerUtil.getConnection();
-        String sql = "INSERT INTO Version (id,version,Project_project_id) " +
-                  "VALUES('"+ version.getProjectVersionId()+"','" + version.getProjectVersion()+"','"+version.getProjectId()+")";
-        IssueTrackerUtil.executeQuery(conn, sql);
+////        Connection conn;
+////
+////        conn = IssueTrackerUtil.getConnection();
+//        String sql = "INSERT INTO Version (id,version,Project_project_id) " +
+//                  "VALUES('"+ version.getProjectVersionId()+"','" + version.getProjectVersion()+"','"+version.getProjectId()+")";
+//        IssueTrackerUtil.executeQuery(conn, sql);
         return null;
     }
 
     public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException {
-        Connection conn;
-        conn = IssueTrackerUtil.getConnection();
-        String sql = "SELECT * FROM Version where Project_project_id = " +projId;
+         Connection dbConnection = null;
+        Statement statement = null;
+        dbConnection = DBConfiguration.getDBConnection();
+        String sql = "SELECT * FROM VERSION where Project_project_id = " +projId;
         System.out.println("******sql:"+sql);
-         Statement stmt= conn.createStatement();
+         Statement stmt= dbConnection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
 
         List<Version> versionList = new ArrayList<Version>();
