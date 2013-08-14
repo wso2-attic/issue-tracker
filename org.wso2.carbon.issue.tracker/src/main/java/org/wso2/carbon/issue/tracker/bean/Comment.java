@@ -18,15 +18,17 @@
  */
 package org.wso2.carbon.issue.tracker.bean;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Comment {
 
     private int commentId;
-    private String commentDescription;
-    private String commentCreatedTime;
-    private String commentUpdatedTime;
-    private String commentAuthor;
+    private String comment;
+    private String createdTime;
+    private String updatedTime;
+    private String commentCreator;
     private int issueId;
-    private int userId;
 
     public int getCommentId() {
         return commentId;
@@ -36,36 +38,36 @@ public class Comment {
         this.commentId = commentId;
     }
 
-    public String getCommentDescription() {
-        return commentDescription;
+    public String getComment() {
+        return comment;
     }
 
-    public void setCommentDescription(String commentDescription) {
-        this.commentDescription = commentDescription;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public String getCommentCreatedTime() {
-        return commentCreatedTime;
+    public String getCreatedTime() {
+        return createdTime;
     }
 
-    public void setCommentCreatedTime(String commentCreatedTime) {
-        this.commentCreatedTime = commentCreatedTime;
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
     }
 
-    public String getCommentUpdatedTime() {
-        return commentUpdatedTime;
+    public String getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setCommentUpdatedTime(String commentUpdatedTime) {
-        this.commentUpdatedTime = commentUpdatedTime;
+    public void setUpdatedTime(String updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
-    public String getCommentAuthor() {
-        return commentAuthor;
+    public String getCommentCreator() {
+        return commentCreator;
     }
 
-    public void setCommentAuthor(String commentAuthor) {
-        this.commentAuthor = commentAuthor;
+    public void setCommentCreator(String commentCreator) {
+        this.commentCreator = commentCreator;
     }
 
     public int getIssueId() {
@@ -76,11 +78,20 @@ public class Comment {
         this.issueId = issueId;
     }
 
-    public int getUserId() {
-        return userId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Comment comment = (Comment) o;
+
+        if (commentId != comment.commentId) return false;
+
+        return true;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    @Override
+    public int hashCode() {
+        return commentId;
     }
 }
