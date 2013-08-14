@@ -18,6 +18,9 @@
  */
 package org.wso2.carbon.issue.tracker.bean;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Issue {
 
     private int id;
