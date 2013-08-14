@@ -18,7 +18,6 @@
  */
 package org.wso2.carbon.issue.tracker.util;
 
- 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,7 +26,6 @@ import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 
- 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -68,16 +66,11 @@ public class DBConfiguration {
 	 * @return
 	 */
 	public static Connection getDBConnection() {
-		Connection result = null;
+
 		if (dataSource == null) {
 			Initialize();
-			result = doGetConnection();
-		} else {
-		
-			result = doGetConnection();
 		}
-		return result;
-
+		return doGetConnection();
 	}
 
 	private static Connection doGetConnection() {

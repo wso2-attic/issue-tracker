@@ -21,13 +21,15 @@ package org.wso2.carbon.issue.tracker.internal;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import org.wso2.carbon.issue.tracker.dao.IssueDAO;
+
 @Path("/issue")
 public class IssueService {
 
     @GET
     @Path("/sayhello")
     public String sayHello(){
-        return "Hello";
+        return "Hello";      
 
     }
 }
