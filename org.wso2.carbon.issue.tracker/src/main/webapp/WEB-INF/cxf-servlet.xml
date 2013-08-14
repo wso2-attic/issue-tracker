@@ -37,7 +37,7 @@
     </jaxrs:server>
 
     <bean id="issueBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
-    <bean id="commentBean" class="org.wso2.carbon.issue.tracker.internal.CommentService" />
+    <bean id="commentBean" class="org.wso2.carbon.issue.tracker.server.impl.CommentServiceImpl" />
     <bean id="versionBean" class="org.wso2.carbon.issue.tracker.internal.VersionService" />
 
 </beans>
