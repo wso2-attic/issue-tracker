@@ -18,6 +18,7 @@
  */
 package org.wso2.carbon.issue.tracker.internal;
 
+import com.google.gson.Gson;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 
@@ -30,11 +31,20 @@ import java.util.List;
 public class VersionService {
 
     @GET
-    @Path("/project/{id}/")
+    @Path("/project/{project_id}/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Version> getVersionListOfProject(@PathParam("project_id") String projectId) throws Exception {
+    public String getVersionListOfProject(@PathParam("project_id") String projectId) throws Exception {
         // return Response.status(200).entity("addUser is called, userAgent : " + userAgent).build();
-        return null;
+        StringBuilder b1 = new StringBuilder();
+        VersionDAO versionDAO = new VersionDAO();
+
+        List<Version> versionList = versionDAO.viewAllVersions(projectId);
+        b1.append("{\"VersionList\":[\n");
+        Gson gson1 = new Gson();
+        String json1 = null;
+        json1 = gson1.toJson(versionList);
+        b1.append(json1);
+        return b1.toString();
     }
 
     @POST
