@@ -19,6 +19,8 @@
 package org.wso2.carbon.issue.tracker.internal;
 
 import com.google.gson.Gson;
+
+import org.apache.log4j.Logger;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 
@@ -30,39 +32,45 @@ import java.util.List;
 @Path("/versionService")
 public class VersionService {
 
-    @GET
-    @Path("/project/{project_id}/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getVersionListOfProject(@PathParam("project_id") String projectId) throws Exception {
-        // return Response.status(200).entity("addUser is called, userAgent : " + userAgent).build();
-        StringBuilder b1 = new StringBuilder();
-        VersionDAO versionDAO = new VersionDAO();
+	Logger logger = Logger.getLogger(VersionService.class);
 
-        List<Version> versionList = versionDAO.viewAllVersions(projectId);
-        b1.append("{\"VersionList\":[\n");
-        Gson gson1 = new Gson();
-        String json1 = null;
-        json1 = gson1.toJson(versionList);
-        b1.append(json1);
-        return b1.toString();
-    }
+	@GET
+	@Path("/project/{project_id}/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getVersionListOfProject(
+			@PathParam("project_id") String projectId) throws Exception {
+		// return Response.status(200).entity("addUser is called, userAgent : "
+		// + userAgent).build();
+		StringBuilder b1 = new StringBuilder();
+		VersionDAO versionDAO = new VersionDAO();
 
-    @POST
-    @Path("/postVersion")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addVersionToProject(Version version) throws Exception{
+		List<Version> versionList = versionDAO.viewAllVersions(projectId);
+		b1.append("{\"VersionList\":[\n");
+		Gson gson1 = new Gson();
+		String json1 = null;
+		json1 = gson1.toJson(versionList);
+		b1.append(json1);
+		return b1.toString();
+	}
 
-        System.out.println("----invoking addCustomer, Customer name is: " + version.getProjectVersion());
+	@POST
+	@Path("/postVersion")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addVersionToProject(Version version) throws Exception {
 
-        VersionDAO versionDAO = new VersionDAO();
-        versionDAO.addVersionForProject(version);
+		logger.debug("----invoking addCustomer, Customer name is: "
+				+ version.getProjectVersion());
 
-        return Response.ok(version).build();
-    }
-    @GET
-    @Path("/hello")
-    public String sayHello(){
-        System.out.println("Hellloooooo");
-        return "hello";
-    }
+		VersionDAO versionDAO = new VersionDAO();
+		versionDAO.addVersionForProject(version);
+
+		return Response.ok(version).build();
+	}
+
+	@GET
+	@Path("/hello")
+	public String sayHello() {
+		System.out.println("Hellloooooo");
+		return "hello";
+	}
 }

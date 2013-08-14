@@ -20,8 +20,12 @@ package org.wso2.carbon.issue.tracker.internal;
 
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import org.apache.log4j.Logger;
 
 public class JaxrsServer {
+
+  static Logger logger = Logger.getLogger(JaxrsServer.class);
+  
   protected JaxrsServer() throws Exception {
         JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
         sf.setResourceClasses(VersionService.class);
@@ -34,7 +38,7 @@ public class JaxrsServer {
 
     public static void main(String args[]) throws Exception {
         new JaxrsServer();
-        System.out.println("Server ready...");
+        logger.info("Server ready...");
 
         Thread.sleep(5 * 60 * 1000);
         System.out.println("Server exiting");

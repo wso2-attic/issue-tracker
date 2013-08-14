@@ -19,24 +19,14 @@
 package org.wso2.carbon.issue.tracker.dao;
 
 import org.wso2.carbon.issue.tracker.bean.Comment;
+
 import java.util.List;
 
-public class CommentDAO {
+public interface CommentDAO {
 
-    public List<Comment> getCommentsForIssue(String id) throws Exception {
-        return null;
-    }
-
-    public String postCommentForIssue(Comment comment) throws Exception {
-        return null;
-    }
-
-    public String deleteComment(int usreId, int commentId) throws Exception {
-        return null;
-    }
-
-    public String editComment(Comment comment) throws Exception {
-        return null;
-    }
+    public List<Comment> getCommentsForIssue(int id) throws Exception;
+    public String postCommentForIssue(Comment comment) throws Exception;
+    public String deleteCommentByCommentId(int userId, int commentId) throws Exception;
+    public String editComment(Comment comment) throws Exception ;
 
 }

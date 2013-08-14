@@ -19,22 +19,16 @@
 package org.wso2.carbon.issue.tracker.util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Logger;
-
 import javax.naming.InitialContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 /**
  * Represents Database configuration details
  */
 public class DBConfiguration {
-	static Log log = LogFactory.getLog(DBConfiguration.class);
+	static Logger log = Logger.getLogger(DBConfiguration.class);
 	private static DataSource dataSource = null;
 
 	private static void Initialize() {
