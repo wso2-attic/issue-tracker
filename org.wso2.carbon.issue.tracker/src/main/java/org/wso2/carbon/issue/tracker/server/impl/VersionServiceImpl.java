@@ -18,69 +18,88 @@
  */
 package org.wso2.carbon.issue.tracker.server.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
+import org.wso2.carbon.issue.tracker.dao.VersionDAO;
+import org.wso2.carbon.issue.tracker.delegate.DAODeligate;
 import org.wso2.carbon.issue.tracker.server.VersionService;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 
-import javax.ws.rs.PathParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VersionServiceImpl implements VersionService {
+    private static final Log log = LogFactory.getLog(VersionServiceImpl.class);
 
-    public List<Version> getVersionListOfProject(@PathParam("project_id") int projId) {
-        Connection dbConnection = null;
-        Statement statement = null;
-        dbConnection = DBConfiguration.getDBConnection();
-        String sql = "SELECT * FROM VERSION where Project_project_id = " + projId;
-        System.out.println("******sql:" + sql);
-        Statement stmt = null;
+    public Response getVersionListOfProject(int projId) {
+//        Connection dbConnection = null;
+//        Statement statement = null;
+//        dbConnection = DBConfiguration.getDBConnection();
+//        String sql = "SELECT * FROM VERSION where Project_project_id = " + projId;
+//        System.out.println("******sql:" + sql);
+//        Statement stmt = null;
+//        try {
+//            stmt = dbConnection.createStatement();
+//        } catch (SQLException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//        ResultSet rs = null;
+//        try {
+//            rs = stmt.executeQuery(sql);
+//        } catch (SQLException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//
+//        List<Version> versionList = new ArrayList<Version>();
+//
+//        int i = 0;
+//        System.out.println("select statement sucessfully used");
+//        try {
+//            while (rs.next()) {
+//                int versionId = rs.getInt("id");
+//                String version = rs.getString("version");
+//                int projectId = rs.getInt("Project_project_id");
+//
+//                Version v = new Version();
+//                v.setProjectVersionId(versionId);
+//                v.setProjectVersion(version);
+//                v.setProjectId(projectId);
+//
+//                versionList.add(i, v);
+//                i++;
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//
+//        return versionList;
+
+
+         if(log.isDebugEnabled()){
+            log.debug("Executing get Versions for project Id : projectID: " + projId);
+        }
+
+        System.out.println("Executing get Versions for project Id : projectID: " + projId);
+        VersionDAO versionDAO = DAODeligate.getVersionInstance();
+        List<Version> versionList = null;
         try {
-            stmt = dbConnection.createStatement();
+            versionList = versionDAO.viewAllVersions(projId);
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        ResultSet rs = null;
-        try {
-            rs = stmt.executeQuery(sql);
-        } catch (SQLException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (IssueTrackerException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        List<Version> versionList = new ArrayList<Version>();
-
-        int i = 0;
-        System.out.println("select statement sucessfully used");
-        try {
-            while (rs.next()) {
-                int versionId = rs.getInt("id");
-                String version = rs.getString("version");
-                int projectId = rs.getInt("Project_project_id");
-
-                Version v = new Version();
-                v.setProjectVersionId(versionId);
-                v.setProjectVersion(version);
-                v.setProjectId(projectId);
-
-                versionList.add(i, v);
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-//             for(int a=0; a<versionList.size(); a++){
-//                 System.out.println(versionList.);
-//             }
-        //IssueTrackerUtil.executeQuery(conn,sql);
-        return versionList;
+        GenericEntity<List<Version>> entity = new GenericEntity<List<Version>>(versionList){} ;
+        return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     public Response addVersionToProject(Version version) {

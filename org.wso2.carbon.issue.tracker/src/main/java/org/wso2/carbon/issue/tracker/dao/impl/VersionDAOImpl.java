@@ -20,9 +20,14 @@ package org.wso2.carbon.issue.tracker.dao.impl;
 
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
+import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VersionDAOImpl implements VersionDAO{
@@ -32,7 +37,49 @@ public class VersionDAOImpl implements VersionDAO{
     }
 
     @Override
-    public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<Version> viewAllVersions(int projId) throws IssueTrackerException, SQLException {
+        Connection dbConnection = null;
+        Statement statement = null;
+        dbConnection = DBConfiguration.getDBConnection();
+        String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projId;
+        System.out.println("******sql:" + sql);
+        Statement stmt = null;
+        try {
+            stmt = dbConnection.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        List<Version> versionList = new ArrayList<Version>();
+
+        int i = 0;
+        System.out.println("select statement sucessfully used");
+        try {
+            while (rs.next()) {
+                int versionId = rs.getInt("VERSION_ID");
+                String version = rs.getString("VERSION");
+                int projectId = rs.getInt("PROJECT_ID");
+
+                Version v = new Version();
+                v.setProjectVersionId(versionId);
+                v.setProjectVersion(version);
+                v.setProjectId(projectId);
+
+                versionList.add(i, v);
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return versionList;
+
     }
+
 }

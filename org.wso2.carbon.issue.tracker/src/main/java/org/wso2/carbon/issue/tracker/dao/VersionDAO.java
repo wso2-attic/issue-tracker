@@ -30,7 +30,7 @@ public interface VersionDAO {
     public String addVersionForProject(Version version) throws IssueTrackerException;
 
 
-    public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException;
+    public List<Version> viewAllVersions(int projId) throws IssueTrackerException, SQLException;
 
 
 }
