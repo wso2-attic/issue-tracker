@@ -1,10 +1,10 @@
 package org.wso2.carbon.issue.tracker.delegate;
 
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
-import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.dao.impl.CommentDAOImpl;
+import org.wso2.carbon.issue.tracker.dao.impl.IssueDAO;
 import org.wso2.carbon.issue.tracker.dao.impl.ProjectDAOImpl;
 import org.wso2.carbon.issue.tracker.dao.impl.VersionDAOImpl;
 
