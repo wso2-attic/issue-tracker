@@ -23,40 +23,51 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Project {
 
-    private String projectId;
-    private String projectName;
-    private String projectOwner;
-    private String projectOrganizationId;
+    private int id;
+    private String name;
+    private String owner;
+    private int organizationId;
+    private String description;
 
-    public String getProjectId() {
-        return projectId;
+    public int getId() {
+        return id;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getName() {
+        return name;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getProjectOwner() {
-        return projectOwner;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setProjectOwner(String projectOwner) {
-        this.projectOwner = projectOwner;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
-    public String getProjectOrganizationId() {
-        return projectOrganizationId;
+    public int getOrganizationId() {
+        return organizationId;
     }
 
-    public void setProjectOrganizationId(String projectOrganizationId) {
-        this.projectOrganizationId = projectOrganizationId;
+    public void setOrganizationId(int organizationId) {
+        this.organizationId = organizationId;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    
 }

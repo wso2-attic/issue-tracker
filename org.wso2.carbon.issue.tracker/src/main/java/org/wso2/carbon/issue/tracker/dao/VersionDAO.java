@@ -18,70 +18,17 @@
  */
 package org.wso2.carbon.issue.tracker.dao;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
-import org.wso2.carbon.issue.tracker.util.IssueTrackerUtil;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
-public class VersionDAO {
+public interface VersionDAO {
 
-    private static final Log log = LogFactory.getLog(VersionDAO.class);
 
-    public String addVersionForProject(Version version) throws IssueTrackerException {
+    public boolean addVersionForProject(Version version) throws IssueTrackerException;
+    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException;
 
-        Connection conn;
-
-        conn = IssueTrackerUtil.getConnection();
-        String sql = "INSERT INTO Version (id,version,Project_project_id) " +
-                  "VALUES('"+ version.getProjectVersionId()+"','" + version.getProjectVersion()+"','"+version.getProjectId()+")";
-        IssueTrackerUtil.executeQuery(conn, sql);
-        return null;
-    }
-
-    public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException {
-        Connection conn;
-        conn = IssueTrackerUtil.getConnection();
-        String sql = "SELECT * FROM Version where Project_project_id = " +projId;
-        System.out.println("******sql:"+sql);
-         Statement stmt= conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-
-        List<Version> versionList = new ArrayList<Version>();
-
-        int i = 0;
-	            System.out.println("select statement sucessfully used");
-	            while (rs.next()) {
-	                int versionId= rs.getInt("id");
-	                String version= rs.getString("version");
-	                int projectId= rs.getInt("Project_project_id");
-
-                    Version v = new Version();
-                    v.setProjectVersionId(versionId);
-                    v.setProjectVersion(version);
-                    v.setProjectId(projectId);
-
-                    versionList.add(i,v);
-                    i++;
-	                }
-
-//             for(int a=0; a<versionList.size(); a++){
-//                 System.out.println(versionList.);
-//             }
-        //IssueTrackerUtil.executeQuery(conn,sql);
-        return versionList;
-    }
-
-    private static void handleException(String msg, Throwable t) throws IssueTrackerException {
-        log.error(msg, t);
-        throw new IssueTrackerException(msg, t);
-    }
 
 }

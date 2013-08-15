@@ -20,13 +20,47 @@ package org.wso2.carbon.issue.tracker.dao;
 
 import org.wso2.carbon.issue.tracker.bean.Comment;
 
+import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Defines the database operations for a {@link Comment}
+ *
+ */
 public interface CommentDAO {
 
-    public List<Comment> getCommentsForIssue(int id) throws Exception;
-    public String postCommentForIssue(Comment comment) throws Exception;
-    public String deleteCommentByCommentId(int userId, int commentId) throws Exception;
-    public String editComment(Comment comment) throws Exception ;
+    /**
+     * Get all comments for given Issue ID
+     * @param issueId       Issue ID
+     * @return              List of comments of given issue id
+     * @throws SQLException
+     */
+    public List<Comment> getCommentsForIssue(int issueId) throws SQLException;
+
+    /**
+     * Add comment to a given issue
+     * @param comment {@link Comment}
+     * @param issueId Issue id of comment
+     * @return
+     * @throws SQLException
+     */
+    public void addCommentForIssue(Comment comment, int issueId) throws SQLException;
+
+    /**
+     * Delete Comment by ID
+     * @param commentId     Comment ID
+     * @return              Comment is successfully deleted or not
+     * @throws SQLException
+     */
+    public boolean deleteCommentByCommentId(int issueId, int commentId) throws SQLException;
+
+    /**
+     * Edit Comment based on given comment
+     * @param comment {@link Comment}
+     * @param issueId Issue id of comment
+     * @return
+     * @throws SQLException
+     */
+    public void editComment(Comment comment, int issueId) throws SQLException ;
 
 }

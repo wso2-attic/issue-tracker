@@ -35,6 +35,7 @@
 			<groupId>org.wso2.carbon</groupId>
 			<artifactId>org.wso2.carbon.user.core</artifactId>
 			<version>4.1.0</version>
+
 		</dependency>
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>
@@ -49,38 +50,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jettison</groupId>
-			<artifactId>jettison</artifactId>
-			<version>1.1</version>
-		</dependency>
 
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.6</version>
-		</dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
@@ -105,7 +85,7 @@
 				<configuration>
 
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<warName>${project.artifactId}</warName>
+					<warName>issuetracker-${project.version}</warName>
 				</configuration>
 			</plugin>
 			<plugin>

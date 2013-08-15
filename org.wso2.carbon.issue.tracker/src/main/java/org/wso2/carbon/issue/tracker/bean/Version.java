@@ -50,4 +50,22 @@ public class Version {
     public void setProjectId(int projectId) {
         this.projectId = projectId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Version version = (Version) o;
+
+        if (projectVersionId != version.projectVersionId) return false;
+        if (projectVersionId != version.projectVersionId) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return projectVersionId;
+    }
 }
