@@ -12,7 +12,7 @@ public interface VersionService {
     @GET
     @Path("/project/{project_id}/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVersionListOfProject(@PathParam("project_id") int projectId);
+    public Response getVersionListOfProjectByProjectId(@PathParam("project_id") int projectId);
 
     @POST
     @Path("/postVersion")

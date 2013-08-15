@@ -35,7 +35,7 @@ import java.util.List;
 public class VersionServiceImpl implements VersionService {
     private static final Log log = LogFactory.getLog(VersionServiceImpl.class);
 
-    public Response getVersionListOfProject(int projId) {
+    public Response getVersionListOfProjectByProjectId(int projId) {
          if(log.isDebugEnabled()){
             log.debug("Executing get Versions for project Id : projectID: " + projId);
         }
@@ -44,7 +44,7 @@ public class VersionServiceImpl implements VersionService {
         VersionDAO versionDAO = DAODelegate.getVersionInstance();
         List<Version> versionList = null;
         try {
-            versionList = versionDAO.viewAllVersions(projId);
+            versionList = versionDAO.getVersionListOfProjectByProjectId(projId);
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON_TYPE).build();

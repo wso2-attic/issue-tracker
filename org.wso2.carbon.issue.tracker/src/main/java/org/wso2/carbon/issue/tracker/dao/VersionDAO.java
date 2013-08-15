@@ -28,7 +28,7 @@ public interface VersionDAO {
 
 
     public boolean addVersionForProject(Version version) throws IssueTrackerException;
-    public List<Version> viewAllVersions(int projId) throws IssueTrackerException, SQLException;
+    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException;
 
 
 }

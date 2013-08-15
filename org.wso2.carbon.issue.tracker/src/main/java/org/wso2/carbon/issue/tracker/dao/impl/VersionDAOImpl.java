@@ -70,7 +70,7 @@ public class VersionDAOImpl implements VersionDAO{
     }
 
     @Override
-    public List<Version> viewAllVersions(int projId) throws IssueTrackerException, SQLException {
+    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException {
         Connection dbConnection = null;
         Statement statement = null;
         dbConnection = DBConfiguration.getDBConnection();
