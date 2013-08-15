@@ -28,7 +28,6 @@ public class Comment {
     private String createdTime;
     private String updatedTime;
     private String creator;
-    private int issueId;
 
     public int getId() {
         return Id;
@@ -68,14 +67,6 @@ public class Comment {
 
     public void setCreator(String creator) {
         this.creator = creator;
-    }
-
-    public int getIssueId() {
-        return issueId;
-    }
-
-    public void setIssueId(int issueId) {
-        this.issueId = issueId;
     }
 
     @Override

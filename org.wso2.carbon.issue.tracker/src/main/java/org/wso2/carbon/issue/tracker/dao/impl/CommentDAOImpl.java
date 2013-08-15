@@ -54,7 +54,6 @@ public class CommentDAOImpl implements CommentDAO {
                 comment.setCreatedTime(updatedTimeStr);
 
                 comment.setCreator(rs.getString("CREATOR"));
-                comment.setIssueId(rs.getInt("ISSUE_ID"));
 
                 comments.add(comment);
             }
@@ -81,7 +80,7 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public void addCommentForIssue(Comment comment) throws SQLException {
+    public void addCommentForIssue(Comment comment, int issueId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
@@ -95,7 +94,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setTimestamp(3, getCurrentTimeStamp());
             preparedStatement.setString(4, comment.getCreator());
-            preparedStatement.setInt(5, comment.getIssueId());
+            preparedStatement.setInt(5, issueId);
 
             // execute insert SQL statement
             preparedStatement.executeUpdate();
@@ -117,7 +116,6 @@ public class CommentDAOImpl implements CommentDAO {
             if (dbConnection != null) {
                 dbConnection.close();
             }
-
         }
     }
 
@@ -137,9 +135,9 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setInt(1, issueId);
             preparedStatement.setInt(2, commentId);
             // execute delete SQL statement
-            int x = preparedStatement.executeUpdate();
+            int count = preparedStatement.executeUpdate();
 
-            if(x==0)
+            if(count==0)
                 result = false;
             else
                 result = true;
@@ -161,7 +159,6 @@ public class CommentDAOImpl implements CommentDAO {
             if (dbConnection != null) {
                 dbConnection.close();
             }
-
         }
         return result;
     }
@@ -170,7 +167,7 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public void editComment(Comment comment) throws SQLException {
+    public void editComment(Comment comment, int issueId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
@@ -183,7 +180,7 @@ public class CommentDAOImpl implements CommentDAO {
 
             preparedStatement.setString(1, comment.getComment());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
-            preparedStatement.setInt(3, comment.getIssueId());
+            preparedStatement.setInt(3, issueId);
             preparedStatement.setInt(4, comment.getId());
 
             // execute update SQL stetement
