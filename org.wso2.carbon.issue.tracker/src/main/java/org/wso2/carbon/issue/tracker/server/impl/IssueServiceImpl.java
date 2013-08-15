@@ -2,12 +2,14 @@ package org.wso2.carbon.issue.tracker.server.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.common.util.StringUtils;
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.delegate.DAODelegate;
 import org.wso2.carbon.issue.tracker.server.IssueService;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -79,10 +81,22 @@ public class IssueServiceImpl implements IssueService {
         if (log.isDebugEnabled()) {
             log.debug("Executing addNewCommentForIssue, created by: " + comment.getCreator());
         }
+
+        if (StringUtils.isEmpty(comment.getComment())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Comment cannot be empty").build();
+        }
+
+        if (StringUtils.isEmpty(comment.getCreator())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Comment creator cannot be empty").build();
+        }
+
+        if (issueId ==0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
+        }
+
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            comment.setIssueId(issueId);
-            commentDAO.addCommentForIssue(comment);
+            commentDAO.addCommentForIssue(comment, issueId);
             return Response.ok().type(MediaType.APPLICATION_JSON).build();
         } catch (SQLException e) {
             String msg = "Error while add comments for issue";
@@ -107,11 +121,26 @@ public class IssueServiceImpl implements IssueService {
             log.debug("Executing modifyCommentForIssue, CommentId: " + commentId);
         }
 
+        if (StringUtils.isEmpty(comment.getComment())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Comment cannot be empty").build();
+        }
+
+        if (StringUtils.isEmpty(comment.getCreator())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Comment creator cannot be empty").build();
+        }
+
+        if (issueId == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
+        }
+
+        if (commentId == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid comment ID").build();
+        }
+
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            comment.setIssueId(issueId);
             comment.setId(commentId);
-            commentDAO.editComment(comment);
+            commentDAO.editComment(comment, issueId);
             return Response.ok().build();
 
         } catch (SQLException e) {
@@ -134,6 +163,14 @@ public class IssueServiceImpl implements IssueService {
     public Response deleteComment(String tenantDomain, int issueId, int commentId) {
         if(log.isDebugEnabled()){
             log.debug("Executing deleteComment, commentID: " + commentId);
+        }
+
+        if (issueId == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
+        }
+
+        if (commentId == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid comment ID").build();
         }
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
