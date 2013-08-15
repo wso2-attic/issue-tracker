@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 public class ProjectServiceImpl implements ProjectService{
     @Override
     public Response getAllProject(String tenantDomain) {
+        System.out.println("HEHEHHE");
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

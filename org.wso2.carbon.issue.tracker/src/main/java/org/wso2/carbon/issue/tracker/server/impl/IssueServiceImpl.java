@@ -138,8 +138,8 @@ public class IssueServiceImpl implements IssueService {
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            commentDAO.deleteCommentByCommentId(commentId);
-            return Response.ok().build();
+            boolean result = commentDAO.deleteCommentByCommentId(issueId, commentId);
+            return result ? Response.ok().build() : Response.notModified("Invalid credentials").build();
 
         } catch (SQLException e) {
             String msg = "Error while delete comments";

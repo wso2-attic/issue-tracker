@@ -51,7 +51,7 @@ public interface CommentDAO {
      * @return              Comment is successfully deleted or not
      * @throws SQLException
      */
-    public void deleteCommentByCommentId(int commentId) throws SQLException;
+    public boolean deleteCommentByCommentId(int issueId, int commentId) throws SQLException;
 
     /**
      * Edit Comment based on given comment

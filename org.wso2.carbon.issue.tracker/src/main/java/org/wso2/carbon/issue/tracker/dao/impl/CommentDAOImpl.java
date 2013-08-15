@@ -123,20 +123,24 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public void deleteCommentByCommentId(int commentId) throws SQLException {
+    public boolean deleteCommentByCommentId(int issueId, int commentId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String deleteSQL = "DELETE COMMENT WHERE ID = ? AND USER_ID = ?";
-
+        String deleteSQL = "DELETE FROM COMMENT WHERE ISSUE_ID= ? AND ID = ?";
+        boolean result = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
-            preparedStatement.setInt(1, commentId);
-
+            preparedStatement.setInt(1, issueId);
+            preparedStatement.setInt(2, commentId);
             // execute delete SQL statement
             int x = preparedStatement.executeUpdate();
 
+            if(x==0)
+                result = false;
+            else
+                result = true;
 
             System.out.println("Record is deleted! " + x);
 
@@ -155,6 +159,7 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
+        return result;
     }
 
     /**
@@ -165,7 +170,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ID = ?";
+        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
 
 
         try {
@@ -174,9 +179,8 @@ public class CommentDAOImpl implements CommentDAO {
 
             preparedStatement.setString(1, comment.getComment());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
-            preparedStatement.setInt(3, comment.getId());
-            preparedStatement.setInt(4, comment.getIssueId());
-            preparedStatement.setString(5, comment.getCreator());
+            preparedStatement.setInt(3, comment.getIssueId());
+            preparedStatement.setInt(4, comment.getId());
 
             // execute update SQL stetement
             preparedStatement.executeUpdate();
