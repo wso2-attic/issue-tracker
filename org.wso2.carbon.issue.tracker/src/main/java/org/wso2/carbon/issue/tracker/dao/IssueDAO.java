@@ -87,6 +87,7 @@ public class IssueDAO {
 					+ " " + e.getMessage());
 		}
 	}
+	
 
 	public void updateWithComment(Issue issue, Comment comment) {
 		
