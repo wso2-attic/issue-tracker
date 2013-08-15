@@ -21,7 +21,7 @@ package org.wso2.carbon.issue.tracker.internal;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.wso2.carbon.issue.tracker.dao.impl.IssueDAO;
+import org.wso2.carbon.issue.tracker.dao.impl.IssueDAOImpl;
 
 @Path("/issue")
 public class IssueService {

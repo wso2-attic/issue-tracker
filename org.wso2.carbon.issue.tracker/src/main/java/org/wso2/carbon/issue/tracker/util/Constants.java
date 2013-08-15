@@ -18,9 +18,13 @@
  */
 package org.wso2.carbon.issue.tracker.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Issue Tracker Project related Constants
  */
 public class Constants {
 
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 }

@@ -4,7 +4,7 @@ import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.dao.impl.CommentDAOImpl;
-import org.wso2.carbon.issue.tracker.dao.impl.IssueDAO;
+import org.wso2.carbon.issue.tracker.dao.impl.IssueDAOImpl;
 import org.wso2.carbon.issue.tracker.dao.impl.ProjectDAOImpl;
 import org.wso2.carbon.issue.tracker.dao.impl.VersionDAOImpl;
 
@@ -15,7 +15,7 @@ import org.wso2.carbon.issue.tracker.dao.impl.VersionDAOImpl;
 public class DAODelegate {
 
     private static CommentDAO commentInstance = null;
-    private static IssueDAO issueInstance = null;
+    private static IssueDAOImpl issueInstance = null;
     private static ProjectDAO projectInstance = null;
     private static VersionDAO versionInstance = null;
 
@@ -29,9 +29,9 @@ public class DAODelegate {
         return commentInstance;
     }
 
-    public synchronized static IssueDAO getIssueInstance() {
+    public synchronized static IssueDAOImpl getIssueInstance() {
         if (issueInstance == null)
-            issueInstance = new IssueDAO();
+            issueInstance = new IssueDAOImpl();
         return issueInstance;
     }
 
