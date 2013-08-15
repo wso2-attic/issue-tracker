@@ -31,7 +31,7 @@ public interface CommentDAO {
 
     /**
      * Get all comments for given Issue ID
-     * @param issueId            Issue ID
+     * @param issueId       Issue ID
      * @return              List of comments of given issue id
      * @throws SQLException
      */

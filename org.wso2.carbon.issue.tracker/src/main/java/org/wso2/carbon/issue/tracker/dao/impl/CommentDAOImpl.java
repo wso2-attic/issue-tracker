@@ -36,7 +36,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement = dbConnection.prepareStatement(selectSQL);
             preparedStatement.setInt(1, issueId);
 
-            // execute select SQL stetement
+            // execute select SQL statement
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -97,10 +97,12 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setString(4, comment.getCreator());
             preparedStatement.setInt(5, comment.getIssueId());
 
-            // execute insert SQL stetement
+            // execute insert SQL statement
             preparedStatement.executeUpdate();
 
-            System.out.println("Record is inserted into COMMENT table!");
+            if(log.isDebugEnabled()){
+                log.debug("Record is inserted into COMMENT table!");
+            }
 
         } catch (SQLException e) {
             String msg = "Error while adding comment to DB, commentID: "+ comment.getId();
@@ -142,7 +144,9 @@ public class CommentDAOImpl implements CommentDAO {
             else
                 result = true;
 
-            System.out.println("Record is deleted! " + x);
+            if(log.isDebugEnabled()){
+                log.debug("Record is deleted from COMMENT table!");
+            }
 
         } catch (SQLException e) {
             String msg = "Error while deleting comment from DB, commentID: " + commentId;
@@ -185,7 +189,9 @@ public class CommentDAOImpl implements CommentDAO {
             // execute update SQL stetement
             preparedStatement.executeUpdate();
 
-            System.out.println("Record is updated to COMMENT  table!");
+            if(log.isDebugEnabled()){
+                log.debug("Record is updated to COMMENT  table!");
+            }
 
         } catch (SQLException e) {
             String msg = "Error while editing comment to DB, commentID: "+ comment.getId();
@@ -200,13 +206,12 @@ public class CommentDAOImpl implements CommentDAO {
             if (dbConnection != null) {
                 dbConnection.close();
             }
-
         }
     }
 
     /**
      * Get current time to log DB
-     * @return
+     * @return   {@link Timestamp}
      */
     private static Timestamp getCurrentTimeStamp() {
         java.util.Date today = new java.util.Date();
