@@ -23,17 +23,50 @@ import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VersionDAOImpl implements VersionDAO{
     @Override
-    public String addVersionForProject(Version version) throws IssueTrackerException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean addVersionForProject(Version version) throws IssueTrackerException {
+        Connection dbConnection = null;
+                Statement statement = null;
+                dbConnection = DBConfiguration.getDBConnection();
+        PreparedStatement preparedStatement = null;
+                try {
+                           statement = dbConnection.createStatement();
+                       } catch (SQLException e) {
+                    try {
+                        throw new IssueTrackerException("Error while creating SQL statement", e);
+                    } catch (IssueTrackerException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+            //INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("5.0.0","1");
+
+        String insertTableSQL = "INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES (?, ?)";
+
+                       try {
+
+            dbConnection = DBConfiguration.getDBConnection();
+            preparedStatement = dbConnection.prepareStatement(insertTableSQL);
+
+            preparedStatement.setString(1, version.getProjectVersion());
+            preparedStatement.setInt(2, version.getProjectId());
+
+
+            // execute insert SQL stetement
+            preparedStatement.executeUpdate();
+
+                       } catch (SQLException e) {
+                           try {
+                               throw new IssueTrackerException("Error while executing SQL statement", e);
+                           } catch (IssueTrackerException e1) {
+                               e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                           }
+                       }
+        return true;
     }
 
     @Override
@@ -42,7 +75,6 @@ public class VersionDAOImpl implements VersionDAO{
         Statement statement = null;
         dbConnection = DBConfiguration.getDBConnection();
         String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projId;
-        System.out.println("******sql:" + sql);
         Statement stmt = null;
         try {
             stmt = dbConnection.createStatement();
@@ -59,7 +91,6 @@ public class VersionDAOImpl implements VersionDAO{
         List<Version> versionList = new ArrayList<Version>();
 
         int i = 0;
-        System.out.println("select statement sucessfully used");
         try {
             while (rs.next()) {
                 int versionId = rs.getInt("VERSION_ID");
