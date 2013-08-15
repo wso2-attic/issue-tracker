@@ -6,6 +6,7 @@ import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.dao.impl.CommentDAOImpl;
+import org.wso2.carbon.issue.tracker.dao.impl.ProjectDAOImpl;
 
 
 public class DAODeligate {
@@ -28,7 +29,7 @@ public class DAODeligate {
 
     public synchronized static ProjectDAO getProjectInstance(){
         if(projectInstance == null)
-            projectInstance = new ProjectDAO();
+            projectInstance = new ProjectDAOImpl();
         return projectInstance;
     }
 
