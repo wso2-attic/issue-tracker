@@ -18,6 +18,7 @@
  */
 package org.wso2.carbon.issue.tracker.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.wso2.carbon.issue.tracker.bean.Project;
@@ -34,7 +35,7 @@ public interface ProjectDAO {
      * @param project
      *            information about the project.
      */
-    public void add(Project project);
+    public void add(Project project) throws SQLException ;
 
     /**
      * Modified a project information. given by the {@link Project}#id
@@ -42,7 +43,7 @@ public interface ProjectDAO {
      * @param project
      *            new information about the project (except the id)
      */
-    public void update(Project project);
+    public void update(Project project) throws SQLException ;
 
     /**
      * Retrieves a Project specified by the id
@@ -51,7 +52,7 @@ public interface ProjectDAO {
      *            id of the project
      * @return a {@link Project} or null
      */
-    public Project get(int id);
+    public Project get(int id) throws SQLException;
 
     /**
      * Returns projects owned by a particular organization (specified by
@@ -62,6 +63,6 @@ public interface ProjectDAO {
      * 
      * @return a list of project. ( an empty list if there are no projects)
      */
-    public List<Project> getProjectsByOrganizationId(int organizationId);
+    public List<Project> getProjectsByOrganizationId(int organizationId) throws SQLException;
 
 }
