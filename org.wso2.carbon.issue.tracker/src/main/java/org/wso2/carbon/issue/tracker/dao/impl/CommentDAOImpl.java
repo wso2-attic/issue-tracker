@@ -10,13 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nihanth
- * Date: 8/14/13
- * Time: 9:35 AM
- * To change this template use File | Settings | File Templates.
- */
 public class CommentDAOImpl implements CommentDAO {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -26,7 +19,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String selectSQL = "SELECT COMMENT_ID, COMMENT, CREATED_TIME, UPDATED_TIME, COMMENT_CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY COMMENT_ID ASC";
+        String selectSQL = "SELECT ID, COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
         List<Comment> comments = new ArrayList<Comment>();
 
         try {
@@ -40,7 +33,7 @@ public class CommentDAOImpl implements CommentDAO {
             while (rs.next()) {
 
                 Comment comment = new Comment();
-                comment.setCommentId(rs.getInt("COMMENT_ID"));
+                comment.setId(rs.getInt("ID"));
                 comment.setComment(rs.getString("COMMENT"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
@@ -51,7 +44,7 @@ public class CommentDAOImpl implements CommentDAO {
                 String updatedTimeStr = dateFormat.format(updatedTime);
                 comment.setCreatedTime(updatedTimeStr);
 
-                comment.setCommentCreator(rs.getString("COMMENT_CREATOR"));
+                comment.setCreator(rs.getString("CREATOR"));
 
                 comment.setIssueId(rs.getInt("ISSUE_ID"));
 
@@ -81,11 +74,11 @@ public class CommentDAOImpl implements CommentDAO {
         return comments;
     }
 
-    public String postCommentForIssue(Comment comment) throws SQLException {
+    public boolean postCommentForIssue(Comment comment) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO COMMENT (COMMENT, CREATED_TIME, UPDATED_TIME, COMMENT_CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
+        String insertTableSQL = "INSERT INTO COMMENT (COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
 
         try {
             System.out.println("Comment: " + comment.getComment());
@@ -98,7 +91,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setString(1, comment.getComment());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setTimestamp(3, getCurrentTimeStamp());
-            preparedStatement.setString(4, comment.getCommentCreator());
+            preparedStatement.setString(4, comment.getCreator());
             preparedStatement.setInt(5, comment.getIssueId());
 
             // execute insert SQL stetement
@@ -109,7 +102,7 @@ public class CommentDAOImpl implements CommentDAO {
         } catch (SQLException e) {
 
             System.out.println(e.getMessage());
-
+            return false;
         } finally {
 
             if (preparedStatement != null) {
@@ -123,31 +116,32 @@ public class CommentDAOImpl implements CommentDAO {
         }
 
 
-        return null;
+        return true;
     }
 
     @Override
-    public String deleteCommentByCommentId(int userId, int commentId) throws SQLException {
+    public boolean deleteCommentByCommentId(int commentId, String creator) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String deleteSQL = "DELETE COMMENT WHERE COMMENT_ID = ? AND USER_ID = ?";
+        String deleteSQL = "DELETE COMMENT WHERE ID = ? AND USER_ID = ?";
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
             preparedStatement.setInt(1, commentId);
-            preparedStatement.setInt(2, userId);
+            preparedStatement.setString(2, creator);
 
             // execute delete SQL statement
-            preparedStatement.executeUpdate();
+            int x = preparedStatement.executeUpdate();
 
-            System.out.println("Record is deleted!");
+
+            System.out.println("Record is deleted! " + x);
 
         } catch (SQLException e) {
 
             System.out.println(e.getMessage());
-
+            return false;
         } finally {
 
             if (preparedStatement != null) {
@@ -159,15 +153,15 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
-        return null;
+        return true;
     }
 
     @Override
-    public String editComment(Comment comment) throws SQLException {
+    public boolean editComment(Comment comment) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE COMMENT_ID? AND ISSUE_ID=?";
+        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ID? AND CREATOR=?";
 
 
         try {
@@ -176,8 +170,9 @@ public class CommentDAOImpl implements CommentDAO {
 
             preparedStatement.setString(1, comment.getComment());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
-            preparedStatement.setInt(3, comment.getCommentId());
+            preparedStatement.setInt(3, comment.getId());
             preparedStatement.setInt(4, comment.getIssueId());
+            preparedStatement.setString(5, comment.getCreator());
 
             // execute update SQL stetement
             preparedStatement.executeUpdate();
@@ -187,7 +182,7 @@ public class CommentDAOImpl implements CommentDAO {
         } catch (SQLException e) {
 
             System.out.println(e.getMessage());
-
+            return false;
         } finally {
 
             if (preparedStatement != null) {
@@ -202,7 +197,43 @@ public class CommentDAOImpl implements CommentDAO {
 
 
 
-        return null;
+        return true;
+    }
+
+    @Override
+    public boolean isOwnerOfComment(int commentId, String creator) throws SQLException {
+        Connection dbConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        String selectSQL = "SELECT COUNT(ID) FROM COMMENT WHERE ID =? AND CREATOR = ?";
+        int count = -1;
+
+
+        try {
+            dbConnection = DBConfiguration.getDBConnection();
+            preparedStatement = dbConnection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, commentId);
+            preparedStatement.setString(2, creator);
+
+            // execute select SQL stetement
+            ResultSet rs = preparedStatement.executeQuery();
+           if(rs.next())
+               count = rs.getInt(1);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
+
+        }
+        return count==0?true:false;
     }
 
     private static Timestamp getCurrentTimeStamp() {

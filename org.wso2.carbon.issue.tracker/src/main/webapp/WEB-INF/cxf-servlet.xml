@@ -16,8 +16,6 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-
-
     <jaxrs:server id="commentService" address="/comment">
         <jaxrs:serviceBeans>
             <ref bean="commentBean" />
@@ -38,6 +36,6 @@
 
     <bean id="issueBean" class="org.wso2.carbon.issue.tracker.internal.IssueService" />
     <bean id="commentBean" class="org.wso2.carbon.issue.tracker.server.impl.CommentServiceImpl" />
-    <bean id="versionBean" class="org.wso2.carbon.issue.tracker.internal.VersionService" />
+    <bean id="versionBean" class="org.wso2.carbon.issue.tracker.server.impl.VersionServiceImpl" />
 
 </beans>

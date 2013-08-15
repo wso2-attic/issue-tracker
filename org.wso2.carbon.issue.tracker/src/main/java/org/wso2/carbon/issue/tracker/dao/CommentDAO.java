@@ -20,13 +20,14 @@ package org.wso2.carbon.issue.tracker.dao;
 
 import org.wso2.carbon.issue.tracker.bean.Comment;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface CommentDAO {
 
-    public List<Comment> getCommentsForIssue(int id) throws Exception;
-    public String postCommentForIssue(Comment comment) throws Exception;
-    public String deleteCommentByCommentId(int userId, int commentId) throws Exception;
-    public String editComment(Comment comment) throws Exception ;
-
+    public List<Comment> getCommentsForIssue(int id) throws SQLException;
+    public boolean postCommentForIssue(Comment comment) throws SQLException;
+    public boolean deleteCommentByCommentId(int commentId, String creator) throws SQLException;
+    public boolean editComment(Comment comment) throws SQLException ;
+    public boolean isOwnerOfComment(int commentId, String creator) throws SQLException;
 }
