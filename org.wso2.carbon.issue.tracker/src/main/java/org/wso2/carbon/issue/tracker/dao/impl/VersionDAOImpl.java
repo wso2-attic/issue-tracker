@@ -16,21 +16,23 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.wso2.carbon.issue.tracker.dao;
+package org.wso2.carbon.issue.tracker.dao.impl;
 
 import org.wso2.carbon.issue.tracker.bean.Version;
+import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface VersionDAO {
+public class VersionDAOImpl implements VersionDAO{
+    @Override
+    public String addVersionForProject(Version version) throws IssueTrackerException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-
-    public String addVersionForProject(Version version) throws IssueTrackerException;
-
-
-    public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException;
-
-
+    @Override
+    public List<Version> viewAllVersions(String projId) throws IssueTrackerException, SQLException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
