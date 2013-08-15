@@ -23,19 +23,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Comment {
 
-    private int commentId;
+    private int Id;
     private String comment;
     private String createdTime;
     private String updatedTime;
-    private String commentCreator;
+    private String creator;
     private int issueId;
 
-    public int getCommentId() {
-        return commentId;
+    public int getId() {
+        return Id;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setId(int id) {
+        Id = id;
     }
 
     public String getComment() {
@@ -62,12 +62,12 @@ public class Comment {
         this.updatedTime = updatedTime;
     }
 
-    public String getCommentCreator() {
-        return commentCreator;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setCommentCreator(String commentCreator) {
-        this.commentCreator = commentCreator;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public int getIssueId() {
@@ -85,13 +85,13 @@ public class Comment {
 
         Comment comment = (Comment) o;
 
-        if (commentId != comment.commentId) return false;
+        if (Id != comment.Id) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return commentId;
+        return Id;
     }
 }

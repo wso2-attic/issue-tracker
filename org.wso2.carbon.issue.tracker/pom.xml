@@ -105,7 +105,7 @@
 				<configuration>
 
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<warName>${project.artifactId}</warName>
+					<warName>issuetracker-${project.version}</warName>
 				</configuration>
 			</plugin>
 			<plugin>
