@@ -40,7 +40,6 @@ public class VersionServiceImpl implements VersionService {
             log.debug("Executing get Versions for project Id : projectID: " + projId);
         }
 
-        System.out.println("Executing get Versions for project Id : projectID: " + projId);
         VersionDAO versionDAO = DAODeligate.getVersionInstance();
         List<Version> versionList = null;
         try {
@@ -61,7 +60,6 @@ public class VersionServiceImpl implements VersionService {
          if(log.isDebugEnabled()){
             log.debug("Executing post for project version, project version: " + version.getProjectVersion());
         }
-        System.out.println("Executing post for project version, project version: " + version.getProjectVersion());
         VersionDAO versioDAO = DAODeligate.getVersionInstance();
         try {
             versioDAO.addVersionForProject(version);
@@ -75,7 +73,6 @@ public class VersionServiceImpl implements VersionService {
     }
 
     public String sayHello() {
-        System.out.println("Hellloooooo VERSION");
-        return "hello VERSUION";
+        return "hello VERSION";
     }
 }

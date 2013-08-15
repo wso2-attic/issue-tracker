@@ -48,9 +48,6 @@ public class VersionDAOImpl implements VersionDAO{
         String insertTableSQL = "INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES (?, ?)";
 
                        try {
-                           System.out.println("Version: " + version.getProjectVersion());
-            System.out.println("project id: " + version.getProjectId());
-
 
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
@@ -62,7 +59,6 @@ public class VersionDAOImpl implements VersionDAO{
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
 
-            System.out.println("Record is inserted into VERSION table!");
                        } catch (SQLException e) {
                            try {
                                throw new IssueTrackerException("Error while executing SQL statement", e);
@@ -79,7 +75,6 @@ public class VersionDAOImpl implements VersionDAO{
         Statement statement = null;
         dbConnection = DBConfiguration.getDBConnection();
         String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projId;
-        System.out.println("******sql:" + sql);
         Statement stmt = null;
         try {
             stmt = dbConnection.createStatement();
@@ -96,7 +91,6 @@ public class VersionDAOImpl implements VersionDAO{
         List<Version> versionList = new ArrayList<Version>();
 
         int i = 0;
-        System.out.println("select statement sucessfully used");
         try {
             while (rs.next()) {
                 int versionId = rs.getInt("VERSION_ID");
