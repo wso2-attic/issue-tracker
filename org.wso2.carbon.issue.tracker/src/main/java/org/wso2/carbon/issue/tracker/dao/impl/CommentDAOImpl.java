@@ -1,5 +1,7 @@
 package org.wso2.carbon.issue.tracker.dao.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
@@ -10,11 +12,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of {@link CommentDAO}
+ *
+ */
 public class CommentDAOImpl implements CommentDAO {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private static final Log log = LogFactory.getLog(CommentDAOImpl.class);
 
-
-   @Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Comment> getCommentsForIssue(int issueId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
@@ -45,17 +54,15 @@ public class CommentDAOImpl implements CommentDAO {
                 comment.setCreatedTime(updatedTimeStr);
 
                 comment.setCreator(rs.getString("CREATOR"));
-
                 comment.setIssueId(rs.getInt("ISSUE_ID"));
 
                 comments.add(comment);
-
             }
 
         } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
-
+            String msg = "Error while getting comment from DB, issueID: "+ issueId;
+            log.error(msg, e);
+            throw e;
         } finally {
 
             if (preparedStatement != null) {
@@ -67,24 +74,20 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
-
-
-
-
         return comments;
     }
 
-    public boolean postCommentForIssue(Comment comment) throws SQLException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addCommentForIssue(Comment comment) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
         String insertTableSQL = "INSERT INTO COMMENT (COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
 
         try {
-            System.out.println("Comment: " + comment.getComment());
-            System.out.println("issue_id: " + comment.getIssueId());
-
-
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
@@ -100,9 +103,9 @@ public class CommentDAOImpl implements CommentDAO {
             System.out.println("Record is inserted into COMMENT table!");
 
         } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
-            return false;
+            String msg = "Error while adding comment to DB, commentID: "+ comment.getId();
+            log.error(msg, e);
+            throw e;
         } finally {
 
             if (preparedStatement != null) {
@@ -114,13 +117,13 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
-
-
-        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean deleteCommentByCommentId(int commentId, String creator) throws SQLException {
+    public void deleteCommentByCommentId(int commentId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
@@ -130,7 +133,6 @@ public class CommentDAOImpl implements CommentDAO {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
             preparedStatement.setInt(1, commentId);
-            preparedStatement.setString(2, creator);
 
             // execute delete SQL statement
             int x = preparedStatement.executeUpdate();
@@ -139,9 +141,9 @@ public class CommentDAOImpl implements CommentDAO {
             System.out.println("Record is deleted! " + x);
 
         } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
-            return false;
+            String msg = "Error while deleting comment from DB, commentID: " + commentId;
+            log.error(msg, e);
+            throw e;
         } finally {
 
             if (preparedStatement != null) {
@@ -153,15 +155,17 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
-        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean editComment(Comment comment) throws SQLException {
+    public void editComment(Comment comment) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ID? AND CREATOR=?";
+        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ID = ?";
 
 
         try {
@@ -180,9 +184,9 @@ public class CommentDAOImpl implements CommentDAO {
             System.out.println("Record is updated to COMMENT  table!");
 
         } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
-            return false;
+            String msg = "Error while editing comment to DB, commentID: "+ comment.getId();
+            log.error(msg, e);
+            throw e;
         } finally {
 
             if (preparedStatement != null) {
@@ -194,48 +198,12 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         }
-
-
-
-        return true;
     }
 
-    @Override
-    public boolean isOwnerOfComment(int commentId, String creator) throws SQLException {
-        Connection dbConnection = null;
-        PreparedStatement preparedStatement = null;
-
-        String selectSQL = "SELECT COUNT(ID) FROM COMMENT WHERE ID =? AND CREATOR = ?";
-        int count = -1;
-
-
-        try {
-            dbConnection = DBConfiguration.getDBConnection();
-            preparedStatement = dbConnection.prepareStatement(selectSQL);
-            preparedStatement.setInt(1, commentId);
-            preparedStatement.setString(2, creator);
-
-            // execute select SQL stetement
-            ResultSet rs = preparedStatement.executeQuery();
-           if(rs.next())
-               count = rs.getInt(1);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-
-            if (dbConnection != null) {
-                dbConnection.close();
-            }
-
-        }
-        return count==0?true:false;
-    }
-
+    /**
+     * Get current time to log DB
+     * @return
+     */
     private static Timestamp getCurrentTimeStamp() {
         java.util.Date today = new java.util.Date();
         return new Timestamp(today.getTime());

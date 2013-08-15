@@ -7,40 +7,43 @@ import org.wso2.carbon.issue.tracker.server.ProjectService;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-
+/**
+ * Implementation of {@link ProjectService}
+ *
+ */
 public class ProjectServiceImpl implements ProjectService{
     @Override
-    public Response getAllProject() {
+    public Response getAllProject(String tenantDomain) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response getProject(@PathParam("projectId") int projectId) {
+    public Response getProject(String tenantDomain, int projectId) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response addProject(Project project) {
+    public Response addProject(String tenantDomain, Project project) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response editProject(@PathParam("projectId") int projectId, Project project) {
+    public Response editProject(String tenantDomain, int projectId, Project project) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response getAllVersionsOfProject(@PathParam("projectId") int projectId) {
+    public Response getAllVersionsOfProject(String tenantDomain, int projectId) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response getAllIssuesOfProject(@PathParam("projectId") int projectId) {
+    public Response getAllIssuesOfProject(String tenantDomain, int projectId) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Response addNewIssueToProject(@PathParam("projectId") int projectId, Issue issue) {
+    public Response addNewIssueToProject(String tenantDomain, int projectId, Issue issue) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

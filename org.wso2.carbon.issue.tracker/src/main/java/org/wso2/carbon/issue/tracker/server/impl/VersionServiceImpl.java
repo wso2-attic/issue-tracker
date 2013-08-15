@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
-import org.wso2.carbon.issue.tracker.delegate.DAODeligate;
+import org.wso2.carbon.issue.tracker.delegate.DAODelegate;
 import org.wso2.carbon.issue.tracker.server.VersionService;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
@@ -87,7 +87,7 @@ public class VersionServiceImpl implements VersionService {
         }
 
         System.out.println("Executing get Versions for project Id : projectID: " + projId);
-        VersionDAO versionDAO = DAODeligate.getVersionInstance();
+        VersionDAO versionDAO = DAODelegate.getVersionInstance();
         List<Version> versionList = null;
         try {
             versionList = versionDAO.viewAllVersions(projId);

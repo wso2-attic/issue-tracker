@@ -8,35 +8,41 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
-@Path("/issue")
+/**
+ *
+ * Service class defines, operations related to Issue related services
+ *
+ */
+
+@Path("/t/{tenantDomain}/issue")
 public interface IssueService {
 
     @GET
     @Path("/{issueId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIssue(@PathParam("issueId") int issueId);
+    public Response getIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId);
 
     @POST
     @Path("/{issueId}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response editIssue(@PathParam("issueId") int issueId, Issue issue);
+    public Response editIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId, Issue issue);
 
     @POST
     @Path("/{issueId}/comment")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response addNewCommentForIssue(@PathParam("issueId") int issueId, Comment comment);
+    public Response addNewCommentForIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId, Comment comment);
 
     @POST
     @Path("/{issueId}/comment/{commentId}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response modifyCommentForIssue(@PathParam("issueId") int issueId, @PathParam("commentId") int commentId, Comment comment);
+    public Response modifyCommentForIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId, @PathParam("commentId") int commentId, Comment comment);
 
     @DELETE
     @Path("/{issueId}/comment/{commentId}/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response deleteComment(@PathParam("issueId") int issueId, @PathParam("commentId") int commentId);
+    public Response deleteComment(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId, @PathParam("commentId") int commentId);
 
 }
