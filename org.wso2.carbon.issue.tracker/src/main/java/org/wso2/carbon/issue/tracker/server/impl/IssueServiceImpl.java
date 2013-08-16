@@ -51,19 +51,10 @@ public class IssueServiceImpl implements IssueService {
             IssueResponse response = new IssueResponse();
             response.setIssue(issue);
             response.setComments(comments);
-
-            System.out.println(comments.size());
-
-            GenericEntity<List<Comment>> entity = new GenericEntity<List<Comment>>(comments){} ;
             return Response.ok().entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
-
-
-            //return Response.ok().entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
-            //return response;
         } catch (Exception e) {
             String msg = "Error while get comments for issue";
             log.error(msg, e);
-            //throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
