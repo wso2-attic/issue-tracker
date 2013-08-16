@@ -1,0 +1,20 @@
+package org.wso2.carbon.issue.tracker.dao;
+
+import java.sql.SQLException;
+
+import org.wso2.carbon.issue.tracker.bean.Comment;
+import org.wso2.carbon.issue.tracker.bean.Issue;
+
+public interface IssueDAO {
+
+    
+    public void add(Issue issue) throws SQLException;
+    
+    public void updateAttribute(Issue issue, String columnName, String value) throws SQLException;
+    
+    public void addComment(Issue issue, Comment comment) throws SQLException;
+    
+    public Issue getIssueByKey(String uniqueKey) throws SQLException;
+    
+    public Issue getIssueById(int id) throws SQLException;
+}

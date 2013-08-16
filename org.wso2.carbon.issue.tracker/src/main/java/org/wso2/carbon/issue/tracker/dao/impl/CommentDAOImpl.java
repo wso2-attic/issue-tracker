@@ -1,23 +1,26 @@
 package org.wso2.carbon.issue.tracker.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
+import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
-
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementation of {@link CommentDAO}
  *
  */
 public class CommentDAOImpl implements CommentDAO {
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
     private static final Log log = LogFactory.getLog(CommentDAOImpl.class);
 
     /**
@@ -46,11 +49,11 @@ public class CommentDAOImpl implements CommentDAO {
                 comment.setComment(rs.getString("COMMENT"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
-                String createdTimeStr = dateFormat.format(createdTime);
+                String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
                 comment.setCreatedTime(createdTimeStr);
 
                 Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-                String updatedTimeStr = dateFormat.format(updatedTime);
+                String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
                 comment.setCreatedTime(updatedTimeStr);
 
                 comment.setCreator(rs.getString("CREATOR"));
