@@ -139,6 +139,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
             preparedStatement.setInt(1, issueId);
             preparedStatement.setInt(2, commentId);
+
             // execute delete SQL statement
             isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
 
