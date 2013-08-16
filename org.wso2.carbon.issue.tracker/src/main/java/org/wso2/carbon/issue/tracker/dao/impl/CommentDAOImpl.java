@@ -31,7 +31,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String selectSQL = "SELECT ID, COMMENT_DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
+        String selectSQL = "SELECT ID, DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
         List<Comment> comments = new ArrayList<Comment>();
 
         try {
@@ -46,7 +46,7 @@ public class CommentDAOImpl implements CommentDAO {
 
                 Comment comment = new Comment();
                 comment.setId(rs.getInt("ID"));
-                comment.setCommentDescription(rs.getString("COMMENT_DESCRIPTION"));
+                comment.setCommentDescription(rs.getString("DESCRIPTION"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
                 String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
@@ -87,7 +87,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO COMMENT (COMMENT_DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
+        String insertTableSQL = "INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
 
         boolean isInserted = false;
         try {
@@ -173,7 +173,7 @@ public class CommentDAOImpl implements CommentDAO {
 
         boolean isUpdated = false;
 
-        String updateTableSQL = "UPDATE COMMENT SET COMMENT_DESCRIPTION = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
+        String updateTableSQL = "UPDATE COMMENT SET DESCRIPTION = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
 
 
         try {
