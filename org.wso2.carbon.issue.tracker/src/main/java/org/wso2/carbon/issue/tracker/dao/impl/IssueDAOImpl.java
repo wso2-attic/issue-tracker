@@ -32,222 +32,202 @@ import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 
 public class IssueDAOImpl implements IssueDAO {
-    Logger logger = Logger.getLogger(IssueDAOImpl.class);
+	Logger logger = Logger.getLogger(IssueDAOImpl.class);
 
-    public void add(Issue issue) throws SQLException {
+	public boolean add(Issue issue) throws SQLException {
+		int result = 0;
+		PreparedStatement st = null;
+		Connection dbConnection = null;
+		try {
 
-        PreparedStatement st = null;
-        Connection dbConnection = null;
-        try {
+			dbConnection = DBConfiguration.getDBConnection();
 
-            dbConnection = DBConfiguration.getDBConnection();
+			st = (PreparedStatement) dbConnection
+					.prepareStatement("INSERT INTO ISSUE(ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,"
+							+ "ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,"
+							+ "CREATED_TIME,UPDATED_TIME,SEVERITY)"
+							+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+			st.setString(1, Integer.toString(issue.getId()));
+			st.setString(2, issue.getSummary());
+			st.setString(3, issue.getDescription());
+			st.setString(4, issue.getType());
+			st.setString(5, issue.getPriority());
+			st.setString(6, issue.getOwner());
+			st.setString(7, issue.getStatus());
+			st.setString(8, issue.getAssignee());
+			st.setInt(9, issue.getVersion());
+			st.setString(10, issue.getCreatedTime());
+			st.setString(11, issue.getUpdatedTime());
+			st.setString(12, issue.getSeverity());
+			result = st.executeUpdate();
+		} catch (SQLException e) {
+			logger.info("Erro occure while creating the issue " + issue.getId()
+					+ " " + e.getMessage());
+			throw e;
+		} finally {
+			closeStatement(st, dbConnection);
+		}
+		return (result > 0);
 
-            st =
-                 (PreparedStatement) dbConnection.prepareStatement("INSERT INTO ISSUE(ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,"
-                                                                   + "ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,"
-                                                                   + "CREATED_TIME,UPDATED_TIME,SEVERITY)"
-                                                                   + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-            st.setString(1, Integer.toString(issue.getId()));
-            st.setString(2, issue.getSummary());
-            st.setString(3, issue.getDescription());
-            st.setString(4, issue.getType());
-            st.setString(5, issue.getPriority());
-            st.setString(6, issue.getOwner());
-            st.setString(7, issue.getStatus());
-            st.setString(8, issue.getAssignee());
-            st.setInt(9, issue.getVersion());
-            st.setString(10, issue.getCreatedTime());
-            st.setString(11, issue.getUpdatedTime());
-            st.setString(12, issue.getSeverity());
-            st.executeUpdate();
-        } catch (SQLException e) {
-            logger.info("Erro occure while creating the issue " + issue.getId() + " " + e.getMessage());
-            throw e;
+	}
 
-        } finally {
-            try {
-                if (st != null) {
-                    st.close();
-                }
+	private void closeStatement(PreparedStatement st, Connection dbConnection) {
+		try {
+			if (st != null) {
+				st.close();
+			}
 
-                if (dbConnection != null) {
-                    dbConnection.close();
-                }
-            } catch (SQLException ignore) {
+			if (dbConnection != null) {
+				dbConnection.close();
+			}
+		} catch (SQLException ignore) {
 
-            }
+		}
+	}
 
-        }
+	/**
+	 * Any column of the issue can be updated using this method. REMEBER!! This
+	 * is to use only one attribute of the issue is changed
+	 * 
+	 * @param issue
+	 *            issue to be changed
+	 * @param columnName
+	 *            column name
+	 * @param value
+	 *            new value
+	 */
+	public boolean updateAttribute(Issue issue, String columnName, String value)
+			throws SQLException {
+		int result=0;
+		Connection dbConnection = null;
+		PreparedStatement st = null;
+		try {
+			dbConnection = DBConfiguration.getDBConnection();
+			st = (PreparedStatement) dbConnection
+					.prepareStatement("UPDATE ISSUE SET ?=? WHERE id=?");
 
-    }
+			st.setString(1, columnName);
+			st.setString(2, value);
+			st.setString(3, Integer.toString(issue.getId()));
+			result=st.executeUpdate();
+		} catch (SQLException e) {
+			logger.debug("Erro occure while creating the issue "
+					+ issue.getId() + " " + e.getMessage());
+			throw e;
+		} finally {
+			closeStatement(st, dbConnection);
+		}
+		return (result>0);
+	}
 
-    /**
-     * Any column of the issue can be updated using this method. REMEBER!! This
-     * is to use only one attribute of the issue is changed
-     * 
-     * @param issue
-     *            issue to be changed
-     * @param columnName
-     *            column name
-     * @param value
-     *            new value
-     */
-    public void updateAttribute(Issue issue, String columnName, String value) throws SQLException {
-        Connection dbConnection = null;
-        PreparedStatement st = null;
-        try {
-            dbConnection = DBConfiguration.getDBConnection();
-            st =
-                 (PreparedStatement) dbConnection.prepareStatement("UPDATE ISSUE SET ?=? WHERE id=?");
+	public void addComment(Issue issue, Comment comment) throws SQLException {
 
-            st.setString(1, columnName);
-            st.setString(2, value);
-            st.setString(3, Integer.toString(issue.getId()));
-            st.executeUpdate();
-        } catch (SQLException e) {
-            logger.debug("Erro occure while creating the issue " + issue.getId() + " " +
-                      e.getMessage());
-            throw e;
-        } finally {
-            try {
-                if (st != null) {
-                    st.close();
-                }
+	}
 
-                if (dbConnection != null) {
-                    dbConnection.close();
-                }
-            } catch (SQLException ignore) {
+	public Issue getIssueByKey(String uniqueKey) throws SQLException {
 
-            }
-        }
-    }
+		PreparedStatement st = null;
+		Connection dbConnection = null;
+		Issue issue = null;
+		try {
+			dbConnection = DBConfiguration.getDBConnection();
 
-    public void addComment(Issue issue, Comment comment) throws SQLException {
+			st = (PreparedStatement) dbConnection
+					.prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PKEY = ?");
+			st.setMaxRows(1);
+			st.setString(1, uniqueKey);
 
-    }
+			ResultSet rs = st.executeQuery();
+			if (rs.first()) {
 
-    public Issue getIssueByKey(String uniqueKey) throws SQLException {
+				issue = new Issue();
+				issue.setId(rs.getInt("ISSUE_ID"));
+				issue.setKey(rs.getString("PKEY"));
+				issue.setProjectId(rs.getInt("PROJECT_ID"));
+				issue.setSummary(rs.getString("SUMMARY"));
+				issue.setDescription(rs.getString("DESCRIPTION"));
+				issue.setType(rs.getString("ISSUE_TYPE"));
+				issue.setPriority(rs.getString("PRIORITY"));
+				issue.setOwner(rs.getString("OWNER"));
+				issue.setStatus(rs.getString("STATUS"));
+				issue.setAssignee(rs.getString("ASSIGNEE"));
+				issue.setVersion(rs.getInt("VERSION_ID"));
+				issue.setSeverity(rs.getString("SEVERITY"));
 
-        PreparedStatement st = null;
-        Connection dbConnection = null;
-        Issue issue = null;
-        try {
-            dbConnection = DBConfiguration.getDBConnection();
+				Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
+				String createdTimeStr = Constants.DATE_FORMAT
+						.format(createdTime);
+				issue.setCreatedTime(createdTimeStr);
 
-            st =
-                 (PreparedStatement) dbConnection.prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PKEY = ?");
-            st.setMaxRows(1);
-            st.setString(1, uniqueKey);
+				Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
+				String updatedTimeStr = Constants.DATE_FORMAT
+						.format(updatedTime);
+				issue.setUpdatedTime(updatedTimeStr);
 
-            ResultSet rs = st.executeQuery();
-            if (rs.first()) {
+			}
 
-                issue = new Issue();
-                issue.setId(rs.getInt("ISSUE_ID"));
-                issue.setKey(rs.getString("PKEY"));
-                issue.setProjectId(rs.getInt("PROJECT_ID"));
-                issue.setSummary(rs.getString("SUMMARY"));
-                issue.setDescription(rs.getString("DESCRIPTION"));
-                issue.setType(rs.getString("ISSUE_TYPE"));
-                issue.setPriority(rs.getString("PRIORITY"));
-                issue.setOwner(rs.getString("OWNER"));
-                issue.setStatus(rs.getString("STATUS"));
-                issue.setAssignee(rs.getString("ASSIGNEE"));
-                issue.setVersion(rs.getInt("VERSION_ID"));
-                issue.setSeverity(rs.getString("SEVERITY"));
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
 
-                Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
-                String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
-                issue.setCreatedTime(createdTimeStr);
+		} finally {
+			closeStatement(st, dbConnection);
 
-                Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-                String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
-                issue.setUpdatedTime(updatedTimeStr);
+		}
+		return issue;
+	}
 
-            }
+	public Issue getIssueById(int id) throws SQLException {
 
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw e;
+		PreparedStatement st = null;
+		Connection dbConnection = null;
+		Issue issue = null;
+		try {
+			dbConnection = DBConfiguration.getDBConnection();
 
-        } finally {
-            try {
-                if (st != null) {
-                    st.close();
-                }
+			st = (PreparedStatement) dbConnection
+					.prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PKEY = ?");
+			st.setMaxRows(1);
+			st.setInt(1, id);
 
-                if (dbConnection != null) {
-                    dbConnection.close();
-                }
-            } catch (SQLException ignore) {
+			ResultSet rs = st.executeQuery();
+			if (rs.first()) {
 
-            }
+				issue = new Issue();
+				issue.setId(rs.getInt("ISSUE_ID"));
+				issue.setKey(rs.getString("PKEY"));
+				issue.setProjectId(rs.getInt("PROJECT_ID"));
+				issue.setSummary(rs.getString("SUMMARY"));
+				issue.setDescription(rs.getString("DESCRIPTION"));
+				issue.setType(rs.getString("ISSUE_TYPE"));
+				issue.setPriority(rs.getString("PRIORITY"));
+				issue.setOwner(rs.getString("OWNER"));
+				issue.setStatus(rs.getString("STATUS"));
+				issue.setAssignee(rs.getString("ASSIGNEE"));
+				issue.setVersion(rs.getInt("VERSION_ID"));
+				issue.setSeverity(rs.getString("SEVERITY"));
 
-        }
-        return issue;
-    }
+				Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
+				String createdTimeStr = Constants.DATE_FORMAT
+						.format(createdTime);
+				issue.setCreatedTime(createdTimeStr);
 
-    public Issue getIssueById(int id) throws SQLException {
+				Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
+				String updatedTimeStr = Constants.DATE_FORMAT
+						.format(updatedTime);
+				issue.setUpdatedTime(updatedTimeStr);
 
-        PreparedStatement st = null;
-        Connection dbConnection = null;
-        Issue issue = null;
-        try {
-            dbConnection = DBConfiguration.getDBConnection();
+			}
 
-            st =
-                 (PreparedStatement) dbConnection.prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PKEY = ?");
-            st.setMaxRows(1);
-            st.setInt(1, id);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
 
-            ResultSet rs = st.executeQuery();
-            if (rs.first()) {
+		} finally {
+			closeStatement(st, dbConnection);
 
-                issue = new Issue();
-                issue.setId(rs.getInt("ISSUE_ID"));
-                issue.setKey(rs.getString("PKEY"));
-                issue.setProjectId(rs.getInt("PROJECT_ID"));
-                issue.setSummary(rs.getString("SUMMARY"));
-                issue.setDescription(rs.getString("DESCRIPTION"));
-                issue.setType(rs.getString("ISSUE_TYPE"));
-                issue.setPriority(rs.getString("PRIORITY"));
-                issue.setOwner(rs.getString("OWNER"));
-                issue.setStatus(rs.getString("STATUS"));
-                issue.setAssignee(rs.getString("ASSIGNEE"));
-                issue.setVersion(rs.getInt("VERSION_ID"));
-                issue.setSeverity(rs.getString("SEVERITY"));
+		}
+		return issue;
+	}
 
-                Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
-                String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
-                issue.setCreatedTime(createdTimeStr);
-
-                Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-                String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
-                issue.setUpdatedTime(updatedTimeStr);
-
-            }
-
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw e;
-
-        } finally {
-            try {
-                if (st != null) {
-                    st.close();
-                }
-
-                if (dbConnection != null) {
-                    dbConnection.close();
-                }
-            } catch (SQLException ignore) {
-
-            }
-
-        }
-        return issue;
-    }
-
-    
 }

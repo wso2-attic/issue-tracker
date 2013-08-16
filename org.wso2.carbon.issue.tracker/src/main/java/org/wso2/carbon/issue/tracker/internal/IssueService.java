@@ -18,18 +18,29 @@
  */
 package org.wso2.carbon.issue.tracker.internal;
 
-import javax.ws.rs.GET;
+import java.sql.SQLException;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-
+import org.apache.log4j.Logger;
+import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.dao.impl.IssueDAOImpl;
 
 @Path("/issue")
 public class IssueService {
+	Logger logger = Logger.getLogger(IssueService.class);
 
-    @GET
-    @Path("/sayhello")
-    public String sayHello(){
-        return "Hello";      
+    @POST
+    @Path("/add")
+    public boolean add(Issue issue){
+        boolean result=false;
+    	IssueDAOImpl issueDao=new IssueDAOImpl();
+    	try {
+			result=issueDao.add(issue);
+		} catch (SQLException e) {
+			logger.info("Erro occure while creating the issue " + issue.getId()
+					+ " " + e.getMessage());
+		}
+ 		return result;     
 
     }
 }
