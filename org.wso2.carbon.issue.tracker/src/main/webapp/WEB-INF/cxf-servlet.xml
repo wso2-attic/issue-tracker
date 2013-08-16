@@ -16,23 +16,16 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-    <jaxrs:server id="issueTracker" address="/">
+    <jaxrs:server id="issueTracker" address="/t">
         <jaxrs:serviceBeans>
             <ref bean="issueBean" />
             <ref bean="projectBean" />
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
-    <jaxrs:server id="versionService" address="/version">
-        <jaxrs:serviceBeans>
-            <ref bean="versionBean" />
-        </jaxrs:serviceBeans>
-    </jaxrs:server>
 
     <bean id="issueBean" class="org.wso2.carbon.issue.tracker.server.impl.IssueServiceImpl" />
     <bean id="projectBean" class="org.wso2.carbon.issue.tracker.server.impl.ProjectServiceImpl" />
-
-    <bean id="versionBean" class="org.wso2.carbon.issue.tracker.server.impl.VersionServiceImpl" />
 
 
 </beans>

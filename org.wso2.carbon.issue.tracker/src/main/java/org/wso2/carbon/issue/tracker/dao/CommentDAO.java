@@ -58,7 +58,7 @@ public interface CommentDAO {
      * Edit Comment based on given comment
      * @param comment {@link Comment}
      * @param issueId Issue id of comment
-     * @return
+     * @return        Comment is successfully updated or not
      * @throws SQLException
      */
     public boolean editComment(Comment comment, int issueId) throws SQLException ;

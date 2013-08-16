@@ -14,13 +14,13 @@ import javax.ws.rs.core.Response;
  *
  */
 
-@Path("/t/{tenantDomain}/issue")
+@Path("/{tenantDomain}/issue")
 public interface IssueService {
 
     @GET
-    @Path("/{issueId}")
+    @Path("/{uniqueKey}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("issueId") int issueId);
+    public Response getIssue(@PathParam("tenantDomain") String tenantDomain, @PathParam("uniqueKey") String uniqueKey);
 
     @POST
     @Path("/{issueId}")

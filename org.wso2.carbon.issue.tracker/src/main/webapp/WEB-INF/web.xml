@@ -38,7 +38,7 @@
 
     <servlet-mapping>
         <servlet-name>JAXServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
 
     <session-config>

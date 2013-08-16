@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
  * Service class defines, operations related to Project related services
  *
  */
-@Path("/t/{tenantDomain}/project")
+@Path("/{tenantDomain}/project")
 public interface ProjectService {
 
     @GET

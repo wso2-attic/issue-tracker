@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.bean.Issue;
+import org.wso2.carbon.issue.tracker.bean.IssueResponse;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
+import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.delegate.DAODelegate;
 import org.wso2.carbon.issue.tracker.server.IssueService;
 
@@ -27,31 +29,36 @@ public class IssueServiceImpl implements IssueService {
     /**
      * Get issues and comments for a given issue id
      * @param tenantDomain      Tenant domain name
-     * @param issueId           Issue id which need to retrieve
+     * @param uniqueKey         Unique key of issue which need to retrieve
      * @return                  {@link Response}
      */
     @Override
-    public Response getIssue(String tenantDomain, int issueId) {
+    public Response getIssue(String tenantDomain, String uniqueKey) {
 
         if(log.isDebugEnabled()){
-            log.debug("Executing getIssue, issueId: " + issueId);
+            log.debug("Executing getIssue, uniqueKey: " + uniqueKey);
         }
 
-        // TODO: need to get issue object and append response
+        System.out.println("ISSUE ID: " + uniqueKey);
+        IssueDAO issueDAO = DAODelegate.getIssueInstance();
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         List<Comment> comments = null;
         try {
-            // get all comments related to given issue
-            comments = commentDAO.getCommentsForIssue(issueId);
+            Issue issue = issueDAO.getIssueByKey(uniqueKey);
+
+            if(issue!=null)
+                comments = commentDAO.getCommentsForIssue(issue.getId());     // get all comments related to given issue
+
+            IssueResponse response = new IssueResponse();
+            response.setComment(comments);
+            response.setIssue(issue);
+            return Response.ok().entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             String msg = "Error while get comments for issue";
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
-
-        GenericEntity<List<Comment>> entity = new GenericEntity<List<Comment>>(comments){} ;
-        return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
 
@@ -96,8 +103,11 @@ public class IssueServiceImpl implements IssueService {
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            commentDAO.addCommentForIssue(comment, issueId);
-            return Response.ok().type(MediaType.APPLICATION_JSON).build();
+            boolean isInserted = commentDAO.addCommentForIssue(comment, issueId);
+            if (isInserted)
+                return Response.ok().type(MediaType.APPLICATION_JSON).build();
+            else
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully inserted.").build();
         } catch (SQLException e) {
             String msg = "Error while add comments for issue";
             log.error(msg, e);
@@ -140,8 +150,11 @@ public class IssueServiceImpl implements IssueService {
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
             comment.setId(commentId);
-            commentDAO.editComment(comment, issueId);
-            return Response.ok().build();
+            boolean isUpdated = commentDAO.editComment(comment, issueId);
+            if(isUpdated)
+                return Response.ok().build();
+            else
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully updated.").build();
 
         } catch (SQLException e) {
             String msg = "Error while edit comments";
