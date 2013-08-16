@@ -31,7 +31,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String selectSQL = "SELECT ID, COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
+        String selectSQL = "SELECT ID, DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
         List<Comment> comments = new ArrayList<Comment>();
 
         try {
@@ -46,7 +46,7 @@ public class CommentDAOImpl implements CommentDAO {
 
                 Comment comment = new Comment();
                 comment.setId(rs.getInt("ID"));
-                comment.setComment(rs.getString("COMMENT"));
+                comment.setCommentDescription(rs.getString("DESCRIPTION"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
                 String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
@@ -87,14 +87,14 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO COMMENT (COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
+        String insertTableSQL = "INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
 
         boolean isInserted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
-            preparedStatement.setString(1, comment.getComment());
+            preparedStatement.setString(1, comment.getCommentDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setTimestamp(3, getCurrentTimeStamp());
             preparedStatement.setString(4, comment.getCreator());
@@ -139,6 +139,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
             preparedStatement.setInt(1, issueId);
             preparedStatement.setInt(2, commentId);
+
             // execute delete SQL statement
             isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
 
@@ -173,14 +174,14 @@ public class CommentDAOImpl implements CommentDAO {
 
         boolean isUpdated = false;
 
-        String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
+        String updateTableSQL = "UPDATE COMMENT SET DESCRIPTION = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
 
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(updateTableSQL);
 
-            preparedStatement.setString(1, comment.getComment());
+            preparedStatement.setString(1, comment.getCommentDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setInt(3, issueId);
             preparedStatement.setInt(4, comment.getId());

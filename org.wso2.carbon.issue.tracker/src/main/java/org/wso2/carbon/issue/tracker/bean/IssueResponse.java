@@ -8,15 +8,15 @@ import java.util.List;
  */
 @XmlRootElement
 public class IssueResponse {
-    private List<Comment> comment;
+    private List<Comment> comments;
     private Issue issue;
 
-    public List<Comment> getComment() {
-        return comment;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setComment(List<Comment> comment) {
-        this.comment = comment;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public Issue getIssue() {
