@@ -83,12 +83,13 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public void addCommentForIssue(Comment comment, int issueId) throws SQLException {
+    public boolean addCommentForIssue(Comment comment, int issueId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
         String insertTableSQL = "INSERT INTO COMMENT (COMMENT, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
 
+        boolean isInserted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
@@ -100,7 +101,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setInt(5, issueId);
 
             // execute insert SQL statement
-            preparedStatement.executeUpdate();
+            isInserted = preparedStatement.executeUpdate() == 1 ? true : false;
 
             if(log.isDebugEnabled()){
                 log.debug("Record is inserted into COMMENT table!");
@@ -120,6 +121,7 @@ public class CommentDAOImpl implements CommentDAO {
                 dbConnection.close();
             }
         }
+        return isInserted;
     }
 
     /**
@@ -131,19 +133,14 @@ public class CommentDAOImpl implements CommentDAO {
         PreparedStatement preparedStatement = null;
 
         String deleteSQL = "DELETE FROM COMMENT WHERE ISSUE_ID= ? AND ID = ?";
-        boolean result = false;
+        boolean isDeleted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
             preparedStatement.setInt(1, issueId);
             preparedStatement.setInt(2, commentId);
             // execute delete SQL statement
-            int count = preparedStatement.executeUpdate();
-
-            if(count==0)
-                result = false;
-            else
-                result = true;
+            isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
 
             if(log.isDebugEnabled()){
                 log.debug("Record is deleted from COMMENT table!");
@@ -163,16 +160,18 @@ public class CommentDAOImpl implements CommentDAO {
                 dbConnection.close();
             }
         }
-        return result;
+        return isDeleted;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void editComment(Comment comment, int issueId) throws SQLException {
+    public boolean editComment(Comment comment, int issueId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
+
+        boolean isUpdated = false;
 
         String updateTableSQL = "UPDATE COMMENT SET COMMENT = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
 
@@ -187,7 +186,7 @@ public class CommentDAOImpl implements CommentDAO {
             preparedStatement.setInt(4, comment.getId());
 
             // execute update SQL stetement
-            preparedStatement.executeUpdate();
+            isUpdated = preparedStatement.executeUpdate() == 1 ? true : false;
 
             if(log.isDebugEnabled()){
                 log.debug("Record is updated to COMMENT  table!");
@@ -207,6 +206,7 @@ public class CommentDAOImpl implements CommentDAO {
                 dbConnection.close();
             }
         }
+        return isUpdated;
     }
 
     /**

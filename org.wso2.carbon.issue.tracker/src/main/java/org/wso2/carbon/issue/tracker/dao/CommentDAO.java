@@ -41,10 +41,10 @@ public interface CommentDAO {
      * Add comment to a given issue
      * @param comment {@link Comment}
      * @param issueId Issue id of comment
-     * @return
+     * @return        Is comment successfully inserted or not
      * @throws SQLException
      */
-    public void addCommentForIssue(Comment comment, int issueId) throws SQLException;
+    public boolean addCommentForIssue(Comment comment, int issueId) throws SQLException;
 
     /**
      * Delete Comment by ID
@@ -61,6 +61,6 @@ public interface CommentDAO {
      * @return
      * @throws SQLException
      */
-    public void editComment(Comment comment, int issueId) throws SQLException ;
+    public boolean editComment(Comment comment, int issueId) throws SQLException ;
 
 }
