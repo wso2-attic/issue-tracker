@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Comment {
 
     private int Id;
-    private String comment;
+    private String commentDescription;
     private String createdTime;
     private String updatedTime;
     private String creator;
@@ -35,14 +35,6 @@ public class Comment {
 
     public void setId(int id) {
         Id = id;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getCreatedTime() {
@@ -67,6 +59,14 @@ public class Comment {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getCommentDescription() {
+        return commentDescription;
+    }
+
+    public void setCommentDescription(String commentDescription) {
+        this.commentDescription = commentDescription;
     }
 
     @Override
