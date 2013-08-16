@@ -8,9 +8,9 @@ import org.wso2.carbon.issue.tracker.bean.Issue;
 public interface IssueDAO {
 
     
-    public void add(Issue issue) throws SQLException;
+    public boolean add(Issue issue) throws SQLException;
     
-    public void updateAttribute(Issue issue, String columnName, String value) throws SQLException;
+    public boolean updateAttribute(Issue issue, String columnName, String value) throws SQLException;
     
     public void addComment(Issue issue, Comment comment) throws SQLException;
     
