@@ -2,6 +2,7 @@ package org.wso2.carbon.issue.tracker.server;
 
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.bean.Issue;
+import org.wso2.carbon.issue.tracker.bean.IssueResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
