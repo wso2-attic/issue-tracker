@@ -51,7 +51,6 @@ public class IssueServiceImpl implements IssueService {
             IssueResponse response = new IssueResponse();
             response.setIssue(issue);
             response.setComments(comments);
-
             return Response.ok().entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             String msg = "Error while get comments for issue";
