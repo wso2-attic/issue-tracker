@@ -70,7 +70,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public void update(Project project) throws SQLException {
 
         String updateTableSQL =
-                                "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ?, WHERE PROJECT_ID = ? AND ORGANIZATION_ID = ?";
+                                "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ? WHERE PROJECT_ID = ? AND ORGANIZATION_ID = ?";
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 

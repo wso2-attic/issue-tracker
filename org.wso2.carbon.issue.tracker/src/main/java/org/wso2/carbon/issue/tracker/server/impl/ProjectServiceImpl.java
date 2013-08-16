@@ -19,7 +19,23 @@ import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 public class ProjectServiceImpl implements ProjectService {
     @Override
     public Response getAllProject(String tenantDomain) {
-        return null;
+
+        Response response = null;
+
+        try {
+            List<Project> projects =
+                                     DAODelegate.getProjectInstance()
+                                                .getProjectsByOrganizationId(1);
+
+            GenericEntity<List<Project>> entity = new GenericEntity<List<Project>>(projects) {
+            };
+            response = Response.ok().entity(entity).build();
+
+        } catch (SQLException e) {
+            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        return response;
     }
 
     @Override
@@ -125,15 +141,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Response getAllIssuesOfProject(String tenantDomain, int projectId) {
-        
-        Response response = null;
-
-        
-        return response; 
+        Response response = Response.ok().build();
+        return response;
     }
 
     @Override
     public Response addNewIssueToProject(String tenantDomain, int projectId, Issue issue) {
-        return null; 
+        return Response.ok().build();
     }
 }
