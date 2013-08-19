@@ -67,13 +67,13 @@ public class ProjectDAOImpl implements ProjectDAO {
     /**
      * {@inheritDoc}
      */
-    public void update(Project project) throws SQLException {
+    public boolean update(Project project) throws SQLException {
 
         String updateTableSQL =
                                 "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ? WHERE PROJECT_ID = ? AND ORGANIZATION_ID = ?";
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
-
+        int effectedRows = -1;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(updateTableSQL);
@@ -85,8 +85,9 @@ public class ProjectDAOImpl implements ProjectDAO {
             preparedStatement.setInt(5, project.getOrganizationId());
 
             // execute update SQL stetement
-            preparedStatement.executeUpdate();
-
+            effectedRows = preparedStatement.executeUpdate();
+            
+            
         } catch (SQLException e) {
 
             logger.error(e.getMessage(), e);
@@ -103,7 +104,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             }
 
         }
-
+        return effectedRows > 0;
     }
 
     /**

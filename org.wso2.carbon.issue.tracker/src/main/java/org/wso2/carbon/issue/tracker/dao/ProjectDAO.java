@@ -43,7 +43,7 @@ public interface ProjectDAO {
      * @param project
      *            new information about the project (except the id)
      */
-    public void update(Project project) throws SQLException ;
+    public boolean update(Project project) throws SQLException ;
 
     /**
      * Retrieves a Project specified by the id

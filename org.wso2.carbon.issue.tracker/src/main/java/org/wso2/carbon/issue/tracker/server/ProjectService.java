@@ -4,8 +4,10 @@ import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.bean.Project;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  *
@@ -27,7 +29,7 @@ public interface ProjectService {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project);
+    public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project, @Context UriInfo ui);
 
     @POST
     @Path("/{projectId}")
