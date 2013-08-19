@@ -1,6 +1,7 @@
 package org.wso2.carbon.issue.tracker.delegate;
 
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
+import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.dao.impl.CommentDAOImpl;
@@ -14,36 +15,40 @@ import org.wso2.carbon.issue.tracker.dao.impl.VersionDAOImpl;
  */
 public class DAODelegate {
 
-    private static CommentDAO commentInstance = null;
-    private static IssueDAOImpl issueInstance = null;
-    private static ProjectDAO projectInstance = null;
-    private static VersionDAO versionInstance = null;
+    private static CommentDAO commentInstance = new CommentDAOImpl();
+    private static IssueDAO issueInstance = new IssueDAOImpl();
+    private static ProjectDAO projectInstance = new ProjectDAOImpl();
+    private static VersionDAO versionInstance = new VersionDAOImpl();
 
     /**
-     *
-     * @return
+     * Get CommentDAO object
+     * @return {@link CommentDAO}
      */
-    public synchronized static CommentDAO getCommentInstance() {
-        if (commentInstance == null)
-            commentInstance = new CommentDAOImpl();
+    public static CommentDAO getCommentInstance() {
         return commentInstance;
     }
 
-    public synchronized static IssueDAOImpl getIssueInstance() {
-        if (issueInstance == null)
-            issueInstance = new IssueDAOImpl();
+    /**
+     * Get IssueDAOImpl object
+     * @return  {@link IssueDAOImpl}
+     */
+    public static IssueDAO getIssueInstance() {
         return issueInstance;
     }
 
-    public synchronized static ProjectDAO getProjectInstance() {
-        if (projectInstance == null)
-            projectInstance = new ProjectDAOImpl();
+    /**
+     * Get ProjectDAO object
+     * @return {@link ProjectDAO}
+     */
+    public static ProjectDAO getProjectInstance() {
         return projectInstance;
     }
 
-    public synchronized static VersionDAO getVersionInstance() {
-        if (versionInstance == null)
-            versionInstance = new VersionDAOImpl();
+    /**
+     * Get VersionDAO object
+     * @return {@link VersionDAO}
+     */
+    public static VersionDAO getVersionInstance() {
         return versionInstance;
     }
 
