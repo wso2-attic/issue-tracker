@@ -26,8 +26,7 @@ import java.util.List;
 
 public interface VersionDAO {
 
-
-    public boolean addVersionForProject(Version version) throws IssueTrackerException;
+    public boolean addVersionForProject(Version version) throws SQLException;
     public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException;
 
 

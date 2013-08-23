@@ -1,13 +1,7 @@
 package org.wso2.carbon.issue.tracker.delegate;
 
-import org.wso2.carbon.issue.tracker.dao.CommentDAO;
-import org.wso2.carbon.issue.tracker.dao.IssueDAO;
-import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
-import org.wso2.carbon.issue.tracker.dao.VersionDAO;
-import org.wso2.carbon.issue.tracker.dao.impl.CommentDAOImpl;
-import org.wso2.carbon.issue.tracker.dao.impl.IssueDAOImpl;
-import org.wso2.carbon.issue.tracker.dao.impl.ProjectDAOImpl;
-import org.wso2.carbon.issue.tracker.dao.impl.VersionDAOImpl;
+import org.wso2.carbon.issue.tracker.dao.*;
+import org.wso2.carbon.issue.tracker.dao.impl.*;
 
 
 /**
@@ -19,7 +13,7 @@ public class DAODelegate {
     private static IssueDAO issueInstance = new IssueDAOImpl();
     private static ProjectDAO projectInstance = new ProjectDAOImpl();
     private static VersionDAO versionInstance = new VersionDAOImpl();
-
+    private static SearchDAO searchInstance = new SearchDAOImpl();
     /**
      * Get CommentDAO object
      * @return {@link CommentDAO}
@@ -50,6 +44,10 @@ public class DAODelegate {
      */
     public static VersionDAO getVersionInstance() {
         return versionInstance;
+    }
+
+    public static SearchDAO getSerarchInstance(){
+        return searchInstance;
     }
 
 }

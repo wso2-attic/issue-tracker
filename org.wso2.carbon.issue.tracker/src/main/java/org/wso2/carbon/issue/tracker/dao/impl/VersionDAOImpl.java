@@ -18,95 +18,80 @@
  */
 package org.wso2.carbon.issue.tracker.dao.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
-import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VersionDAOImpl implements VersionDAO{
-    @Override
-    public boolean addVersionForProject(Version version) throws IssueTrackerException {
-        Connection dbConnection = null;
-                Statement statement = null;
-                dbConnection = DBConfiguration.getDBConnection();
-        PreparedStatement preparedStatement = null;
-                try {
-                           statement = dbConnection.createStatement();
-                       } catch (SQLException e) {
-                    try {
-                        throw new IssueTrackerException("Error while creating SQL statement", e);
-                    } catch (IssueTrackerException e1) {
-                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                }
-            //INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES ("5.0.0","1");
+    private static final Log log = LogFactory.getLog(VersionDAOImpl.class);
 
+    @Override
+    public boolean addVersionForProject(Version version) throws SQLException {
+        Connection dbConnection = DBConfiguration.getDBConnection();
+        PreparedStatement preparedStatement = null;
         String insertTableSQL = "INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES (?, ?)";
 
-                       try {
-
+        try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
             preparedStatement.setString(1, version.getProjectVersion());
             preparedStatement.setInt(2, version.getProjectId());
 
-
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
-
-                       } catch (SQLException e) {
-                           try {
-                               throw new IssueTrackerException("Error while executing SQL statement", e);
-                           } catch (IssueTrackerException e1) {
-                               e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                           }
-                       }
+        } catch (SQLException e) {
+            String msg = "Error while adding version to DB, version: "+ version.getProjectVersion();
+            log.error(msg, e);
+            throw e;
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
+        }
         return true;
     }
 
     @Override
-    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException {
+    public List<Version> getVersionListOfProjectByProjectId(int projectId) throws SQLException {
         Connection dbConnection = null;
-        Statement statement = null;
         dbConnection = DBConfiguration.getDBConnection();
-        String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projId;
+        String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projectId;
         Statement stmt = null;
+        ResultSet rs = null;
+        List<Version> versionList = new ArrayList<Version>();
         try {
             stmt = dbConnection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        ResultSet rs = null;
-        try {
             rs = stmt.executeQuery(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        List<Version> versionList = new ArrayList<Version>();
-
-        int i = 0;
-        try {
             while (rs.next()) {
-                int versionId = rs.getInt("VERSION_ID");
-                String version = rs.getString("VERSION");
-                int projectId = rs.getInt("PROJECT_ID");
+                Version version = new Version();
+                version.setProjectVersionId(rs.getInt("VERSION_ID"));
+                version.setProjectVersion(rs.getString("VERSION"));
+                version.setProjectId(rs.getInt("PROJECT_ID"));
 
-                Version v = new Version();
-                v.setProjectVersionId(versionId);
-                v.setProjectVersion(version);
-                v.setProjectId(projectId);
-
-                versionList.add(i, v);
-                i++;
+                versionList.add(version);
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            String msg = "Error while getting versions from DB, project id: "+ projectId;
+            log.error(msg, e);
+            throw e;
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
         }
 
         return versionList;

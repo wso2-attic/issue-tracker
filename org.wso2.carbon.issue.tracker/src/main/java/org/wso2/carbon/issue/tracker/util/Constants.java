@@ -24,7 +24,12 @@ import java.text.SimpleDateFormat;
 /**
  * Issue Tracker Project related Constants
  */
-public class Constants {
+public interface Constants {
 
-    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    int BY_PROJECT_NAME = 1;
+    int BY_OWNER = 2;
+    int BY_ASSIGNEE = 3;
+    int ALL_ISSUE = 4;
+
 }
