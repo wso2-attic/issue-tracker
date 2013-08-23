@@ -2,6 +2,7 @@ package org.wso2.carbon.issue.tracker.server;
 
 import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.bean.Project;
+import org.wso2.carbon.issue.tracker.bean.Version;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -52,5 +53,11 @@ public interface ProjectService {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response addNewIssueToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Issue issue);
+
+    @POST
+    @Path("/{projectId}/version")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response addNewVersionToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Version version);
 
 }

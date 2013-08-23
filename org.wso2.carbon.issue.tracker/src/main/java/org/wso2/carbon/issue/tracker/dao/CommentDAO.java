@@ -40,27 +40,28 @@ public interface CommentDAO {
     /**
      * Add comment to a given issue
      * @param comment {@link Comment}
-     * @param issueId Issue id of comment
+     * @param uniqueKey Issue unique key of comment
      * @return        Is comment successfully inserted or not
      * @throws SQLException
      */
-    public boolean addCommentForIssue(Comment comment, int issueId) throws SQLException;
+    public boolean addCommentForIssue(Comment comment, String uniqueKey) throws SQLException;
 
     /**
      * Delete Comment by ID
+     * @param uniqueKey     Issue unique key of comment
      * @param commentId     Comment ID
      * @return              Comment is successfully deleted or not
      * @throws SQLException
      */
-    public boolean deleteCommentByCommentId(int issueId, int commentId) throws SQLException;
+    public boolean deleteCommentByCommentId(String uniqueKey, int commentId) throws SQLException;
 
     /**
      * Edit Comment based on given comment
      * @param comment {@link Comment}
-     * @param issueId Issue id of comment
+     * @param uniqueKey Issue unique key of comment
      * @return        Comment is successfully updated or not
      * @throws SQLException
      */
-    public boolean editComment(Comment comment, int issueId) throws SQLException ;
+    public boolean editComment(Comment comment, String uniqueKey) throws SQLException ;
 
 }
