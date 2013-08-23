@@ -1,10 +1,6 @@
 package org.wso2.carbon.issue.tracker.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +79,11 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean addCommentForIssue(Comment comment, int issueId) throws SQLException {
+    public boolean addCommentForIssue(Comment comment, String uniqueKey) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) VALUES (?, ?, ?, ?, ?)";
+        String insertTableSQL = "INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) SELECT ?, ?, ?, ?, ISSUE_ID FROM ISSUE WHERE PKEY = ?";
 
         boolean isInserted = false;
         try {
@@ -96,9 +92,9 @@ public class CommentDAOImpl implements CommentDAO {
 
             preparedStatement.setString(1, comment.getCommentDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
-            preparedStatement.setTimestamp(3, getCurrentTimeStamp());
+            preparedStatement.setNull(3, Types.INTEGER);
             preparedStatement.setString(4, comment.getCreator());
-            preparedStatement.setInt(5, issueId);
+            preparedStatement.setString(5, uniqueKey);
 
             // execute insert SQL statement
             isInserted = preparedStatement.executeUpdate() == 1 ? true : false;
@@ -128,16 +124,16 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteCommentByCommentId(int issueId, int commentId) throws SQLException {
+    public boolean deleteCommentByCommentId(String issuePkey, int commentId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String deleteSQL = "DELETE FROM COMMENT WHERE ISSUE_ID= ? AND ID = ?";
+        String deleteSQL = "DELETE c FROM COMMENT c INNER JOIN ISSUE i ON i.ISSUE_ID = c.ISSUE_ID WHERE i.PKEY=? AND c.ID = ?";
         boolean isDeleted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
-            preparedStatement.setInt(1, issueId);
+            preparedStatement.setString(1, issuePkey);
             preparedStatement.setInt(2, commentId);
 
             // execute delete SQL statement
@@ -168,14 +164,13 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean editComment(Comment comment, int issueId) throws SQLException {
+    public boolean editComment(Comment comment, String uniqueKey) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
         boolean isUpdated = false;
 
-        String updateTableSQL = "UPDATE COMMENT SET DESCRIPTION = ?, UPDATED_TIME = ? WHERE ISSUE_ID=? AND ID = ?";
-
+        String updateTableSQL = "UPDATE COMMENT c INNER JOIN ISSUE i ON c.ISSUE_ID = i.ISSUE_ID SET i.DESCRIPTION = ?, i.UPDATED_TIME = ?  WHERE c.ID=? AND i.PKEY = ? AND c.CREATOR = ? ";
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
@@ -183,8 +178,9 @@ public class CommentDAOImpl implements CommentDAO {
 
             preparedStatement.setString(1, comment.getCommentDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
-            preparedStatement.setInt(3, issueId);
-            preparedStatement.setInt(4, comment.getId());
+            preparedStatement.setInt(3, comment.getId());
+            preparedStatement.setString(4, uniqueKey);
+            preparedStatement.setString(5, comment.getCreator());
 
             // execute update SQL stetement
             isUpdated = preparedStatement.executeUpdate() == 1 ? true : false;

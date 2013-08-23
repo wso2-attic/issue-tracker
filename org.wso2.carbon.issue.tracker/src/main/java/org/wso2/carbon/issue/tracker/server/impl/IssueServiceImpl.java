@@ -3,20 +3,25 @@ package org.wso2.carbon.issue.tracker.server.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
-import org.wso2.carbon.issue.tracker.bean.Comment;
-import org.wso2.carbon.issue.tracker.bean.Issue;
-import org.wso2.carbon.issue.tracker.bean.IssueResponse;
+import org.wso2.carbon.issue.tracker.bean.*;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.dao.IssueDAO;
+import org.wso2.carbon.issue.tracker.dao.SearchDAO;
 import org.wso2.carbon.issue.tracker.delegate.DAODelegate;
 import org.wso2.carbon.issue.tracker.server.IssueService;
+import org.wso2.carbon.issue.tracker.util.Constants;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBElement;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link IssueService}
@@ -63,26 +68,68 @@ public class IssueServiceImpl implements IssueService {
     /**
      * Edit issue details
      * @param tenantDomain      Tenant domain name
-     * @param issueId           Issue id of issue which need to edit
+     * @param uniqueKey         Unique key of issue which need to retrieve
      * @param issue             {@link Issue}
-     * @return                   {@link Response}
+     * @return                  {@link Response}
      */
     @Override
-    public Response editIssue(String tenantDomain, int issueId, Issue issue) {
-        // TODO: DB call to edit issue
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Response editIssue(String tenantDomain, String  uniqueKey, Issue issue) {
+        if (log.isDebugEnabled()) {
+            log.debug("Executing editIssue, created by: " + issue.getOwner());
+        }
+
+        if (StringUtils.isEmpty(issue.getSummary())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue summary cannot be empty!").build();
+        }
+
+        if (StringUtils.isEmpty(issue.getOwner())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue owner cannot be empty!").build();
+        }
+
+        if(StringUtils.isEmpty(issue.getType())){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
+        }
+
+        if(StringUtils.isEmpty(issue.getPriority())){
+            issue.setPriority("NORMAL");
+        }
+
+        if(StringUtils.isEmpty(issue.getStatus())){
+            issue.setStatus("OPEN");
+        }
+
+        if(StringUtils.isEmpty(issue.getType())){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
+        }
+
+        if(StringUtils.isEmpty(issue.getType())){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
+        }
+        issue.setKey(uniqueKey);
+        IssueDAO issueDAO = DAODelegate.getIssueInstance();
+        try {
+            boolean isInserted = issueDAO.update(issue);
+            if (isInserted)
+                return Response.ok(isInserted).type(MediaType.APPLICATION_JSON).build();
+            else
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Issue is not successfully updated.").build();
+        } catch (SQLException e) {
+            String msg = "Error while edit Issue to Project";
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
     }
 
 
     /**
      * Add new comment to given issue
      * @param tenantDomain  Tenant domain name
-     * @param issueId       Comment's, issue id
+     * @param uniqueKey     Comment's, issue id
      * @param comment       {@link Comment}
      * @return              {@link Response}, Returns HTTP/1.1 200 for successfully added comment else returns internal server error HTTP/1.1 500
      */
     @Override
-    public Response addNewCommentForIssue(String tenantDomain, int issueId, Comment comment) {
+    public Response addNewCommentForIssue(String tenantDomain, String uniqueKey, Comment comment) {
         if (log.isDebugEnabled()) {
             log.debug("Executing addNewCommentForIssue, created by: " + comment.getCreator());
         }
@@ -95,13 +142,9 @@ public class IssueServiceImpl implements IssueService {
             return Response.status(Response.Status.BAD_REQUEST).entity("Comment creator cannot be empty").build();
         }
 
-        if (issueId ==0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
-        }
-
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            boolean isInserted = commentDAO.addCommentForIssue(comment, issueId);
+            boolean isInserted = commentDAO.addCommentForIssue(comment, uniqueKey);
             if (isInserted)
                 return Response.ok().type(MediaType.APPLICATION_JSON).build();
             else
@@ -117,14 +160,14 @@ public class IssueServiceImpl implements IssueService {
     /**
      * Edit comment to given issue
      *  @param tenantDomain  Tenant domain name
-     * @param issueId        Issue id of comment, which need to edit
+     * @param uniqueKey      Issue id of comment, which need to edit
      * @param commentId      Comment id
      * @param comment        {@link Comment}
      * @return               {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
      *                       returns internal server error HTTP/1.1 500
      */
     @Override
-    public Response modifyCommentForIssue(String tenantDomain, int issueId, int commentId, Comment comment) {
+    public Response modifyCommentForIssue(String tenantDomain, String uniqueKey, int commentId, Comment comment) {
         if(log.isDebugEnabled()){
             log.debug("Executing modifyCommentForIssue, CommentId: " + commentId);
         }
@@ -137,10 +180,6 @@ public class IssueServiceImpl implements IssueService {
             return Response.status(Response.Status.BAD_REQUEST).entity("Comment creator cannot be empty").build();
         }
 
-        if (issueId == 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
-        }
-
         if (commentId == 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid comment ID").build();
         }
@@ -148,12 +187,11 @@ public class IssueServiceImpl implements IssueService {
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
             comment.setId(commentId);
-            boolean isUpdated = commentDAO.editComment(comment, issueId);
+            boolean isUpdated = commentDAO.editComment(comment, uniqueKey);
             if(isUpdated)
                 return Response.ok().build();
             else
-                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully updated.").build();
-
+                return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully updated.").build();
         } catch (SQLException e) {
             String msg = "Error while edit comments";
             log.error(msg, e);
@@ -165,19 +203,15 @@ public class IssueServiceImpl implements IssueService {
     /**
      * Deleted comment from DB
      * @param tenantDomain      Tenant domain name
-     * @param issueId           Issue id of comment, which need to delete
+     * @param uniqueKey         Issue id of comment, which need to delete
      * @param commentId         Comment id of comment, which need to delete
      * @return                  {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
      *                          returns internal server error HTTP/1.1 500
      */
     @Override
-    public Response deleteComment(String tenantDomain, int issueId, int commentId) {
+    public Response deleteComment(String tenantDomain, String uniqueKey, int commentId) {
         if(log.isDebugEnabled()){
             log.debug("Executing deleteComment, commentID: " + commentId);
-        }
-
-        if (issueId == 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Issue ID").build();
         }
 
         if (commentId == 0) {
@@ -186,13 +220,52 @@ public class IssueServiceImpl implements IssueService {
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
-            boolean result = commentDAO.deleteCommentByCommentId(issueId, commentId);
+            boolean result = commentDAO.deleteCommentByCommentId(uniqueKey, commentId);
             return result ? Response.ok().build() : Response.notModified("Invalid credentials").build();
-
         } catch (SQLException e) {
             String msg = "Error while delete comments";
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
+    }
+
+    /**
+     * Search Issues of given project
+     * @param tenantDomain    Tenant domain name
+     * @param searchBean      {@link SearchBean}
+     * @return
+     */
+    @Override
+    public Response searchIssue(String tenantDomain, SearchBean searchBean) {
+        SearchDAO searchDAO = DAODelegate.getSerarchInstance();
+        List<SearchResponse> list = null;
+
+        String status = searchBean.getIssueStatus();
+        String issueType = searchBean.getIssueType();
+        String priority = searchBean.getPriority();
+        String severity = searchBean.getSeverity();
+
+        if(StringUtils.isEmpty(status) || status.equals("-1"))
+            searchBean.setIssueStatus(null);
+        if(StringUtils.isEmpty(issueType) || issueType.equals("-1"))
+            searchBean.setIssueType(null);
+        if(StringUtils.isEmpty(priority) || priority.equals("-1"))
+            searchBean.setPriority(null);
+        if(StringUtils.isEmpty(severity) || severity.equals("-1"))
+            searchBean.setSeverity(null);
+
+        try {
+            if(searchBean.getSearchType() == Constants.ALL_ISSUE)
+                list = searchDAO.searchIssueBySummaryContent(searchBean);
+            else
+                list = searchDAO.searchIssue(searchBean);
+
+        } catch (Exception e) {
+            String msg = "Error while searching Issues";
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
+        GenericEntity entity = new GenericEntity<List<SearchResponse>>(list){};
+        return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 }
