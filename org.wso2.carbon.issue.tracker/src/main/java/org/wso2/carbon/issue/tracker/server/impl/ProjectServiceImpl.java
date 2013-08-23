@@ -26,6 +26,9 @@ import org.wso2.carbon.user.api.UserStoreException;
 public class ProjectServiceImpl implements ProjectService {
     private static final Log log = LogFactory.getLog(ProjectServiceImpl.class);
 
+    @Context
+    private UriInfo ui;
+    
     @Override
     public Response getAllProject(String tenantDomain) {
 
@@ -79,7 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Response addProject(String tenantDomain, Project project, @Context UriInfo ui) {
+    public Response addProject(String tenantDomain, Project project) {
 
         if (StringUtils.isEmpty(project.getName())) {
             throw new WebApplicationException(

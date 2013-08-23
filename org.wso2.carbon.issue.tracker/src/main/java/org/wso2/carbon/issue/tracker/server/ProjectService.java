@@ -30,7 +30,7 @@ public interface ProjectService {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project, @Context UriInfo ui);
+    public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project);
 
     @POST
     @Path("/{projectId}")

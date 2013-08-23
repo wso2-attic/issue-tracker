@@ -20,7 +20,10 @@ package org.wso2.carbon.issue.tracker.util;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import javax.naming.Context;
 import javax.naming.InitialContext;
+
 import org.apache.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
@@ -47,7 +50,9 @@ public class DBConfiguration {
 	 */
 	private static DataSource lookupDataSource(String dataSourceName) {
 		try {
-			return (DataSource) InitialContext.doLookup(dataSourceName);
+		    Context initCtx = new InitialContext();
+		    
+			return (DataSource) initCtx.lookup(dataSourceName);
 		} catch (Exception e) {
 			throw new RuntimeException("Error in looking up data source: "
 					+ e.getMessage(), e);
