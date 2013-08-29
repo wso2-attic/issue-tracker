@@ -1,0 +1,17 @@
+<%
+    var caramel = require('caramel');
+    var log = new Log();
+
+    (function () {
+         project = require('/modules/project.js'),
+
+         pid = request.getParameter('pid');
+         var result = project.getAllVersionOfProject1(pid);
+                              log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+result.data);
+
+
+         print(result.data);
+
+        return result.data;
+    }());
+%>

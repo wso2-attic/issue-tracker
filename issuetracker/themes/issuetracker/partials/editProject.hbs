@@ -1,0 +1,10 @@
+<div class="span12"><h3>{{title}}</h3></div>
+<table>
+	<tr><td>Project Name</td><td>:</td><td valign="middle"><input type='text' id='projectName' name="pname" placeholder="Project Name" maxlength="40" value="{{data.name}}" /></td></tr>
+	<tr><td>Owner</td><td>:</td><td valign="middle"><input type='text' id='owner' name="owner" placeholder="Project Owner" maxlength="40" value="{{data.owner}}"/></td></tr>
+	<tr><td>Description</td><td>:</td><td valign="middle"><input type='text' id='description' name="description" placeholder="Description" maxlength="40" value="{{data.description}}"/></td></tr>
+</table>
+<input type="hidden" name="projectId" id="projectId" value="{{data.id}}"/>
+<input type="hidden" name="organizationId" id="organizationId" value="{{data.organizationId}}"/>
+
+<input type="button" value="Save Project" id="editMe">

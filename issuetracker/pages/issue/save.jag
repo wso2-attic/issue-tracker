@@ -1,0 +1,30 @@
+<%
+    var caramel = require('caramel');
+    var log = new Log();
+
+    (function () {
+            issue = require('/modules/issue.js');
+
+        var jsonobj = request.getParameter('jsonobj'),
+        projectId = request.getParameter('id'),
+        action = request.getParameter('action');
+
+
+         log.info('jsonobj '+jsonobj);
+        var result;
+        if (action === 'addIssue') {
+            result = issue.addIssue(projectId, jsonobj);
+            log.info(">><<><>: " + stringify(result));
+            print(stringify(result));
+        } else if (action === 'editIssue') {
+            id = request.getParameter('projectId');
+            ukey = request.getParameter('ukey');
+
+                     log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+ukey);
+
+            result = issue.editIssue(ukey, jsonobj);
+            print(stringify(result));
+        }
+        return result;
+    }());
+%>

@@ -1,0 +1,20 @@
+<%
+    var caramel = require('caramel');
+    var log = new Log();
+    (function () {
+        project = require('/modules/project.js');
+
+        var id = request.getParameter('id');
+        log.info('>>>>>>>>>>>id '+id);
+
+
+        caramel.render({
+            'title': 'Issue Tracker| Edit Project',
+            'body' : {
+                            title: 'Edit Project',
+                            'data' : project.getProjectById(id).data.project
+                        }
+        });
+    }());
+%>
+

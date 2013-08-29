@@ -1,0 +1,26 @@
+<div class="span12"><h3>{{title}}</h3></div>
+
+<table>
+	<tr><td width="20%">description</td>
+	    <td width="10%">id</td>
+        <td width="20%">name</td>
+	    <td width="10%">organizationId</td>
+	    <td width="20%">owner</td>
+	    <td width="10%">EDIT</td>
+	    <td width="10%">VIEW</td>
+	</tr>
+{{#each data}}
+	<tr><td>{{description}}</td>
+	    <td>{{id}}</td>
+            <td>{{name}}</td>
+	    <td>{{organizationId}}</td>
+	    <td>{{owner}}</td>
+	     <td>
+            <a href="{{url "/pages/project/edit.jag"}}?id={{id}}" >edit</a>
+	     </td>
+	     <td>
+            <a href="{{url "/pages/project/view.jag"}}?id={{id}}" >view</a>
+	     </td>
+	</tr>
+{{/each}}
+</table>

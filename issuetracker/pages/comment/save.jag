@@ -1,0 +1,30 @@
+<%
+    var caramel = require('caramel');
+    var log = new Log();
+
+    (function () {
+            comment = require('/modules/comment.js');
+
+        var jsonobj = request.getParameter('jsonobj'),
+        commentId = request.getParameter('id'),
+                                ukey = request.getParameter('ukey');
+
+        action = request.getParameter('action');
+
+
+         log.info('jsonobj '+jsonobj);
+        var result;
+        if (action === 'addComment') {
+            result = comment.addComment(ukey, jsonobj);
+            log.info(">><<><>: " + stringify(result));
+        } else if (action === 'editComment') {
+            result = comment.editComment(ukey, commentId, jsonobj);
+        } else if(action === 'deleteComment'){
+                        result = comment.deleteComment(ukey, commentId);
+
+                        log.info("<<<<<<<<<<<<<<<<<<<< " + result);
+
+        }
+                    print(stringify(result));
+    }());
+%>

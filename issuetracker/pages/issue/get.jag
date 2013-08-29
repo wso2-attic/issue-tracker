@@ -1,0 +1,18 @@
+<%
+    var caramel = require('caramel');
+    var log = new Log();
+    (function () {
+        issue = require('/modules/issue.js'),
+
+        pkey = request.getParameter('pkey');
+
+        caramel.render({
+            'title': 'Issue Tracker| Edit Issue',
+            'body' : {
+                            title: 'Edit Issue',
+                            data : issue.getIssueById(pkey).data.issueResponse
+                        }
+        });
+    }());
+%>
+

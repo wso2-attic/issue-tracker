@@ -1,0 +1,19 @@
+<%
+var caramel;
+issue = require('/modules/issue.js');
+     var id = request.getParameter('pkey');
+
+	caramel = require('caramel');
+	caramel.render({
+		'title': {text :'Issue Tracker'},
+		'body' : {
+                    title: 'Issues',
+                    data: issue.getAllIssue(id).data.issue
+                }
+	});
+%>
+
+
+
+
+

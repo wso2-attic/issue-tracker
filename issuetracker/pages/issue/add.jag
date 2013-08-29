@@ -1,0 +1,12 @@
+<%
+    project = require('/modules/project.js');
+    var caramel;
+	caramel = require('caramel');
+	caramel.render({
+		'title': {text :'Issue Tracker| Add Issue'},
+		'body' : {
+                    title: 'Add Issue',
+                    project: project.getProject().data.project
+                 }
+	});
+%>

@@ -1,0 +1,46 @@
+<div class="span12"><h3>{{title}}</h3></div>
+
+<table border="1">
+	<tr style="background:#DCDCDC"><td width="5%">ID</td>
+	    <td width="5%">Key</td>
+        <td width="10%">Project ID</td>
+	    <td width="13%">Summary</td>
+	    <td width="5%">Type</td>
+	    <td width="5%">Priority</td>
+        <td width="5%">owner</td>
+        <td width="5%">status</td>
+        <td width="10%">assignee</td>
+        <td width="5%">version</td>
+        <td width="10%">created time</td>
+        <td width="10%">updated time</td>
+        <td width="5%">SEVERITY</td>
+        <td>EDIT</td>
+        <td>COMMENT</td>
+	</tr>
+{{#each data}}
+	<tr><td>{{id}}</td>
+	    <td>{{key}}</td>
+        <td>{{projectId}}</td>
+	    <td>{{summary}}</td>
+	    <td>{{type}}</td>
+	    <td>{{priority}}</td>
+        <td>{{owner}}</td>
+        <td>{{status}}</td>
+        <td>{{assignee}}</td>
+        <td>{{version}}</td>
+        <td>{{createdTime}}</td>
+	    <td>{{updatedTime}}</td>
+        <td>{{severity}}</td>
+
+	    <td>
+            <a href="{{url "/pages/issue/edit.jag"}}?id={{key}}&pid={{projectId}}" >edit</a>
+	    </td>
+
+	    <td>
+            <a href="{{url "/pages/issue/get.jag"}}?pkey={{key}}" >Comment</a>
+        </td>
+
+	</tr>
+{{/each}}
+</table>
+

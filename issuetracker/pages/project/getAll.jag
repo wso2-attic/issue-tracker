@@ -1,0 +1,18 @@
+<%
+var caramel;
+project = require('/modules/project.js');
+
+	caramel = require('caramel');
+	caramel.render({
+		'title': {text :'Blog Aggregator'},
+		'body' : {
+                    title: 'Projects',
+                    data: project.getProject().data.project
+                }
+	});
+%>
+
+
+
+
+
