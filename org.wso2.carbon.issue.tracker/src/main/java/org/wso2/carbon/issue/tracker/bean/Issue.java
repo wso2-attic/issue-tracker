@@ -24,6 +24,7 @@ public class Issue {
 
     private int id;
     private int projectId;
+    private String projectName;
     private String key;
     private String title;
     private String summary;
@@ -33,7 +34,7 @@ public class Issue {
     private String owner;
     private String status;
     private String assignee;
-    private int version;
+    private Integer version;
     private String createdTime;
     private String updatedTime;
     private String severity;
@@ -118,11 +119,11 @@ public class Issue {
         this.assignee = assignee;
     }
 
-    public int getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
@@ -158,4 +159,11 @@ public class Issue {
         this.description = description;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 }

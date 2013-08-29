@@ -177,7 +177,7 @@ public class IssueDAOImpl implements IssueDAO {
 			dbConnection = DBConfiguration.getDBConnection();
 
 			st = (PreparedStatement) dbConnection
-					.prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PKEY = ?");
+					.prepareStatement("SELECT p.PROJECT_NAME, i.ISSUE_ID, i.PKEY, i.PROJECT_ID, i.SUMMARY, i.DESCRIPTION, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.VERSION_ID, i.CREATED_TIME, i.UPDATED_TIME, i.SEVERITY FROM ISSUE i INNER JOIN PROJECT p ON (i.PROJECT_ID=p.PROJECT_ID)  WHERE PKEY = ?");
 			st.setMaxRows(1);
 			st.setString(1, uniqueKey);
 
@@ -185,6 +185,7 @@ public class IssueDAOImpl implements IssueDAO {
 			if (rs.first()) {
 
 				issue = new Issue();
+                issue.setProjectName(rs.getString("PROJECT_NAME"));
 				issue.setId(rs.getInt("ISSUE_ID"));
 				issue.setKey(rs.getString("PKEY"));
 				issue.setProjectId(rs.getInt("PROJECT_ID"));
@@ -284,8 +285,11 @@ public class IssueDAOImpl implements IssueDAO {
             dbConnection = DBConfiguration.getDBConnection();
 
             st = (PreparedStatement) dbConnection
-                    .prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PROJECT_ID = ?");
-            st.setInt(1, projectId);
+                    .prepareStatement("SELECT ISSUE_ID,PKEY,PROJECT_ID,SUMMARY,DESCRIPTION,ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,CREATED_TIME,UPDATED_TIME,SEVERITY FROM ISSUE WHERE PROJECT_ID = ifnull(?, PROJECT_ID)");
+            if(projectId==0)
+                st.setNull(1, Types.INTEGER);
+            else
+                st.setInt(1, projectId);
 
             ResultSet rs = st.executeQuery();
             while (rs.next()) {

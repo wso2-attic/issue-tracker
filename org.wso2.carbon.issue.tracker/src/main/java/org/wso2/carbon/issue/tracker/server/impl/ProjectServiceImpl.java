@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.bean.Project;
+import org.wso2.carbon.issue.tracker.bean.ResponseBean;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.dao.IssueDAO;
@@ -28,7 +29,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Context
     private UriInfo ui;
-    
+
+    /**
+     * TODO: for response boolean we have to return our obj as response
+     * @param tenantDomain
+     * @return
+     */
     @Override
     public Response getAllProject(String tenantDomain) {
 
@@ -37,6 +43,11 @@ public class ProjectServiceImpl implements ProjectService {
         try {
 
             int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
 
             List<Project> projects =
                     DAODelegate.getProjectInstance()
@@ -60,17 +71,22 @@ public class ProjectServiceImpl implements ProjectService {
         Response response = null;
         try {
             Project project = DAODelegate.getProjectInstance().get(projectId);
+            ResponseBean responseBean = new ResponseBean();
 
             if (project != null) {
                 int tenantId = TenantUtils.getTenantId(tenantDomain);
 
                 if (project.getOrganizationId() == tenantId) {
-                    response = Response.ok().entity(project).build();
+                   return Response.ok().entity(project).build();
                 } else {
-                    response = Response.status(Status.NOT_FOUND).build();
+                    responseBean.setSuccess(false);
+                    responseBean.setMessage("Invalid Tenant Domain");
+                    return Response.status(Status.NOT_FOUND).build();
                 }
             } else {
-                response = Response.status(Status.NOT_FOUND).build();
+                responseBean.setSuccess(false);
+                responseBean.setMessage("Invalid Project ID");
+                return Response.status(Status.NOT_FOUND).entity(responseBean).build();
             }
 
         } catch (SQLException e) {
@@ -78,7 +94,6 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (UserStoreException use) {
             throw new WebApplicationException(use, Response.Status.INTERNAL_SERVER_ERROR);
         }
-        return response;
     }
 
     @Override
@@ -95,24 +110,34 @@ public class ProjectServiceImpl implements ProjectService {
                     new IllegalArgumentException(
                             "project owner cannot be empty"));
         }
-
-        if ((project.getOrganizationId() <= 0)) {
-            throw new WebApplicationException(
-                    new IllegalArgumentException(
-                            "invalid organization id"));
-        }
-
+        ResponseBean response = new ResponseBean();
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
+
+            if ((tenantId <= 0)) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
             project.setOrganizationId(tenantId);
-            DAODelegate.getProjectInstance().add(project);
+            boolean isCreated = DAODelegate.getProjectInstance().add(project);
+
+            if(isCreated){
+                response.setSuccess(isCreated);
+                return Response.ok().entity(response).build();
+            } else {
+                response.setSuccess(isCreated);
+                response.setMessage("Data hasnt persist successfully");
+                return Response.notModified().entity(response).build();
+            }
+
         } catch (SQLException e) {
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         } catch (UserStoreException use) {
             throw new WebApplicationException(use, Response.Status.INTERNAL_SERVER_ERROR);
         }
 
-        return Response.created(ui.getAbsolutePath()).build();
+        //return Response.created(ui.getAbsolutePath()).entity(response).build();
     }
 
     @Override
@@ -130,29 +155,36 @@ public class ProjectServiceImpl implements ProjectService {
                             "project owner cannot be empty"));
         }
 
-        if ((project.getOrganizationId() <= 0)) {
-            throw new WebApplicationException(
-                    new IllegalArgumentException(
-                            "invalid organization id"));
-        }
 
-        Response response = null;
+        ResponseBean response = new ResponseBean();
 
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
 
             //check weather the project exists before proceeding.
             project.setId(projectId);
             if (DAODelegate.getProjectInstance().update(project)) {
-                response = Response.ok().build();
+                //response = Response.ok().build();
+                response.setSuccess(true);
+                return Response.ok().entity(response).build();
+
             } else {
-                response = Response.notModified().build();
+                response.setSuccess(false);
+                response.setMessage("Data hasnt persist successfully");
+                return Response.notModified().entity(response).build();
             }
 
         } catch (SQLException e) {
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (UserStoreException e) {
+            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         }
 
-        return response;
     }
 
     @Override
@@ -161,6 +193,14 @@ public class ProjectServiceImpl implements ProjectService {
         Response response = null;
 
         try {
+
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             List<Version> versions =
                     DAODelegate.getVersionInstance()
                             .getVersionListOfProjectByProjectId(projectId);
@@ -170,6 +210,8 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (IssueTrackerException e) {
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         } catch (SQLException e) {
+            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (UserStoreException e) {
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         }
 
@@ -181,11 +223,20 @@ public class ProjectServiceImpl implements ProjectService {
     public Response getAllIssuesOfProject(String tenantDomain, int projectId) {
         Response response = null;
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             List<Issue> issues = DAODelegate.getIssueInstance().getAllIssuesOfProject(projectId);
             GenericEntity<List<Issue>> entity = new GenericEntity<List<Issue>>(issues) {};
 
             response = Response.ok().entity(entity).build();
         } catch (SQLException e) {
+            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (UserStoreException e) {
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         }
 
@@ -230,16 +281,36 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         IssueDAO issueDAO = DAODelegate.getIssueInstance();
+        ResponseBean response = new ResponseBean();
+
+
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             boolean isInserted = issueDAO.add(issue);
-            if (isInserted)
-                return Response.ok(isInserted).type(MediaType.APPLICATION_JSON).build();
-            else
-                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Issue is not successfully inserted.").build();
+            if (isInserted){
+                response.setSuccess(true);
+                return Response.ok().entity(response).type(MediaType.APPLICATION_JSON).build();
+            } else{
+                response.setSuccess(false);
+                response.setMessage("Issue is not successfully inserted.");
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(response).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while add Issue to Project";
+            String msg = "Error while add Issue to Project, " + e.getMessage();
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+            response.setSuccess(false);
+            response.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
 
@@ -257,18 +328,37 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         version.setProjectId(projectId);
-
+        ResponseBean response = new ResponseBean();
         VersionDAO versionDAO = DAODelegate.getVersionInstance();
         try {
+
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             boolean isInserted = versionDAO.addVersionForProject(version);
-            if (isInserted)
-                return Response.ok(isInserted).type(MediaType.APPLICATION_JSON).build();
-            else
-                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Version is not successfully inserted.").build();
+            response.setSuccess(isInserted);
+
+            if (isInserted){
+                return Response.ok().entity(response).type(MediaType.APPLICATION_JSON).build();
+            } else {
+                response.setMessage("Version is not successfully inserted.");
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(response).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while add Version to Project";
+            String msg = "Error while add Version to Project, " + e.getMessage();
+            response.setSuccess(false);
+            response.setMessage(msg);
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
+            String msg = "Error while add Version to Project, " + e.getMessage();
+            response.setSuccess(false);
+            response.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
 }

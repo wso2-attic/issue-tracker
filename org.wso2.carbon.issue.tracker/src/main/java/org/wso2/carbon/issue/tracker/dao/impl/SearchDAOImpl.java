@@ -45,7 +45,6 @@ public class SearchDAOImpl implements SearchDAO{
                                     "ORDER BY p.PROJECT_ID, v.VERSION_id, i.ISSUE_ID ASC";
 
 
-        System.out.println("SQL: " + selectSQL);
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(selectSQL);
@@ -135,7 +134,6 @@ public class SearchDAOImpl implements SearchDAO{
 
                                 "ORDER BY p.PROJECT_ID, v.VERSION_id, i.ISSUE_ID ASC";
 
-        System.out.println("SQL: " + selectSQL);
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(selectSQL);

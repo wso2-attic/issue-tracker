@@ -35,7 +35,7 @@ public interface ProjectDAO {
      * @param project
      *            information about the project.
      */
-    public void add(Project project) throws SQLException ;
+    public boolean add(Project project) throws SQLException ;
 
     /**
      * Modified a project information. given by the {@link Project}#id

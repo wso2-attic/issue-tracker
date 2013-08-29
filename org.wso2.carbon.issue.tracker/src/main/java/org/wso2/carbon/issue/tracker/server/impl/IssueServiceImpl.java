@@ -10,6 +10,8 @@ import org.wso2.carbon.issue.tracker.dao.SearchDAO;
 import org.wso2.carbon.issue.tracker.delegate.DAODelegate;
 import org.wso2.carbon.issue.tracker.server.IssueService;
 import org.wso2.carbon.issue.tracker.util.Constants;
+import org.wso2.carbon.issue.tracker.util.TenantUtils;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
@@ -48,10 +50,21 @@ public class IssueServiceImpl implements IssueService {
 
         List<Comment> comments = null;
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             Issue issue = issueDAO.getIssueByKey(uniqueKey);
 
             if(issue!=null)
                 comments = commentDAO.getCommentsForIssue(issue.getId());     // get all comments related to given issue
+
+            if(comments.size()==1){
+                comments.add(new Comment());
+            }
 
             IssueResponse response = new IssueResponse();
             response.setIssue(issue);
@@ -107,16 +120,34 @@ public class IssueServiceImpl implements IssueService {
         }
         issue.setKey(uniqueKey);
         IssueDAO issueDAO = DAODelegate.getIssueInstance();
+        ResponseBean responseBean = new ResponseBean();
+
         try {
+
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             boolean isInserted = issueDAO.update(issue);
-            if (isInserted)
-                return Response.ok(isInserted).type(MediaType.APPLICATION_JSON).build();
-            else
-                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Issue is not successfully updated.").build();
+            if (isInserted){
+                responseBean.setSuccess(true);
+                return Response.ok().entity(responseBean).type(MediaType.APPLICATION_JSON).build();
+            } else{
+                responseBean.setSuccess(false);
+                responseBean.setMessage("Issue is not successfully updated.");
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while edit Issue to Project";
+            String msg = "Error while edit Issue to Project, " + e.getMessage();
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+            responseBean.setSuccess(false);
+            responseBean.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseBean).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseBean).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
 
@@ -143,15 +174,32 @@ public class IssueServiceImpl implements IssueService {
         }
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
+        ResponseBean responseBean = new ResponseBean();
+
         try {
+
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
             boolean isInserted = commentDAO.addCommentForIssue(comment, uniqueKey);
-            if (isInserted)
-                return Response.ok().type(MediaType.APPLICATION_JSON).build();
-            else
-                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully inserted.").build();
+            if (isInserted){
+                responseBean.setSuccess(true);
+                return Response.ok().entity(responseBean).type(MediaType.APPLICATION_JSON).build();
+            } else {
+                responseBean.setSuccess(false);
+                responseBean.setMessage("Data is not successfully inserted");
+                return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while add comments for issue";
+            String msg = "Error while add comments for issue, " + e.getMessage();
             log.error(msg, e);
+            responseBean.setSuccess(false);
+            responseBean.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -185,16 +233,33 @@ public class IssueServiceImpl implements IssueService {
         }
 
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
+        ResponseBean responseBean = new ResponseBean();
+
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
             comment.setId(commentId);
+
             boolean isUpdated = commentDAO.editComment(comment, uniqueKey);
-            if(isUpdated)
-                return Response.ok().build();
-            else
-                return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity("Data is not successfully updated.").build();
+            if(isUpdated){
+                responseBean.setSuccess(true);
+                return Response.ok(responseBean).build();
+            } else {
+                responseBean.setMessage("Data is not successfully updated.");
+                responseBean.setSuccess(false);
+                return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while edit comments";
+            String msg = "Error while edit comments, " + e.getMessage();
             log.error(msg, e);
+            responseBean.setSuccess(false);
+            responseBean.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -217,14 +282,31 @@ public class IssueServiceImpl implements IssueService {
         if (commentId == 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid comment ID").build();
         }
-
+        ResponseBean responseBean = new ResponseBean();
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+
             boolean result = commentDAO.deleteCommentByCommentId(uniqueKey, commentId);
-            return result ? Response.ok().build() : Response.notModified("Invalid credentials").build();
+            responseBean.setSuccess(result);
+            if(result){
+               return Response.ok().entity(responseBean).build();
+            } else{
+                responseBean.setMessage("Invalid credentials.");
+                return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
+            }
         } catch (SQLException e) {
-            String msg = "Error while delete comments";
+            String msg = "Error while delete comments, " + e.getMessage();
             log.error(msg, e);
+            responseBean.setSuccess(false);
+            responseBean.setMessage(msg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UserStoreException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -255,10 +337,20 @@ public class IssueServiceImpl implements IssueService {
             searchBean.setSeverity(null);
 
         try {
-            if(searchBean.getSearchType() == Constants.ALL_ISSUE)
+            int tenantId = TenantUtils.getTenantId(tenantDomain);
+            if (tenantId<=0) {
+                throw new WebApplicationException(
+                        new IllegalArgumentException(
+                                "invalid organization id"));
+            }
+            ResponseBean responseBean = new ResponseBean();
+
+            if(searchBean.getSearchType() == Constants.ALL_ISSUE){
+                responseBean.setSuccess(true);
                 list = searchDAO.searchIssueBySummaryContent(searchBean);
-            else
+            } else {
                 list = searchDAO.searchIssue(searchBean);
+            }
 
         } catch (Exception e) {
             String msg = "Error while searching Issues";

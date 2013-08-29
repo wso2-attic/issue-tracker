@@ -26,11 +26,11 @@ public class ProjectDAOImpl implements ProjectDAO {
     /**
      * {@inheritDoc}
      */
-    public void add(Project project) throws SQLException {
+    public boolean add(Project project) throws SQLException {
 
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
-
+        boolean isInserted = false;
         String insertTableSQL =
                                 "INSERT INTO PROJECT (PROJECT_NAME,OWNER,DESCRIPTION,ORGANIZATION_ID) VALUES (?,?,?,?)";
 
@@ -45,7 +45,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             preparedStatement.setInt(4, project.getOrganizationId());
 
             // execute insert SQL stetement
-            preparedStatement.executeUpdate();
+            isInserted = preparedStatement.executeUpdate()==1 ? true:false;
 
         } catch (SQLException e) {
 
@@ -62,6 +62,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             }
 
         }
+        return isInserted;
     }
 
     /**

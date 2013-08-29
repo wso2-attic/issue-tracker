@@ -49,8 +49,11 @@ public class CommentDAOImpl implements CommentDAO {
                 comment.setCreatedTime(createdTimeStr);
 
                 Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-                String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
-                comment.setCreatedTime(updatedTimeStr);
+
+                if(updatedTime!=null){
+                    String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
+                    comment.setUpdatedTime(updatedTimeStr);
+                }
 
                 comment.setCreator(rs.getString("CREATOR"));
 
@@ -170,8 +173,7 @@ public class CommentDAOImpl implements CommentDAO {
 
         boolean isUpdated = false;
 
-        String updateTableSQL = "UPDATE COMMENT c INNER JOIN ISSUE i ON c.ISSUE_ID = i.ISSUE_ID SET i.DESCRIPTION = ?, i.UPDATED_TIME = ?  WHERE c.ID=? AND i.PKEY = ? AND c.CREATOR = ? ";
-
+        String updateTableSQL = "UPDATE COMMENT c INNER JOIN ISSUE i ON c.ISSUE_ID = i.ISSUE_ID SET c.DESCRIPTION = ?, c.UPDATED_TIME = ?  WHERE c.ID=? AND i.PKEY = ? AND c.CREATOR = ? ";
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(updateTableSQL);

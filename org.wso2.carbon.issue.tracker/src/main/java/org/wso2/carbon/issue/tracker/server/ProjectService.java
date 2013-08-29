@@ -2,6 +2,7 @@ package org.wso2.carbon.issue.tracker.server;
 
 import org.wso2.carbon.issue.tracker.bean.Issue;
 import org.wso2.carbon.issue.tracker.bean.Project;
+import org.wso2.carbon.issue.tracker.bean.ResponseBean;
 import org.wso2.carbon.issue.tracker.bean.Version;
 
 import javax.ws.rs.*;
@@ -29,7 +30,7 @@ public interface ProjectService {
 
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project);
 
     @POST
