@@ -23,18 +23,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Comment {
 
-    private int Id;
+    private int id;
     private String commentDescription;
     private String createdTime;
     private String updatedTime;
     private String creator;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getCreatedTime() {
@@ -76,13 +76,13 @@ public class Comment {
 
         Comment comment = (Comment) o;
 
-        if (Id != comment.Id) return false;
+        if (id != comment.id) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return Id;
+        return id;
     }
 }

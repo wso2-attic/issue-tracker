@@ -11,10 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
-import org.wso2.carbon.issue.tracker.bean.Issue;
-import org.wso2.carbon.issue.tracker.bean.Project;
-import org.wso2.carbon.issue.tracker.bean.ResponseBean;
-import org.wso2.carbon.issue.tracker.bean.Version;
+import org.wso2.carbon.issue.tracker.bean.*;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
@@ -31,13 +28,11 @@ public class ProjectServiceImpl implements ProjectService {
     private UriInfo ui;
 
     /**
-     * TODO: for response boolean we have to return our obj as response
      * @param tenantDomain
      * @return
      */
     @Override
     public Response getAllProject(String tenantDomain) {
-
         Response response = null;
 
         try {
@@ -98,7 +93,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Response addProject(String tenantDomain, Project project) {
-
         if (StringUtils.isEmpty(project.getName())) {
             throw new WebApplicationException(
                     new IllegalArgumentException(
@@ -110,7 +104,6 @@ public class ProjectServiceImpl implements ProjectService {
                     new IllegalArgumentException(
                             "project owner cannot be empty"));
         }
-        ResponseBean response = new ResponseBean();
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
 
@@ -120,14 +113,12 @@ public class ProjectServiceImpl implements ProjectService {
                                 "invalid organization id"));
             }
             project.setOrganizationId(tenantId);
-            boolean isCreated = DAODelegate.getProjectInstance().add(project);
-
-            if(isCreated){
-                response.setSuccess(isCreated);
+            int projectId = DAODelegate.getProjectInstance().add(project);
+            //response.setProjectId(projectId);
+            String response = "id="+projectId;
+            if(projectId>0){
                 return Response.ok().entity(response).build();
             } else {
-                response.setSuccess(isCreated);
-                response.setMessage("Data hasnt persist successfully");
                 return Response.notModified().entity(response).build();
             }
 
@@ -136,8 +127,6 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (UserStoreException use) {
             throw new WebApplicationException(use, Response.Status.INTERNAL_SERVER_ERROR);
         }
-
-        //return Response.created(ui.getAbsolutePath()).entity(response).build();
     }
 
     @Override
@@ -155,7 +144,6 @@ public class ProjectServiceImpl implements ProjectService {
                             "project owner cannot be empty"));
         }
 
-
         ResponseBean response = new ResponseBean();
 
         try {
@@ -169,10 +157,8 @@ public class ProjectServiceImpl implements ProjectService {
             //check weather the project exists before proceeding.
             project.setId(projectId);
             if (DAODelegate.getProjectInstance().update(project)) {
-                //response = Response.ok().build();
                 response.setSuccess(true);
                 return Response.ok().entity(response).build();
-
             } else {
                 response.setSuccess(false);
                 response.setMessage("Data hasnt persist successfully");
@@ -246,17 +232,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Response addNewIssueToProject(String tenantDomain, int projectId, Issue issue) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing addNewIssueToProject, created by: " + issue.getOwner());
+            log.debug("Executing addNewIssueToProject, created by: " + issue.getReporter());
         }
-        if(issue.getProjectId()<=0 || StringUtils.isEmpty(issue.getKey())){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Project ID or Project Key cannot be empty!").build();
+        if(issue.getProjectId()<=0 ){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Project ID cannot be empty!").build();
         }
 
         if (StringUtils.isEmpty(issue.getSummary())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Issue summary cannot be empty!").build();
         }
 
-        if (StringUtils.isEmpty(issue.getOwner())) {
+        if (StringUtils.isEmpty(issue.getReporter())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Issue owner cannot be empty!").build();
         }
 
@@ -292,10 +278,10 @@ public class ProjectServiceImpl implements ProjectService {
                                 "invalid organization id"));
             }
 
-            boolean isInserted = issueDAO.add(issue);
-            if (isInserted){
+            String issueKey = issueDAO.add(issue);
+            if (issueKey!=null){
                 response.setSuccess(true);
-                return Response.ok().entity(response).type(MediaType.APPLICATION_JSON).build();
+                return Response.ok().entity(issueKey).type(MediaType.APPLICATION_JSON).build();
             } else{
                 response.setSuccess(false);
                 response.setMessage("Issue is not successfully inserted.");
@@ -315,11 +301,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Response addNewVersionToProject(String tenantDomain, int projectId, Version version) {
+    public Response addNewVersionToProject(String tenantDomain, String projectKey, Version version) {
         if (log.isDebugEnabled()) {
             log.debug("Executing addNewVersionToProject, project versoin: " + version.getProjectVersion());
         }
-        if(projectId <= 0 ){
+        if(StringUtils.isEmpty(projectKey) ){
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Project!").build();
         }
 
@@ -327,7 +313,7 @@ public class ProjectServiceImpl implements ProjectService {
             return Response.status(Response.Status.BAD_REQUEST).entity("Project Version cannot be empty!").build();
         }
 
-        version.setProjectId(projectId);
+        //version.setProjectK(projectId);
         ResponseBean response = new ResponseBean();
         VersionDAO versionDAO = DAODelegate.getVersionInstance();
         try {
@@ -339,7 +325,7 @@ public class ProjectServiceImpl implements ProjectService {
                                 "invalid organization id"));
             }
 
-            boolean isInserted = versionDAO.addVersionForProject(version);
+            boolean isInserted = versionDAO.addVersionForProject(version, projectKey);
             response.setSuccess(isInserted);
 
             if (isInserted){

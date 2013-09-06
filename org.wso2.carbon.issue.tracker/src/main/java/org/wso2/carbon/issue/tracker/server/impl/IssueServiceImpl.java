@@ -41,7 +41,6 @@ public class IssueServiceImpl implements IssueService {
      */
     @Override
     public Response getIssue(String tenantDomain, String uniqueKey) {
-
         if(log.isDebugEnabled()){
             log.debug("Executing getIssue, uniqueKey: " + uniqueKey);
         }
@@ -87,16 +86,17 @@ public class IssueServiceImpl implements IssueService {
      */
     @Override
     public Response editIssue(String tenantDomain, String  uniqueKey, Issue issue) {
+
         if (log.isDebugEnabled()) {
-            log.debug("Executing editIssue, created by: " + issue.getOwner());
+            log.debug("Executing editIssue, created by: " + issue.getReporter());
         }
 
         if (StringUtils.isEmpty(issue.getSummary())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Issue summary cannot be empty!").build();
         }
 
-        if (StringUtils.isEmpty(issue.getOwner())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Issue owner cannot be empty!").build();
+        if (StringUtils.isEmpty(issue.getReporter())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Issue reporter cannot be empty!").build();
         }
 
         if(StringUtils.isEmpty(issue.getType())){
@@ -111,13 +111,6 @@ public class IssueServiceImpl implements IssueService {
             issue.setStatus("OPEN");
         }
 
-        if(StringUtils.isEmpty(issue.getType())){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
-        }
-
-        if(StringUtils.isEmpty(issue.getType())){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
-        }
         issue.setKey(uniqueKey);
         IssueDAO issueDAO = DAODelegate.getIssueInstance();
         ResponseBean responseBean = new ResponseBean();
@@ -132,11 +125,11 @@ public class IssueServiceImpl implements IssueService {
             }
 
             boolean isInserted = issueDAO.update(issue);
+            responseBean.setSuccess(isInserted);
+
             if (isInserted){
-                responseBean.setSuccess(true);
                 return Response.ok().entity(responseBean).type(MediaType.APPLICATION_JSON).build();
             } else{
-                responseBean.setSuccess(false);
                 responseBean.setMessage("Issue is not successfully updated.");
                 return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
             }
@@ -338,11 +331,15 @@ public class IssueServiceImpl implements IssueService {
 
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
+
             if (tenantId<=0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
+
+            searchBean.setOrganizationId(tenantId);
+
             ResponseBean responseBean = new ResponseBean();
 
             if(searchBean.getSearchType() == Constants.ALL_ISSUE){

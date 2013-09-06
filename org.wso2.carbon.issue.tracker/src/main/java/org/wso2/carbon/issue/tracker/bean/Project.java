@@ -28,6 +28,7 @@ public class Project {
     private String owner;
     private int organizationId;
     private String description;
+    private String key;
 
     public int getId() {
         return id;
@@ -68,6 +69,12 @@ public class Project {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

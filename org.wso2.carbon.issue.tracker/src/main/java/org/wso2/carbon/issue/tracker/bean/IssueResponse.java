@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
- * Response object of Issue
+ * ResponseID object of Issue
  */
 @XmlRootElement
 public class IssueResponse {

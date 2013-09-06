@@ -56,9 +56,9 @@ public interface ProjectService {
     public Response addNewIssueToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Issue issue);
 
     @POST
-    @Path("/{projectId}/version")
+    @Path("/{projectKey}/version")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response addNewVersionToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Version version);
+    public Response addNewVersionToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey, Version version);
 
 }

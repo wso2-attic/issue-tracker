@@ -31,13 +31,14 @@ public class Issue {
     private String description;
     private String type;
     private String priority;
-    private String owner;
+    private String reporter;
     private String status;
     private String assignee;
     private Integer version;
     private String createdTime;
     private String updatedTime;
     private String severity;
+    private String versionValue;
 
     public int getId() {
         return id;
@@ -95,12 +96,12 @@ public class Issue {
         this.priority = priority;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getReporter() {
+        return reporter;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
     }
 
     public String getStatus() {
@@ -165,5 +166,13 @@ public class Issue {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getVersionValue() {
+        return versionValue;
+    }
+
+    public void setVersionValue(String versionValue) {
+        this.versionValue = versionValue;
     }
 }

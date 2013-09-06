@@ -27,7 +27,7 @@ public class CommentDAOImpl implements CommentDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String selectSQL = "SELECT ID, DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
+        String selectSQL = "SELECT ID, DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
         List<Comment> comments = new ArrayList<Comment>();
 
         try {
@@ -49,7 +49,6 @@ public class CommentDAOImpl implements CommentDAO {
                 comment.setCreatedTime(createdTimeStr);
 
                 Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-
                 if(updatedTime!=null){
                     String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
                     comment.setUpdatedTime(updatedTimeStr);

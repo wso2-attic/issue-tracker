@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Define database access class to search issues
+ * Defines the database operations for a {@link SearchBean}
  */
 public interface SearchDAO {
     /**

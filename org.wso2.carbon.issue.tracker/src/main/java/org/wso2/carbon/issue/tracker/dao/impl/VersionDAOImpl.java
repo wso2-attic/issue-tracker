@@ -31,18 +31,23 @@ import java.util.List;
 public class VersionDAOImpl implements VersionDAO{
     private static final Log log = LogFactory.getLog(VersionDAOImpl.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean addVersionForProject(Version version) throws SQLException {
+    public boolean addVersionForProject(Version version, String projectKey) throws SQLException {
         Connection dbConnection = DBConfiguration.getDBConnection();
         PreparedStatement preparedStatement = null;
-        String insertTableSQL = "INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES (?, ?)";
+        String insertTableSQL = "INSERT INTO VERSION (VERSION, PROJECT_ID) SELECT ?, p.PROJECT_ID FROM PROJECT p WHERE p.PROJECT_KEY=?";
 
+
+        // INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) SELECT ?, ?, ?, ?, ISSUE_ID FROM ISSUE WHERE PKEY = ?
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
             preparedStatement.setString(1, version.getProjectVersion());
-            preparedStatement.setInt(2, version.getProjectId());
+            preparedStatement.setString(2, projectKey);
 
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
@@ -61,6 +66,9 @@ public class VersionDAOImpl implements VersionDAO{
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Version> getVersionListOfProjectByProjectId(int projectId) throws SQLException {
         Connection dbConnection = null;

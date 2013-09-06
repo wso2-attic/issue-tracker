@@ -3,7 +3,7 @@ package org.wso2.carbon.issue.tracker.bean;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Response Object for Search result
+ * ResponseID Object for Search result
  */
 @XmlRootElement
 public class SearchResponse {

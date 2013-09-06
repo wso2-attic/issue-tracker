@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * Defines the database operations for a {@link Comment}
- *
  */
 public interface CommentDAO {
 
