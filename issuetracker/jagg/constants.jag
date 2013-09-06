@@ -1,0 +1,5 @@
+<%
+// collection names
+var ISSUE_TRACKER_URL = "url";
+
+%>

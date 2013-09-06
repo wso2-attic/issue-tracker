@@ -1,0 +1,19 @@
+<%
+var caramel;
+version = require('/modules/version.js');
+     var id = request.getParameter('id');
+
+	caramel = require('caramel');
+	caramel.render({
+		'title': {text :'Issue Tracker'},
+		'body' : {
+                    title: 'Version',
+                    data: issue.getAllVersion(id).data.issue
+                }
+	});
+%>
+
+
+
+
+

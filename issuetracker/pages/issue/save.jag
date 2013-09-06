@@ -10,7 +10,7 @@
         action = request.getParameter('action');
 
 
-         log.info('jsonobj '+jsonobj);
+         log.info('jsonobjaaa '+jsonobj);
         var result;
         if (action === 'addIssue') {
             result = issue.addIssue(projectId, jsonobj);

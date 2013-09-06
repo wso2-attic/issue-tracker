@@ -1,0 +1,21 @@
+<%
+var caramel;
+    var log = new Log();
+
+issue = require('/modules/issue.js');
+    var searchType = request.getParameter('searchType'),
+    searchValue = request.getParameter('searchValue');
+     log.info("++++++++++++++++++++++ " + searchValue);
+	caramel = require('caramel');
+	caramel.render({
+		'title': {text :'Issue Tracker'},
+		'header' : {domain: session.get("DOMAIN"),
+        		          userName: session.get("LOGGED_IN_USER")},
+		'body' : {
+                    title: 'Issues',
+                    data: issue.searchIssue(searchType, searchValue).data.searchResponse,
+                    type:searchType,
+                    value:searchValue
+                }
+	});
+%>

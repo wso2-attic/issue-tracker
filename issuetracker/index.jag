@@ -1,10 +1,24 @@
 <%
-var caramel;
-project = require('/modules/project.js');
+    include('/jagg/config_reader.jag');
+
+    var caramel;
+    project = require('/modules/project.js');
+
+    var user = request.getParameter("user");
+
+    user = user.split("@");
+    userName = user[0];
+    domain = user[1];
+
+    session.put("LOGGED_IN_USER", userName);
+    session.put("DOMAIN", domain);
+    session.put("ISSUE_TRACKER_URL", getProperty(ISSUE_TRACKER_URL));
 
 	caramel = require('caramel');
 	caramel.render({
 		'title': {text :'Issue Tracker'},
+		'header' : {domain: session.get("DOMAIN"),
+                		          userName: session.get("LOGGED_IN_USER")},
 		'body' : {
                     title: 'Projects',
                     data: project.getProject().data.project

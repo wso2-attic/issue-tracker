@@ -1,7 +1,7 @@
 <div class="span12"><h3>{{projectTitle}}</h3></div>
 <table>
 	<tr><td>Project Name</td><td>:</td><td valign="middle"> {{project.name}}</td></tr>
-	<tr><td>Owner</td><td>:</td><td valign="middle">{{project.owner}}</td></tr>
+	<tr><td>Reporter</td><td>:</td><td valign="middle">{{project.reporter}}</td></tr>
 	<tr><td>Description</td><td>:</td><td valign="middle">{{project.description}}</td></tr>
 	<tr><td> &nbsp; </td></tr>
 </table>
@@ -16,13 +16,13 @@
 	    <td width="13%">Summary</td>
 	    <td width="5%">Type</td>
 	    <td width="5%">Priority</td>
-        <td width="5%">owner</td>
-        <td width="5%">status</td>
-        <td width="10%">assignee</td>
-        <td width="5%">version</td>
-        <td width="10%">created time</td>
-        <td width="10%">updated time</td>
-        <td width="5%">SEVERITY</td>
+        <td width="5%">Reporter</td>
+        <td width="5%">Status</td>
+        <td width="10%">Assignee</td>
+        <td width="5%">Version</td>
+        <td width="10%">Vreated time</td>
+        <td width="10%">Updated time</td>
+        <td width="5%">Severity</td>
 	</tr>
 {{#each issue}}
 	<tr><td>{{id}}</td>
@@ -31,7 +31,7 @@
 	    <td>{{summary}}</td>
 	    <td>{{type}}</td>
 	    <td>{{priority}}</td>
-        <td>{{owner}}</td>
+        <td>{{reporter}}</td>
         <td>{{status}}</td>
         <td>{{assignee}}</td>
         <td>{{version}}</td>

@@ -4,6 +4,8 @@
 	caramel = require('caramel');
 	caramel.render({
 		'title': {text :'Issue Tracker| Add Issue'},
+		'header' : {domain: session.get("DOMAIN"),
+		          userName: session.get("LOGGED_IN_USER")},
 		'body' : {
                     title: 'Add Issue',
                     project: project.getProject().data.project

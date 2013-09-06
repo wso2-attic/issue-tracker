@@ -7,17 +7,19 @@
 
         var pkey = request.getParameter('id');
         var pid = request.getParameter('pid');
-
-
+         var user = session.get("LOGGED_IN_USER");
+         var issue = issue.getIssueById(pkey).data.issueResponse.issue;
 
         caramel.render({
             'title': 'Issue Tracker| Edit Issue',
+            'header' : {domain: session.get("DOMAIN"),
+                      userName: session.get("LOGGED_IN_USER")},
             'body' : {
                             title: 'Edit Issue',
                             project: project.getProject(pid).data.project,
-                            issue : issue.getIssueById(pkey).data.issueResponse.issue,
-                            version : project.getAllVersionOfProject(pid).version
-
+                            issue : issue,
+                            version : project.getAllVersionOfProject(pid).version,
+                            isSameUser : issue.reporter == user
                         }
         });
     }());

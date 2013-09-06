@@ -3,7 +3,7 @@ $().ready(function() {
 			$('#saveMe').click(function() {
                 var jsonObj = new Object();
                 jsonObj.name=$("#projectName").attr('value');
-                jsonObj.owner=$("#owner").attr('value');
+                jsonObj.owner=session.get("LOGGED_IN_USER");
                 jsonObj.description=$("#description").attr('value');
 
                 var proj = new Object();
@@ -36,7 +36,7 @@ $().ready(function() {
     $('#editMe').click(function() {
         var jsonObj = new Object();
         jsonObj.name=$("#projectName").attr('value');
-        jsonObj.owner=$("#owner").attr('value');
+        jsonObj.owner=session.get("LOGGED_IN_USER");
         jsonObj.description=$("#description").attr('value');
         jsonObj.organizationId= $("#organizationId").attr('value');
         var proj = new Object();

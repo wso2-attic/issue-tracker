@@ -3,7 +3,8 @@ var log = new Log();
 
 var getProject = function () {
     log.info(">>>>>>>>>>>>>>>..getProject");
-    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project";
+    var domain=session.get("DOMAIN");
+    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project";
     var data = {  };
     var projects = get(url, {} ,"json");
     log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<1 "+projects);
@@ -14,8 +15,9 @@ var getProject = function () {
 
 var getAllVersionOfProject1 = function ( projectId){
     log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
+    var domain=session.get("DOMAIN");
 
-    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project/"+projectId+"/version";
+    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId+"/version";
     //var project = get(url, {} ,"application/json");
     var project = get(url,"json");
     log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 2"+project);
@@ -25,8 +27,8 @@ var getAllVersionOfProject1 = function ( projectId){
 
 var getAllVersionOfProject = function ( projectId){
     log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
-
-    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project/"+projectId+"/version";
+    var domain=session.get("DOMAIN");
+    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId+"/version";
     //var project = get(url, {} ,"application/json");
     var project = get(url,"application/json");
     log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< aa2 " +parse(project.data));
@@ -37,19 +39,38 @@ var getAllVersionOfProject = function ( projectId){
 }
 
 
+//http://10.100.0.120:9768/issuetracker-1.0.0/services/tenant/"+domain+"/project/2/version
+var addVersion = function (projectId, inputPara){
+    var domain=session.get("DOMAIN");
+    log.info("**************** " +projectId);
+    log.info(inputPara);
+
+    var result;
+    var url = session.get("ISSUE_TRACKER_URL")+domain+'/project/'+projectId+'/version';
+    result = post(url, inputPara, {
+        "Content-Type": "application/json"
+    }, 'json');
+    log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< "+stringify(result));
+
+    return result;
+
+}
+
+
 
 var getProjectById = function (projectId) {
     log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
-
-    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project/"+projectId;
+    var domain=session.get("DOMAIN");
+    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId;
     var project = get(url, {} ,"json");
     log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
     return project;
 };
 
 var addProject = function (inputPara){
+    var domain=session.get("DOMAIN");
     var result;
-        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project';
+        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/"+domain+"/project';
         result = post(url, inputPara, {
             "Content-Type": "application/json"
         }, 'json');
@@ -60,11 +81,11 @@ var addProject = function (inputPara){
 
 var editProject = function (inputPara, projectId){
     log.info(">>>>>>>>>>>>>>>..getProjectById " + projectId);
-
+    var domain=session.get("DOMAIN");
     log.info('inputPara '+inputPara);
     var result;
 
-        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/t/wso2.com/project/'+projectId;
+        var url = session.get("ISSUE_TRACKER_URL")+domain+'/project/'+projectId;
         result = post(url, inputPara, {
             "Content-Type": "application/json"
         }, 'json');

@@ -1,5 +1,47 @@
-<div class="row row-white row-footer">
-	<div class="span6">
-		<span> Issue Tracker </span>
-	</div>
-</div>
+		<header class="main_header">
+			<div class="right">
+				<div class="logo">
+					<a href="#">
+					<img src="{{url "/themes/issuetracker/img/appfactory_logo.png"}}"" alt="App Factory" /></a>
+				</div>
+				<div class="dropdown user right">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> <img class="user_photo" src="{{url "/themes/issuetracker/img/avatar.png"}}" alt="Avatar of avatar" /> {{userName}}@{{domain}}<span class="icon-chevron-down"></span> </a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="/your_profile">Your Profile</a>
+						</li>
+						<li>
+							<a href="/sign_out">Sign Out</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="dropdown context_menu">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-reorder"></span></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="/support">Support</a>
+						</li>
+						<li>
+							<a href="/feedback">Feedback</a>
+						</li>
+						<li>
+							<a href="/user_guide">User Guide</a>
+						</li>
+						<li>
+							<a href="/Contacts">Contacts</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<h2><a href="#" class="icon-home"><span>Home</span></a></h2>
+			<p class="sub_heading">
+				<a href="#">
+
+				<img src="{{url "/themes/issuetracker/img/app_icon.png"}}" alt="AwesomeGreatApp icon" /><span class="app_name">AwesomeGreatApp</span></a> &nbsp; <a href="#"><span class=" icon-cog"></span></a>
+			</p>
+
+			<div class="clearfix"></div>
+
+		</header>

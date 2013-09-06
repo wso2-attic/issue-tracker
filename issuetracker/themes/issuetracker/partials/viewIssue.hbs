@@ -1,6 +1,6 @@
 <div class="span12"><h3>{{title}}</h3></div>
                             <input type="hidden" name="ukey" id="ukey" value="{{data.issue.key}}"/>
-                                                        <input type="hidden" name="owner" id="owner" />
+                                                        <input type="hidden" name="reporter" id="reporter" />
 
 
 <table >
@@ -17,12 +17,12 @@
 	    </td></tr>
 	    <tr><td width="5%">Priority</td><td>:</td><td valign="middle">
 	        {{data.issue.priority}}
-        <tr><td width="5%">owner</td><td>:</td><td valign="middle">{{data.issue.owner}}</td></tr>
-        <tr><td width="5%">status</td><td>:</td> <td valign="middle">
+        <tr><td width="5%">Reporter</td><td>:</td><td valign="middle">{{data.issue.reporter}}</td></tr>
+        <tr><td width="5%">Status</td><td>:</td> <td valign="middle">
             {{data.issue.status}}
-        <tr><td width="10%">assignee</td><td>:</td><td valign="middle">{{data.issue.assignee}}</td></tr>
-        <tr><td width="5%">version</td><td>:</td><td valign="middle">{{data.issue.version}}</td></tr>
-        <tr><td width="5%">SEVERITY</td><td>:</td><td valign="middle">
+        <tr><td width="10%">Assignee</td><td>:</td><td valign="middle">{{data.issue.assignee}}</td></tr>
+        <tr><td width="5%">Version</td><td>:</td><td valign="middle">{{data.issue.version}}</td></tr>
+        <tr><td width="5%">Severity</td><td>:</td><td valign="middle">
            {{data.issue.severity}}</td></tr>
         </table>
 
@@ -32,7 +32,14 @@
 <table>
     {{#each data.comments}}
      {{#if id}}
-    <tr><td colspan="2">{{data.comments.creator}} {{#if updatedTime}} updated {{else}} added {{/if}} comment - {{#if updatedTime}} {{updatedTime}} {{else}} {{createdTime}} {{/if}}</td> </tr>
+    <tr><td colspan="2">{{creator}}
+        {{#if updatedTime}}
+            updated
+        {{else}}
+            added
+        {{/if}}
+
+        comment - {{#if updatedTime}} {{updatedTime}} {{else}} {{createdTime}} {{/if}}</td> </tr>
     <tr><td colspan="2" id="desc_{{id}}">{{commentDescription}}</td> </tr>
     <tr>
     <td> <a href="#" onclick="showCommentbox({{id}}, '{{creator}}')" >edit</a> </td>
@@ -85,7 +92,7 @@
     function showCommentbox(id, creator){
         document.getElementById ("commentpopup").value = $("#desc_"+id).text();
         $("#comment_id").val(id);
-        $("#owner").val(creator);
+        $("#reporter").val(creator);
 
         $("#windowTitleDialog").modal ("show");
     }

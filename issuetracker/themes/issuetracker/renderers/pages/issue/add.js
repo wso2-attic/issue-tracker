@@ -1,13 +1,13 @@
 var render = function (theme, data, meta, require) {
-    theme('issue', {
+    theme('issue_', {
         title: [
 			{ partial:'title', context: data.title}
 		],
-		nav: [
-			{ partial:'issueNav', context: data.nav}
+        header: [
+			{ partial:'header', context: data.header}
 		],
 		body: [
-			{ partial:'addIssue', context: data.body}
+			{ partial:'addIssueBody', context: data.body}
 		]
     });
 };
