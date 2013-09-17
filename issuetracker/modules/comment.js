@@ -3,8 +3,8 @@ var log = new Log();
 
 //http://10.100.0.120:9768/issuetracker-1.0.0/services/tenant/wso2.com/issue/IS-2/comment
 var addComment = function (issueKey, jsonString){
+    log.info("::::::::::::::::::::");
     var LOGGED_IN_USER = session.get("LOGGED_IN_USER");
-    log.info("::::::::::::::::::::"+LOGGED_IN_USER);
 
     var jsonObj = parse(jsonString);
 
@@ -16,11 +16,11 @@ var addComment = function (issueKey, jsonString){
     jsonString = stringify(proj);
 
 
-     var domain=session.get("DOMAIN");
 
-    log.info("****************AA " + jsonString);
+
+    log.info("**************** " + jsonString);
     var result;
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/issue/"+issueKey+"/comment";
+    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/issue/"+issueKey+"/comment";
                             log.info(url);
     log.info(jsonString);
     result = post(url, jsonString, {
@@ -46,11 +46,11 @@ var editComment = function (issueKey, commentId, jsonString){
 
     jsonString = stringify(proj);
 
-    var domain=session.get("DOMAIN");
+
     log.info('jsonString '+jsonString);
     var result;
 
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/issue/"+issueKey+"/comment/"+commentId;
+    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/issue/"+issueKey+"/comment/"+commentId;
 
     result = post(url, jsonString, {
         "Content-Type": "application/json"
@@ -64,10 +64,10 @@ var editComment = function (issueKey, commentId, jsonString){
 
 //http://10.100.0.120:9768/issuetracker-1.0.0/services/tenant/wso2.com/issue/IS-2/comment/7
 var deleteComment = function (issueKey, commentId){
-    var domain=session.get("DOMAIN");
+
     log.info("****************");
     var result;
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/issue/"+issueKey+"/comment/"+commentId;
+    var url  = "http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/issue/"+issueKey+"/comment/"+commentId;
     log.info(url);
     var data = {};
     var headers = {};

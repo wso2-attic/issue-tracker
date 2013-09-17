@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.bean.Issue;
+import org.wso2.carbon.issue.tracker.bean.IssueResponse;
 import org.wso2.carbon.issue.tracker.dao.IssueDAO;
 import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
+import org.apache.cxf.common.util.StringUtils;
 
 public class IssueDAOImpl implements IssueDAO {
 	Logger logger = Logger.getLogger(IssueDAOImpl.class);
@@ -36,35 +37,43 @@ public class IssueDAOImpl implements IssueDAO {
      * {@inheritDoc}
      */
     @Override
-	public String add(Issue issue) throws SQLException {
+	public String add(Issue issue, String projectKey, int tenantId) throws SQLException {
 		String issueKey = null;
 		PreparedStatement st = null;
 		Connection dbConnection = null;
 		try {
 			dbConnection = DBConfiguration.getDBConnection();
 
-            String query = "INSERT INTO ISSUE(PROJECT_ID,SUMMARY,DESCRIPTION,"
+            /*String query = "INSERT INTO ISSUE(PROJECT_ID,SUMMARY,DESCRIPTION,"
                     + "ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,"
                     + "CREATED_TIME,SEVERITY)"
-                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                    + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";   */
+
+            String query = "INSERT INTO ISSUE(PROJECT_ID,SUMMARY,DESCRIPTION,"
+                    + "ISSUE_TYPE,PRIORITY,OWNER,STATUS,ASSIGNEE,VERSION_ID,"
+                    + "CREATED_TIME,SEVERITY) SELECT p.PROJECT_ID,?,?,?,?,?,?,?,?,?,? FROM PROJECT p WHERE p.PROJECT_KEY=? AND p.ORGANIZATION_ID=?";
+
+
 
             st = (PreparedStatement) dbConnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-            st.setInt(1, issue.getProjectId());
-			st.setString(2, issue.getSummary());
-			st.setString(3, issue.getDescription());
-			st.setString(4, issue.getType());
-			st.setString(5, issue.getPriority());
-			st.setString(6, issue.getReporter());
-			st.setString(7, issue.getStatus());
-			st.setString(8, issue.getAssignee());
-            if(issue.getVersion()> 0)
-			    st.setInt(9, issue.getVersion());
+			st.setString(1, issue.getSummary());
+			st.setString(2, issue.getDescription());
+			st.setString(3, issue.getType());
+			st.setString(4, issue.getPriority());
+			st.setString(5, issue.getReporter());
+			st.setString(6, issue.getStatus());
+			st.setString(7, issue.getAssignee());
+            if(issue.getVersionId()> 0)
+			    st.setInt(8, issue.getVersionId());
             else
-                st.setNull(9, Types.INTEGER);
+                st.setNull(8, Types.INTEGER);
 
-			st.setTimestamp(10, getCurrentTimeStamp());
-			st.setString(11, issue.getSeverity());
+
+			st.setTimestamp(9, getCurrentTimeStamp());
+			st.setString(10, issue.getSeverity());
+            st.setString(11, projectKey);
+            st.setInt(12, tenantId);
 
             int id = st.executeUpdate();
 
@@ -74,15 +83,17 @@ public class IssueDAOImpl implements IssueDAO {
 
             st.close();
 
-            String query2 = "UPDATE ISSUE SET PKEY = ? WHERE ISSUE_ID = ?";
-            st = (PreparedStatement) dbConnection.prepareStatement(query2);
+            if(id>0){
+                String query2 = "UPDATE ISSUE SET PKEY = ? WHERE ISSUE_ID = ?";
+                st = (PreparedStatement) dbConnection.prepareStatement(query2);
 
-            issueKey = issue.getProjectName() + "-" + id;
+                issueKey = projectKey + "-" + id;
 
-            st.setString(1, issueKey);
-            st.setInt(2, id);
+                st.setString(1, issueKey);
+                st.setInt(2, id);
 
-            st.executeUpdate();
+                st.executeUpdate();
+            }
 
 		} catch (SQLException e) {
 			logger.info("Error occurred while creating the issue " + issue.getId()
@@ -116,8 +127,8 @@ public class IssueDAOImpl implements IssueDAO {
             st.setString(3, issue.getPriority());
             st.setString(4, issue.getStatus());
             st.setString(5, issue.getAssignee());
-            if(issue.getVersion() > 0)
-                st.setInt(6, issue.getVersion());
+            if(issue.getVersionId() > 0)
+                st.setInt(6, issue.getVersionId());
             else
                 st.setNull(6, Types.INTEGER);
 
@@ -184,24 +195,26 @@ public class IssueDAOImpl implements IssueDAO {
      * {@inheritDoc}
      */
     @Override
-	public Issue getIssueByKey(String uniqueKey) throws SQLException {
+	public IssueResponse getIssueByKey(String uniqueKey) throws SQLException {
 
 		PreparedStatement st = null;
 		Connection dbConnection = null;
-		Issue issue = null;
+		IssueResponse issueResponse = null;
 		try {
 			dbConnection = DBConfiguration.getDBConnection();
 
 			st = (PreparedStatement) dbConnection
-					.prepareStatement("SELECT p.PROJECT_NAME, i.ISSUE_ID, i.PKEY, i.PROJECT_ID, i.SUMMARY, i.DESCRIPTION, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.VERSION_ID, i.CREATED_TIME, i.UPDATED_TIME, i.SEVERITY FROM ISSUE i INNER JOIN PROJECT p ON (i.PROJECT_ID=p.PROJECT_ID)  WHERE PKEY = ?");
+					.prepareStatement("SELECT p.PROJECT_KEY, p.PROJECT_NAME, i.ISSUE_ID, i.PKEY, i.PROJECT_ID, i.SUMMARY, i.DESCRIPTION, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.VERSION_ID, i.CREATED_TIME, i.UPDATED_TIME, i.SEVERITY FROM ISSUE i INNER JOIN PROJECT p ON (i.PROJECT_ID=p.PROJECT_ID)  WHERE PKEY = ?");
 			st.setMaxRows(1);
 			st.setString(1, uniqueKey);
 
 			ResultSet rs = st.executeQuery();
 			if (rs.first()) {
 
-				issue = new Issue();
-                issue.setProjectName(rs.getString("PROJECT_NAME"));
+                Issue issue = new Issue();
+                issueResponse.setProjectKey(rs.getString("PROJECT_KEY"));
+                issueResponse.setProjectName(rs.getString("PROJECT_NAME"));
+
 				issue.setId(rs.getInt("ISSUE_ID"));
 				issue.setKey(rs.getString("PKEY"));
 				issue.setProjectId(rs.getInt("PROJECT_ID"));
@@ -212,7 +225,7 @@ public class IssueDAOImpl implements IssueDAO {
 				issue.setReporter(rs.getString("OWNER"));
 				issue.setStatus(rs.getString("STATUS"));
 				issue.setAssignee(rs.getString("ASSIGNEE"));
-				issue.setVersion(rs.getInt("VERSION_ID"));
+				issue.setVersionId(rs.getInt("VERSION_ID"));
 				issue.setSeverity(rs.getString("SEVERITY"));
 
 				Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
@@ -226,6 +239,7 @@ public class IssueDAOImpl implements IssueDAO {
 						.format(updatedTime);
 				    issue.setUpdatedTime(updatedTimeStr);
                 }
+                issueResponse.setIssue(issue);
 
 			}
 
@@ -237,7 +251,7 @@ public class IssueDAOImpl implements IssueDAO {
 			closeStatement(st, dbConnection);
 
 		}
-		return issue;
+		return issueResponse;
 	}
 
     /**
@@ -271,7 +285,7 @@ public class IssueDAOImpl implements IssueDAO {
 				issue.setPriority(rs.getString("OWNER"));
 				issue.setStatus(rs.getString("STATUS"));
 				issue.setAssignee(rs.getString("ASSIGNEE"));
-				issue.setVersion(rs.getInt("VERSION_ID"));
+				issue.setVersionId(rs.getInt("VERSION_ID"));
 				issue.setSeverity(rs.getString("SEVERITY"));
 
 				Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
@@ -301,20 +315,26 @@ public class IssueDAOImpl implements IssueDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<Issue> getAllIssuesOfProject(int projectId) throws SQLException {
+    public List<IssueResponse> getAllIssuesOfProject(String projectKey, int tenantId) throws SQLException {
         PreparedStatement st = null;
         Connection dbConnection = null;
-        List<Issue> issueList = new ArrayList<Issue>();
+        List<IssueResponse> issueList = new ArrayList<IssueResponse>();
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
 
             st = (PreparedStatement) dbConnection
-                    .prepareStatement("SELECT v.VERSION, p.PROJECT_NAME, i.ISSUE_ID, i.PKEY, i.PROJECT_ID, i.SUMMARY, i.DESCRIPTION, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.VERSION_ID, i.CREATED_TIME, i.UPDATED_TIME, i.SEVERITY FROM ISSUE i INNER JOIN PROJECT p ON i.PROJECT_ID = p.PROJECT_ID INNER JOIN VERSION v ON i.VERSION_ID = v.VERSION_ID WHERE i.PROJECT_ID = ifnull(?, i.PROJECT_ID)");
-            if(projectId==0)
+                    .prepareStatement("SELECT v.VERSION, p.PROJECT_NAME, i.ISSUE_ID, i.PKEY, i.PROJECT_ID, i.SUMMARY, i.DESCRIPTION, i.ISSUE_TYPE, i.PRIORITY, " +
+                            "i.OWNER, i.STATUS, i.ASSIGNEE, i.VERSION_ID, i.CREATED_TIME, i.UPDATED_TIME, i.SEVERITY " +
+                            "FROM ISSUE i INNER JOIN PROJECT p ON i.PROJECT_ID = p.PROJECT_ID " +
+                            "LEFT OUTER JOIN VERSION v ON i.VERSION_ID = v.VERSION_ID " +
+                            "WHERE p.PROJECT_KEY = ifnull(?, p.PROJECT_KEY) AND p.ORGANIZATION_ID = ?");
+            if(StringUtils.isEmpty(projectKey))
                 st.setNull(1, Types.INTEGER);
             else
-                st.setInt(1, projectId);
+                st.setString(1, projectKey);
+
+            st.setInt(2, tenantId);
 
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -330,10 +350,13 @@ public class IssueDAOImpl implements IssueDAO {
                 issue.setReporter(rs.getString("OWNER"));
                 issue.setStatus(rs.getString("STATUS"));
                 issue.setAssignee(rs.getString("ASSIGNEE"));
-                issue.setVersion(rs.getInt("VERSION_ID"));
+                issue.setVersionId(rs.getInt("VERSION_ID"));
                 issue.setSeverity(rs.getString("SEVERITY"));
-                issue.setProjectName(rs.getString("PROJECT_NAME"));
-                issue.setVersionValue(rs.getString("VERSION"));
+
+                IssueResponse issueResponse = new IssueResponse();
+
+                issueResponse.setProjectName(rs.getString("PROJECT_NAME"));
+                issueResponse.setVersion(rs.getString("VERSION"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
                 String createdTimeStr = Constants.DATE_FORMAT
@@ -346,7 +369,7 @@ public class IssueDAOImpl implements IssueDAO {
                     issue.setUpdatedTime(updatedTimeStr);
                 }
 
-                issueList.add(issue);
+                issueList.add(issueResponse);
             }
 
         } catch (SQLException e) {

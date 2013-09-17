@@ -1,5 +1,6 @@
 <%
-// collection names
-var ISSUE_TRACKER_URL = "url";
-
+    var ISSUE_TRACKER_URL = "url";
+    var LOGGED_IN_USER = "LOGGED_IN_USER";
+    var DOMAIN = "DOMAIN";
+    var IS_LOGGED = "IS_LOGGED";
 %>

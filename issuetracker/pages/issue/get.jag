@@ -4,16 +4,13 @@
     (function () {
         issue = require('/modules/issue.js'),
 
-        pkey = request.getParameter('pkey')
-        user = session.get("LOGGED_IN_USER");
+        pkey = request.getParameter('pkey');
 
         caramel.render({
             'title': 'Issue Tracker| Edit Issue',
-            'header' : {domain: session.get("DOMAIN"),
-            		          userName: session.get("LOGGED_IN_USER")},
             'body' : {
                             title: 'Edit Issue',
-                            data : issue.getIssueById(pkey, user).data.issueResponse
+                            data : issue.getIssueById(pkey).data.issueResponse
                         }
         });
     }());

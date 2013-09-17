@@ -1,12 +1,11 @@
 <%
 var caramel;
 project = require('/modules/project.js');
+ session.put("LOGGED_IN_USER", "NIHANTH");
 
 	caramel = require('caramel');
 	caramel.render({
 		'title': {text :'Issue Tracker'},
-		'header' : {domain: session.get("DOMAIN"),
-        		          userName: session.get("LOGGED_IN_USER")},
 		'body' : {
                     title: 'Projects',
                     data: project.getProject().data.project

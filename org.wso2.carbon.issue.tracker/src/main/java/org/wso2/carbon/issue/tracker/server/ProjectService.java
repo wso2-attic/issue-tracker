@@ -24,9 +24,9 @@ public interface ProjectService {
     public Response getAllProject(@PathParam("tenantDomain") String tenantDomain);
 
     @GET
-    @Path("/{projectId}")
+    @Path("/{projectKey}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId);
+    public Response getProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey);
 
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -34,26 +34,26 @@ public interface ProjectService {
     public Response addProject(@PathParam("tenantDomain") String tenantDomain, Project project);
 
     @POST
-    @Path("/{projectId}")
+    @Path("/{projectKey}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response editProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Project project);
+    public Response editProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey, Project project);
 
     @GET
-    @Path("/{projectId}/version")
+    @Path("/{projectKey}/version")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getAllVersionsOfProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId);
+    public Response getAllVersionsOfProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey);
 
     @GET
-    @Path("/{projectId}/issue")
+    @Path("/{projectKey}/issue")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getAllIssuesOfProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId);
+    public Response getAllIssuesOfProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey);
 
     @POST
-    @Path("/{projectId}/issue")
+    @Path("/{projectKey}/issue")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response addNewIssueToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectId") int projectId, Issue issue);
+    public Response addNewIssueToProject(@PathParam("tenantDomain") String tenantDomain, @PathParam("projectKey") String projectKey, Issue issue);
 
     @POST
     @Path("/{projectKey}/version")

@@ -35,10 +35,10 @@ public class VersionDAOImpl implements VersionDAO{
      * {@inheritDoc}
      */
     @Override
-    public boolean addVersionForProject(Version version, String projectKey) throws SQLException {
+    public boolean addVersionForProject(Version version, String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = DBConfiguration.getDBConnection();
         PreparedStatement preparedStatement = null;
-        String insertTableSQL = "INSERT INTO VERSION (VERSION, PROJECT_ID) SELECT ?, p.PROJECT_ID FROM PROJECT p WHERE p.PROJECT_KEY=?";
+        String insertTableSQL = "INSERT INTO VERSION (VERSION, PROJECT_ID) SELECT ?, p.PROJECT_ID FROM PROJECT p WHERE p.PROJECT_KEY=? AND p.ORGANIZATION_ID=?";
 
 
         // INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) SELECT ?, ?, ?, ?, ISSUE_ID FROM ISSUE WHERE PKEY = ?
@@ -46,13 +46,14 @@ public class VersionDAOImpl implements VersionDAO{
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
-            preparedStatement.setString(1, version.getProjectVersion());
+            preparedStatement.setString(1, version.getVersion());
             preparedStatement.setString(2, projectKey);
+            preparedStatement.setInt(3, tenantId);
 
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Error while adding version to DB, version: "+ version.getProjectVersion();
+            String msg = "Error while adding version to DB, version: "+ version.getVersion();
             log.error(msg, e);
             throw e;
         } finally {
@@ -70,32 +71,37 @@ public class VersionDAOImpl implements VersionDAO{
      * {@inheritDoc}
      */
     @Override
-    public List<Version> getVersionListOfProjectByProjectId(int projectId) throws SQLException {
+    public List<Version> getVersionListOfProjectByProjectKey(String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = null;
         dbConnection = DBConfiguration.getDBConnection();
-        String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projectId;
-        Statement stmt = null;
+        //String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projectId;
+        String sql = "SELECT v.VERSION_ID, v.VERSION, v.PROJECT_ID FROM VERSION v INNER JOIN PROJECT p ON v.PROJECT_ID = p.PROJECT_ID WHERE p.PROJECT_KEY=? AND p.ORGANIZATION_ID=?";
+
+        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         List<Version> versionList = new ArrayList<Version>();
         try {
-            stmt = dbConnection.createStatement();
-            rs = stmt.executeQuery(sql);
+            preparedStatement = dbConnection.prepareStatement(sql);
+            preparedStatement.setString(1, projectKey);
+            preparedStatement.setInt(2, tenantId);
+
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Version version = new Version();
-                version.setProjectVersionId(rs.getInt("VERSION_ID"));
-                version.setProjectVersion(rs.getString("VERSION"));
+                version.setId(rs.getInt("VERSION_ID"));
+                version.setVersion(rs.getString("VERSION"));
                 version.setProjectId(rs.getInt("PROJECT_ID"));
 
                 versionList.add(version);
             }
 
         } catch (SQLException e) {
-            String msg = "Error while getting versions from DB, project id: "+ projectId;
+            String msg = "Error while getting versions from DB, project key: "+ projectKey;
             log.error(msg, e);
             throw e;
         } finally {
-            if (stmt != null) {
-                stmt.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
             if (dbConnection != null) {
                 dbConnection.close();

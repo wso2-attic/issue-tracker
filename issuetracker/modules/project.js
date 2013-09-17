@@ -1,10 +1,25 @@
 var log = new Log();
+include('/jagg/jagg.jag');
+var url_prefix = context.get(ISSUE_TRACKER_URL)+context.get(DOMAIN)+"/project/";
 
+//http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/project            :: checked
+var getProjectsOfDomain = function () {
+    log.info("========================================================================================= getProjectsOfDomain " );
 
-var getProject = function () {
-    log.info(">>>>>>>>>>>>>>>..getProject");
+    log.info(">>>>>>>>>>>>>>>..getProject " );
+    var url  = url_prefix;
+    var data = {  };
+    var projects = get(url, {} ,"json");
+    log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<1 "+stringify(projects.data.project));
+    log.info("========================================================================================= getProjectsOfDomain " );
+
+    return projects.data.project;
+};
+
+var getAllProject = function () {
+    log.info(">>>>>>>>>>>>>>>..getAllProject");
     var domain=session.get("DOMAIN");
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project";
+    var url  = session.get(ISSUE_TRACKER_URL)+domain+"/project";
     var data = {  };
     var projects = get(url, {} ,"json");
     log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<1 "+projects);
@@ -13,40 +28,48 @@ var getProject = function () {
 };
 
 
-var getAllVersionOfProject1 = function ( projectId){
-    log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
-    var domain=session.get("DOMAIN");
 
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId+"/version";
+var getAllVersionOfProject1 = function ( projectKey){
+    log.info("========================================================================================= getAllVersionOfProject1 " );
+
+
+    var url  = url_prefix+projectKey+"/version";
     //var project = get(url, {} ,"application/json");
-    var project = get(url,"json");
-    log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 2"+project);
-    return project;
+    var project = get(url,{},"json");
+
+    log.info(stringify(project.data.version));
+
+
+    log.info("========================================================================================= getAllVersionOfProject1 " );
+
+    return project.data.version;
+
 
 }
 
-var getAllVersionOfProject = function ( projectId){
-    log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
-    var domain=session.get("DOMAIN");
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId+"/version";
+var getAllVersionOfProject = function ( projectKey){
+    log.info("========================================================================================= getAllVersionOfProject " );
+
+
+    var url  = url_prefix+projectKey+"/version";
     //var project = get(url, {} ,"application/json");
-    var project = get(url,"application/json");
-    log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< aa2 " +parse(project.data));
-    //log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< aa2 " +project.data.version);
-    //log.info(parse(project.data).version);
-    return parse(project.data);
+    var project = get(url,{},"json");
+    log.info(stringify(project.data.version));
+    log.info("========================================================================================= getAllVersionOfProject " );
+
+    return project.data.version;
 
 }
 
 
-//http://10.100.0.120:9768/issuetracker-1.0.0/services/tenant/"+domain+"/project/2/version
+//http://10.100.0.120:9768/issuetracker-1.0.0/services/tenant/wso2.com/project/2/version
 var addVersion = function (projectId, inputPara){
-    var domain=session.get("DOMAIN");
+
     log.info("**************** " +projectId);
     log.info(inputPara);
 
     var result;
-    var url = session.get("ISSUE_TRACKER_URL")+domain+'/project/'+projectId+'/version';
+    var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/project/'+projectId+'/version';
     result = post(url, inputPara, {
         "Content-Type": "application/json"
     }, 'json');
@@ -57,20 +80,21 @@ var addVersion = function (projectId, inputPara){
 }
 
 
+//  http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/project/"+projectKey;
+var getProjectByKey = function (projectKey) {
+    log.info("========================================================================================= getProjectByKey " );
 
-var getProjectById = function (projectId) {
-    log.info(">>>>>>>>>>>>>>>..getProjectById"+projectId);
-    var domain=session.get("DOMAIN");
-    var url  = session.get("ISSUE_TRACKER_URL")+domain+"/project/"+projectId;
+    var url  = url_prefix+projectKey;
     var project = get(url, {} ,"json");
-    log.info("project>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
-    return project;
+    log.info(stringify(project.data.project));
+    log.info("========================================================================================= getProjectByKey " );
+
+    return project.data.project;
 };
 
 var addProject = function (inputPara){
-    var domain=session.get("DOMAIN");
     var result;
-        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/"+domain+"/project';
+        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/project';
         result = post(url, inputPara, {
             "Content-Type": "application/json"
         }, 'json');
@@ -81,11 +105,11 @@ var addProject = function (inputPara){
 
 var editProject = function (inputPara, projectId){
     log.info(">>>>>>>>>>>>>>>..getProjectById " + projectId);
-    var domain=session.get("DOMAIN");
+
     log.info('inputPara '+inputPara);
     var result;
 
-        var url = session.get("ISSUE_TRACKER_URL")+domain+'/project/'+projectId;
+        var url = 'http://10.100.0.120:9765/issuetracker-1.0.0/services/tenant/wso2.com/project/'+projectId;
         result = post(url, inputPara, {
             "Content-Type": "application/json"
         }, 'json');

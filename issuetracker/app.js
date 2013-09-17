@@ -8,3 +8,5 @@ caramel.configs({
         return 'issuetracker';
     }
 });
+
+var configs = require('/tracker.json');

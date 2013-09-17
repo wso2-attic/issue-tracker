@@ -2,10 +2,10 @@
     <div class="form-container">
         <fieldset>
             <div class="input_row">
-                <label for="projectId" ><strong>Project</strong> <em>*</em></label>
-                <select id="projectId" class="select_list">
+                <label for="projectKey" ><strong>Project</strong> <em>*</em></label>
+                <select id="projectKey" class="select_list">
                 {{#each project}}
-                  <option value="{{id}}">{{name}}</option>
+                  <option value="{{key}}">{{name}}</option>
                 {{/each}}
                 </select>
 
@@ -79,7 +79,7 @@
         <div class="buttonrow">
             <input type="button" value="Add Issue" class="btn main" id='saveMe' />
 
-            <a href="#" onclick="location.href='index.jag?'" >Cancel</a>
+            <a href="/issuetracker/index.jag">Cancel</a>
         </div>
     <input type="hidden" name="userName"  id="userName" value='<%= session.get("LOGGED_IN_USER") %>'/>
 
@@ -87,11 +87,11 @@
 
 
 
-<script src="http://static.scripting.com/github/bootstrap2/js/jquery.js"></script>
+<script src="{{url "/themes/issuetracker/js/jquery-1.8.3.min.js"}}"></script>
 
 <script type="text/javascript">
 
-            $(document).ready(function() {
+           $(document).ready(function() {
 
                 $('#version').find('option').remove();
 
@@ -99,14 +99,15 @@
                                 type: 'GET',
                                 url: "getProjectVersion.jag",
                                 data: {
-                                    pid:$("#projectId").attr('value')
+                                    projectKey:$("#projectKey").attr('value')
                                 },
                                 success: function(result){
-                                   $.each(result.version, function(i, obj) {
+                                   $.each(result, function(i, obj) {
+                                        alert(obj.version);
                                        $('#version')
                                            .append($("<option></option>")
-                                               .attr("value",obj.projectVersionId)
-                                               .text(obj.projectVersion));
+                                               .attr("value",obj.id)
+                                               .text(obj.version));
 
                                     });
                                 },

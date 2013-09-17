@@ -23,10 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Issue {
 
     private int id;
-    private int projectId;
-    private String projectName;
     private String key;
-    private String title;
+    private int projectId;
     private String summary;
     private String description;
     private String type;
@@ -34,11 +32,13 @@ public class Issue {
     private String reporter;
     private String status;
     private String assignee;
-    private Integer version;
+    private int versionId;
     private String createdTime;
     private String updatedTime;
     private String severity;
-    private String versionValue;
+
+
+
 
     public int getId() {
         return id;
@@ -62,14 +62,6 @@ public class Issue {
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getSummary() {
@@ -120,12 +112,12 @@ public class Issue {
         this.assignee = assignee;
     }
 
-    public Integer getVersion() {
-        return version;
+    public int getVersionId() {
+        return versionId;
     }
 
-    public void setVersion(Integer version) {
-        this.version = version;
+    public void setVersionId(int versionId) {
+        this.versionId = versionId;
     }
 
     public String getCreatedTime() {
@@ -158,21 +150,5 @@ public class Issue {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getVersionValue() {
-        return versionValue;
-    }
-
-    public void setVersionValue(String versionValue) {
-        this.versionValue = versionValue;
     }
 }

@@ -5,13 +5,14 @@
     (function () {
          project = require('/modules/project.js'),
 
-         pid = request.getParameter('pid');
-         var result = project.getAllVersionOfProject1(pid);
-                              log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+result.data);
+         projectKey = request.getParameter('projectKey');
+         //var result = project.getAllVersionOfProject1(pid);
+         var result = project.getAllVersionOfProject1(projectKey);
 
+         log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+stringify(result));
 
-         print(result.data);
+         //result[0].id = Number(result[0].id);
+         print(result);
 
-        return result.data;
     }());
 %>

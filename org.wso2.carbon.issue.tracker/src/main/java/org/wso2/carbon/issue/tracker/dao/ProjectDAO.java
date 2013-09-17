@@ -48,11 +48,11 @@ public interface ProjectDAO {
     /**
      * Retrieves a Project specified by the id
      * 
-     * @param id
+     * @param key
      *            id of the project
      * @return a {@link Project} or null
      */
-    public Project get(int id) throws SQLException;
+    public Project get(String key, int tenantId) throws SQLException;
 
     /**
      * Returns projects owned by a particular organization (specified by

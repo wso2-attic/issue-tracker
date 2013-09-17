@@ -1,17 +1,12 @@
 package org.wso2.carbon.issue.tracker.dao.impl;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.issue.tracker.bean.*;
 import org.wso2.carbon.issue.tracker.dao.SearchDAO;
 import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,21 +26,20 @@ public class SearchDAOImpl implements SearchDAO{
         List <SearchResponse> resultList = new ArrayList<SearchResponse>();
 
 
-        String selectSQL ="SELECT p.PROJECT_ID, p.PROJECT_NAME, v.VERSION, i.PKEY, i.SUMMARY, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.SEVERITY FROM ISSUE i " +
+        String selectSQL ="SELECT p.PROJECT_KEY, p.PROJECT_ID, p.PROJECT_NAME, v.VERSION, i.PKEY, i.SUMMARY, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.SEVERITY FROM ISSUE i " +
                                 "INNER JOIN PROJECT p " +
                                 "ON p.PROJECT_ID = i.PROJECT_ID " +
                                 "LEFT OUTER JOIN VERSION v " +
                                 "ON p.PROJECT_ID = v.PROJECT_ID AND i.VERSION_ID = v.VERSION_ID "  +
-                                    "WHERE LOWER(p.PROJECT_NAME) = ifnull(?, LOWER(p.PROJECT_NAME)) " +
+                                    "WHERE LOWER(p.PROJECT_NAME) LIKE ifnull(?, LOWER(p.PROJECT_NAME)) " +
                                            "AND LOWER(i.STATUS) = ifnull(?, LOWER(i.STATUS)) " +
-                                           "AND LOWER(i.OWNER) = ifnull(?, LOWER(i.OWNER)) " +
-                                           "AND LOWER(i.ASSIGNEE) = ifnull(?, LOWER(i.ASSIGNEE)) " +
+                                           "AND LOWER(i.OWNER) LIKE ifnull(?, LOWER(i.OWNER)) " +
+                                           "AND LOWER(i.ASSIGNEE) LIKE ifnull(?, LOWER(i.ASSIGNEE)) " +
                                            "AND LOWER(i.ISSUE_TYPE) = ifnull(?, LOWER(i.ISSUE_TYPE)) " +
                                            "AND LOWER(i.PRIORITY) = ifnull(?, LOWER(i.PRIORITY)) " +
                                            "AND LOWER(i.SEVERITY) = ifnull(?, LOWER(i.SEVERITY)) " +
                                            "AND p.ORGANIZATION_ID = ? " +
                                     "ORDER BY p.PROJECT_ID, v.VERSION_id, i.ISSUE_ID ASC";
-
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
@@ -65,10 +59,23 @@ public class SearchDAOImpl implements SearchDAO{
             else if(searchType == Constants.BY_OWNER)
                 owner = searchValue;
 
-            preparedStatement.setString(1, projectName);
+            if(projectName!=null && !projectName.equals(""))
+                preparedStatement.setString(1, "%"+projectName+"%");
+            else
+                preparedStatement.setNull(1, Types.VARCHAR);
+
             preparedStatement.setString(2, searchBean.getIssueStatus());
-            preparedStatement.setString(3, owner);
-            preparedStatement.setString(4, assignee);
+
+            if(owner!=null && !owner.equals(""))
+                preparedStatement.setString(3, "%"+owner+"%");
+            else
+                preparedStatement.setNull(3, Types.VARCHAR);
+
+            if(assignee!=null && !assignee.equals(""))
+                preparedStatement.setString(4, "%"+assignee+"%");
+            else
+                preparedStatement.setNull(4, Types.VARCHAR);
+
             preparedStatement.setString(5, searchBean.getIssueType());
             preparedStatement.setString(6, searchBean.getPriority());
             preparedStatement.setString(7, searchBean.getSeverity());
@@ -79,7 +86,8 @@ public class SearchDAOImpl implements SearchDAO{
 
             while (rs.next()) {
                 SearchResponse response = new SearchResponse();
-                response.setPkey(rs.getString("PKEY"));
+                response.setProjectKey(rs.getString("PROJECT_KEY"));
+                response.setIssuePkey(rs.getString("PKEY"));
                 response.setSummary(rs.getString("SUMMARY"));
                 response.setIssueType(rs.getString("ISSUE_TYPE"));
                 response.setPriority(rs.getString("PRIORITY"));
@@ -122,7 +130,7 @@ public class SearchDAOImpl implements SearchDAO{
         PreparedStatement preparedStatement = null;
         List <SearchResponse> resultList = new ArrayList<SearchResponse>();
 
-        String selectSQL = "SELECT p.PROJECT_ID, p.PROJECT_NAME, v.VERSION, i.PKEY, i.SUMMARY, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.SEVERITY FROM ISSUE i " +
+        String selectSQL = "SELECT p.PROJECT_KEY, p.PROJECT_ID, p.PROJECT_NAME, v.VERSION, i.PKEY, i.SUMMARY, i.ISSUE_TYPE, i.PRIORITY, i.OWNER, i.STATUS, i.ASSIGNEE, i.SEVERITY FROM ISSUE i " +
                             "INNER JOIN PROJECT p " +
                             "ON p.PROJECT_ID = i.PROJECT_ID " +
                             "LEFT OUTER JOIN VERSION v " +
@@ -155,7 +163,7 @@ public class SearchDAOImpl implements SearchDAO{
 
             while (rs.next()) {
                 SearchResponse response = new SearchResponse();
-                response.setPkey(rs.getString("PKEY"));
+                response.setIssuePkey(rs.getString("PKEY"));
                 response.setSummary(rs.getString("SUMMARY"));
                 response.setIssueType(rs.getString("ISSUE_TYPE"));
                 response.setPriority(rs.getString("PRIORITY"));
@@ -167,6 +175,7 @@ public class SearchDAOImpl implements SearchDAO{
                 response.setVersion(rs.getString("VERSION"));
                 response.setProjectId(rs.getInt("PROJECT_ID"));
                 response.setProjectName(rs.getString("PROJECT_NAME"));
+                response.setProjectKey(rs.getString("PROJECT_KEY"));
                 resultList.add(response);
 
             }

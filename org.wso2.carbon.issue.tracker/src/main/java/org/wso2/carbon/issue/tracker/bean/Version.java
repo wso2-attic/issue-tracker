@@ -23,24 +23,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Version {
 
-    private int projectVersionId;
-    private String projectVersion;
+    private int id;
+    private String version;
     private int projectId;
 
-    public int getProjectVersionId() {
-        return projectVersionId;
+    public int getId() {
+        return id;
     }
 
-    public void setProjectVersionId(int projectVersionId) {
-        this.projectVersionId = projectVersionId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setProjectVersion(String projectVersion) {
-        this.projectVersion = projectVersion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public int getProjectId() {
@@ -58,14 +58,14 @@ public class Version {
 
         Version version = (Version) o;
 
-        if (projectVersionId != version.projectVersionId) return false;
-        if (projectVersionId != version.projectVersionId) return false;
+        if (id != version.id) return false;
+        if (id != version.id) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return projectVersionId;
+        return id;
     }
 }

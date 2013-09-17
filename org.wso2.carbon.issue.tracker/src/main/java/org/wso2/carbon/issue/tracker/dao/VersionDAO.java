@@ -29,8 +29,8 @@ import java.util.List;
  */
 public interface VersionDAO {
 
-    public boolean addVersionForProject(Version version, String projectKey) throws SQLException;
-    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException;
+    public boolean addVersionForProject(Version version, String projectKey, int tenantId) throws SQLException;
+    public List<Version> getVersionListOfProjectByProjectKey(String projectKey, int tenantId) throws IssueTrackerException, SQLException;
 
 
 }

@@ -68,12 +68,12 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.issue.tracker.common</artifactId>
-	    <version>${project.version}</version>
+	        <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.scriptengine</artifactId>
-	    <version>0.9.0.ALPHA3-wso2v6</version>
+	        <version>0.9.0.ALPHA3-wso2v6</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -84,6 +84,18 @@
             <groupId>rhino.wso2</groupId>
             <artifactId>js</artifactId>
 	    <version>1.7.0.R4-wso2v1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.governance.api</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
     </dependencies>

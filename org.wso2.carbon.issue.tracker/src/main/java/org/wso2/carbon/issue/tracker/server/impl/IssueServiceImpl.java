@@ -56,19 +56,17 @@ public class IssueServiceImpl implements IssueService {
                                 "invalid organization id"));
             }
 
-            Issue issue = issueDAO.getIssueByKey(uniqueKey);
+            IssueResponse issueResponse = issueDAO.getIssueByKey(uniqueKey);
 
-            if(issue!=null)
-                comments = commentDAO.getCommentsForIssue(issue.getId());     // get all comments related to given issue
+            if(issueResponse!=null)
+                comments = commentDAO.getCommentsForIssue(issueResponse.getIssue().getId());     // get all comments related to given issue
 
             if(comments.size()==1){
                 comments.add(new Comment());
             }
 
-            IssueResponse response = new IssueResponse();
-            response.setIssue(issue);
-            response.setComments(comments);
-            return Response.ok().entity(response).type(MediaType.APPLICATION_JSON_TYPE).build();
+            issueResponse.setComments(comments);
+            return Response.ok().entity(issueResponse).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             String msg = "Error while get comments for issue";
             log.error(msg, e);
@@ -312,6 +310,7 @@ public class IssueServiceImpl implements IssueService {
      */
     @Override
     public Response searchIssue(String tenantDomain, SearchBean searchBean) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         SearchDAO searchDAO = DAODelegate.getSerarchInstance();
         List<SearchResponse> list = null;
 

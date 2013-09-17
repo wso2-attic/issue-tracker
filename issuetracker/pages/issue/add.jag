@@ -1,14 +1,26 @@
 <%
+var caramel;
+
+(function () {
+    var login = require('/modules/login.js');
+    var log = new Log();
+    if(!login.isLogged()){
+        return;
+    }
+
     project = require('/modules/project.js');
-    var caramel;
 	caramel = require('caramel');
+
+    include('/jagg/jagg.jag');
+
+	userName = context.get(LOGGED_IN_USER);
+	domain = context.get(DOMAIN);
+
 	caramel.render({
-		'title': {text :'Issue Tracker| Add Issue'},
-		'header' : {domain: session.get("DOMAIN"),
-		          userName: session.get("LOGGED_IN_USER")},
-		'body' : {
-                    title: 'Add Issue',
-                    project: project.getProject().data.project
-                 }
+		title  : {text : 'Issue Tracker| Add Issue'},
+		header : { domain : domain, userName : userName},
+		body   : {title: 'Add Issue', project: project.getProjectsOfDomain()}
 	});
+
+}());
 %>

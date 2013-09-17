@@ -51,19 +51,14 @@ public class ProjectDAOImpl implements ProjectDAO {
             projectId = rs.getInt(1);
 
         } catch (SQLException e) {
-
             logger.error(e.getMessage(), e);
-
         } finally {
-
             if (preparedStatement != null) {
                 preparedStatement.close();
             }
-
             if (dbConnection != null) {
                 dbConnection.close();
             }
-
         }
         return projectId;
     }
@@ -75,7 +70,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public boolean update(Project project) throws SQLException {
 
         String updateTableSQL =
-                                "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ? WHERE PROJECT_ID = ? AND ORGANIZATION_ID = ?";
+                                "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ? WHERE PROJECT_KEY = ? AND ORGANIZATION_ID = ?";
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         int effectedRows = -1;
@@ -86,7 +81,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             preparedStatement.setString(1, project.getName());
             preparedStatement.setString(2, project.getOwner());
             preparedStatement.setString(3, project.getDescription());
-            preparedStatement.setInt(4, project.getId());
+            preparedStatement.setString(4, project.getKey());
             preparedStatement.setInt(5, project.getOrganizationId());
 
             // execute update SQL stetement
@@ -116,10 +111,10 @@ public class ProjectDAOImpl implements ProjectDAO {
      * {@inheritDoc}
      */
     @Override
-    public Project get(int id) throws SQLException {
+    public Project get(String key, int tenantId) throws SQLException {
 
         String selectSQL =
-                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID FROM PROJECT WHERE PROJECT_ID = ?";
+                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID FROM PROJECT WHERE PROJECT_KEY = ? AND ORGANIZATION_ID=?" ;
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         Project project = null;
@@ -127,7 +122,9 @@ public class ProjectDAOImpl implements ProjectDAO {
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(selectSQL);
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, key);
+            preparedStatement.setInt(2, tenantId);
+
             preparedStatement.setMaxRows(1);
 
             // execute select SQL stetement
@@ -170,7 +167,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public List<Project> getProjectsByOrganizationId(int organizationId) throws SQLException {
 
         String selectSQL =
-                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID FROM PROJECT WHERE ORGANIZATION_ID = ?";
+                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID, PROJECT_KEY FROM PROJECT WHERE ORGANIZATION_ID = ?";
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         List<Project> projects = new ArrayList<Project>();
@@ -189,6 +186,7 @@ public class ProjectDAOImpl implements ProjectDAO {
                 project.setOwner(rs.getString("OWNER"));
                 project.setDescription(rs.getString("DESCRIPTION"));
                 project.setOrganizationId(rs.getInt("ORGANIZATION_ID"));
+                project.setKey(rs.getString("PROJECT_KEY"));
                 projects.add(project);
             }
 

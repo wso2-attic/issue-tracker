@@ -2,10 +2,10 @@
     <div class="form-container">
         <fieldset>
             <div class="input_row">
-                <label for="projectId" ><strong>Project</strong> <em>*</em></label>
-                <select id="projectId" disabled class="select_list">
+                <label for="projectKey" ><strong>Project</strong> <em>*</em></label>
+                <select id="projectKey" disabled class="select_list">
                   {{#each project}}
-                      <option value="{{id}}">{{name}}</option>
+                    <option value="{{key}}">{{name}}</option>
                   {{/each}}
                   </select>
             </div>
@@ -66,10 +66,10 @@
             <div class="input_row">
                 <label for="version" ><strong>Version</strong> <em>*</em></label>
                <select id='version' class="select_list">
-                                                                            {{#each version}}
-                                                                                <option value="{{projectVersionId}}">{{projectVersion}}</option>
-                                                                            {{/each}}
-                                                                            </select>
+                {{#each version}}
+                    <option value="{{id}}">{{version}}</option>
+                {{/each}}
+                </select>
 
             </div>
 
@@ -91,7 +91,7 @@
             {{#if isSameUser}}
                 <input type="button" value="Update Issue" class="btn main" id='editMe' />
             {{/if}}
-            <a href="#" onclick="location.href='index.jag?'" >Cancel</a>
+            <a href="/issuetracker/index.jag">Cancel</a>
         </div>
     <input type="hidden" name="userName"  id="userName" value='<%= session.get("LOGGED_IN_USER") %>'/>
 
@@ -101,8 +101,10 @@
 
 
 <script type="text/javascript">
+
+
          var type = document.getElementById('type');
-         var project = document.getElementById('projectId');
+         var project = document.getElementById('projectKey');
          var priority = document.getElementById('priority');
          var status = document.getElementById('status');
          var severity = document.getElementById('severity');
@@ -110,11 +112,11 @@
 
 
          type.value = "{{issue.type}}";
-         project.value = "{{issue.projectId}}";
+         project.value = "{{projectKey}}";
          priority.value = "{{issue.priority}}";
          status.value = "{{issue.status}}";
          severity.value = "{{issue.severity}}";
-         version.value = "{{issue.version}}";
+         version.value = "{{issue.versionId}}";
 </script>
 
 

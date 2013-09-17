@@ -1,21 +1,31 @@
 <%
 var caramel;
-    var log = new Log();
 
-issue = require('/modules/issue.js');
+(function () {
+    var login = require('/modules/login.js');
+    var log = new Log();
+    if(!login.isLogged()){
+        return;
+    }
+
+    issue = require('/modules/issue.js');
+	caramel = require('caramel');
+
+    include('/jagg/jagg.jag');
+
+	userName = context.get(LOGGED_IN_USER);
+	domain = context.get(DOMAIN);
+
     var searchType = request.getParameter('searchType'),
     searchValue = request.getParameter('searchValue');
-     log.info("++++++++++++++++++++++ " + searchValue);
-	caramel = require('caramel');
+
+
 	caramel.render({
-		'title': {text :'Issue Tracker'},
-		'header' : {domain: session.get("DOMAIN"),
-        		          userName: session.get("LOGGED_IN_USER")},
-		'body' : {
-                    title: 'Issues',
-                    data: issue.searchIssue(searchType, searchValue).data.searchResponse,
-                    type:searchType,
-                    value:searchValue
-                }
+		title  : {text :'Issue Tracker'},
+		header : { domain : domain, userName : userName},
+		body   : {title: 'Issue',  data: issue.searchIssue(searchType, searchValue)}
 	});
+
+}());
+
 %>

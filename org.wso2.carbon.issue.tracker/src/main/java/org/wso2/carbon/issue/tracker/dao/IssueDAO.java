@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.bean.Issue;
+import org.wso2.carbon.issue.tracker.bean.IssueResponse;
 
 /**
  * Defines the database operations for a {@link Issue}
@@ -18,7 +19,7 @@ public interface IssueDAO {
      * @return      Issue unique key
      * @throws SQLException
      */
-    public String add(Issue issue) throws SQLException;
+    public String add(Issue issue, String projectKey, int tenantId) throws SQLException;
 
     /**
      *
@@ -48,7 +49,7 @@ public interface IssueDAO {
      * @return
      * @throws SQLException
      */
-    public Issue getIssueByKey(String uniqueKey) throws SQLException;
+    public IssueResponse getIssueByKey(String uniqueKey) throws SQLException;
 
     /**
      *
@@ -60,10 +61,10 @@ public interface IssueDAO {
 
     /**
      *
-     * @param projectId
+     * @param projectKey
      * @return  {@link List<Issue>}
      * @throws SQLException
      */
-    public List<Issue> getAllIssuesOfProject(int projectId) throws SQLException;
+    public List<IssueResponse> getAllIssuesOfProject(String projectKey, int tenantId) throws SQLException;
 
 }

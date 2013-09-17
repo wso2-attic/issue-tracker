@@ -1,27 +1,42 @@
 <%
-    var caramel = require('caramel');
+var caramel;
+
+(function () {
+    var login = require('/modules/login.js');
     var log = new Log();
-    (function () {
-        issue = require('/modules/issue.js'),
-                project = require('/modules/project.js');
+    if(!login.isLogged()){
+        return;
+    }
 
-        var pkey = request.getParameter('id');
-        var pid = request.getParameter('pid');
-         var user = session.get("LOGGED_IN_USER");
-         var issue = issue.getIssueById(pkey).data.issueResponse.issue;
+    issue = require('/modules/issue.js'),
+    project = require('/modules/project.js');
+    var issuePkey = request.getParameter('issuePkey');
+    var projectKey = request.getParameter('projectKey');
+    var issueRes = issue.getIssueByKey(issuePkey).issue;
+	caramel = require('caramel');
 
-        caramel.render({
-            'title': 'Issue Tracker| Edit Issue',
-            'header' : {domain: session.get("DOMAIN"),
-                      userName: session.get("LOGGED_IN_USER")},
-            'body' : {
+    include('/jagg/jagg.jag');
+
+	userName = context.get(LOGGED_IN_USER);
+	domain = context.get(DOMAIN);
+
+
+caramel.render({
+            title: 'Issue Tracker| Edit Issue',
+            header : { domain : domain, userName : userName},
+            body : {
                             title: 'Edit Issue',
-                            project: project.getProject(pid).data.project,
-                            issue : issue,
-                            version : project.getAllVersionOfProject(pid).version,
-                            isSameUser : issue.reporter == user
+                            project: project.getProjectsOfDomain(),
+                            issue : issueRes,
+                            projectKey: issueRes.projectKey,
+                            version : project.getAllVersionOfProject(projectKey),
+                            isSameUser : issueRes.reporter == userName
                         }
         });
-    }());
+
+
+}());
 %>
+
+
 
