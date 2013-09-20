@@ -4,7 +4,7 @@ $(document).ready(function() {
     $("#projectKey").select2();
     $("#type").select2();
     $("#priority").select2();
-    $("#status").select2();
+    $("#issue_status").select2();
     $("#severity").select2();
 
     $('#version').html('');
