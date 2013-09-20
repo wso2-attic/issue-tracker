@@ -13,21 +13,15 @@ import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.TenantUtils;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBElement;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of {@link IssueService}
- *
  */
 public class IssueServiceImpl implements IssueService {
 
@@ -35,13 +29,14 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Get issues and comments for a given issue id
-     * @param tenantDomain      Tenant domain name
-     * @param uniqueKey         Unique key of issue which need to retrieve
-     * @return                  {@link Response}
+     *
+     * @param tenantDomain Tenant domain name
+     * @param uniqueKey    Unique key of issue which need to retrieve
+     * @return {@link Response}
      */
     @Override
     public Response getIssue(String tenantDomain, String uniqueKey) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Executing getIssue, uniqueKey: " + uniqueKey);
         }
         IssueDAO issueDAO = DAODelegate.getIssueInstance();
@@ -50,18 +45,18 @@ public class IssueServiceImpl implements IssueService {
         List<Comment> comments = null;
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
 
-            IssueResponse issueResponse = issueDAO.getIssueByKey(uniqueKey);
+            IssueResponse issueResponse = issueDAO.getIssueByKey(uniqueKey, tenantId);
 
-            if(issueResponse!=null)
-                comments = commentDAO.getCommentsForIssue(issueResponse.getIssue().getId());     // get all comments related to given issue
+            if (issueResponse != null)
+                comments = commentDAO.getCommentsForIssue(issueResponse.getIssue().getId(), tenantId);     // get all comments related to given issue
 
-            if(comments.size()==1){
+            if (comments.size() == 1) {
                 comments.add(new Comment());
             }
 
@@ -77,13 +72,14 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Edit issue details
-     * @param tenantDomain      Tenant domain name
-     * @param uniqueKey         Unique key of issue which need to retrieve
-     * @param issue             {@link Issue}
-     * @return                  {@link Response}
+     *
+     * @param tenantDomain Tenant domain name
+     * @param uniqueKey    Unique key of issue which need to retrieve
+     * @param issue        {@link Issue}
+     * @return {@link Response}
      */
     @Override
-    public Response editIssue(String tenantDomain, String  uniqueKey, Issue issue) {
+    public Response editIssue(String tenantDomain, String uniqueKey, Issue issue) {
 
         if (log.isDebugEnabled()) {
             log.debug("Executing editIssue, created by: " + issue.getReporter());
@@ -97,15 +93,15 @@ public class IssueServiceImpl implements IssueService {
             return Response.status(Response.Status.BAD_REQUEST).entity("Issue reporter cannot be empty!").build();
         }
 
-        if(StringUtils.isEmpty(issue.getType())){
+        if (StringUtils.isEmpty(issue.getType())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Issue Type cannot be empty!").build();
         }
 
-        if(StringUtils.isEmpty(issue.getPriority())){
+        if (StringUtils.isEmpty(issue.getPriority())) {
             issue.setPriority("NORMAL");
         }
 
-        if(StringUtils.isEmpty(issue.getStatus())){
+        if (StringUtils.isEmpty(issue.getStatus())) {
             issue.setStatus("OPEN");
         }
 
@@ -116,18 +112,18 @@ public class IssueServiceImpl implements IssueService {
         try {
 
             int tenantId = TenantUtils.getTenantId(tenantDomain);
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
 
-            boolean isInserted = issueDAO.update(issue);
+            boolean isInserted = issueDAO.update(issue, tenantId);
             responseBean.setSuccess(isInserted);
 
-            if (isInserted){
+            if (isInserted) {
                 return Response.ok().entity(responseBean).type(MediaType.APPLICATION_JSON).build();
-            } else{
+            } else {
                 responseBean.setMessage("Issue is not successfully updated.");
                 return Response.notModified().type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
             }
@@ -145,10 +141,11 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Add new comment to given issue
-     * @param tenantDomain  Tenant domain name
-     * @param uniqueKey     Comment's, issue id
-     * @param comment       {@link Comment}
-     * @return              {@link Response}, Returns HTTP/1.1 200 for successfully added comment else returns internal server error HTTP/1.1 500
+     *
+     * @param tenantDomain Tenant domain name
+     * @param uniqueKey    Comment's, issue id
+     * @param comment      {@link Comment}
+     * @return {@link Response}, Returns HTTP/1.1 200 for successfully added comment else returns internal server error HTTP/1.1 500
      */
     @Override
     public Response addNewCommentForIssue(String tenantDomain, String uniqueKey, Comment comment) {
@@ -156,7 +153,7 @@ public class IssueServiceImpl implements IssueService {
             log.debug("Executing addNewCommentForIssue, created by: " + comment.getCreator());
         }
 
-        if (StringUtils.isEmpty(comment.getCommentDescription())) {
+        if (StringUtils.isEmpty(comment.getDescription())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Comment cannot be empty").build();
         }
 
@@ -170,13 +167,13 @@ public class IssueServiceImpl implements IssueService {
         try {
 
             int tenantId = TenantUtils.getTenantId(tenantDomain);
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
-            boolean isInserted = commentDAO.addCommentForIssue(comment, uniqueKey);
-            if (isInserted){
+            boolean isInserted = commentDAO.addCommentForIssue(comment, uniqueKey, tenantId);
+            if (isInserted) {
                 responseBean.setSuccess(true);
                 return Response.ok().entity(responseBean).type(MediaType.APPLICATION_JSON).build();
             } else {
@@ -198,20 +195,21 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Edit comment to given issue
-     *  @param tenantDomain  Tenant domain name
-     * @param uniqueKey      Issue id of comment, which need to edit
-     * @param commentId      Comment id
-     * @param comment        {@link Comment}
-     * @return               {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
-     *                       returns internal server error HTTP/1.1 500
+     *
+     * @param tenantDomain Tenant domain name
+     * @param uniqueKey    Issue id of comment, which need to edit
+     * @param commentId    Comment id
+     * @param comment      {@link Comment}
+     * @return {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
+     *         returns internal server error HTTP/1.1 500
      */
     @Override
     public Response modifyCommentForIssue(String tenantDomain, String uniqueKey, int commentId, Comment comment) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Executing modifyCommentForIssue, CommentId: " + commentId);
         }
 
-        if (StringUtils.isEmpty(comment.getCommentDescription())) {
+        if (StringUtils.isEmpty(comment.getDescription())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Comment cannot be empty").build();
         }
 
@@ -228,15 +226,15 @@ public class IssueServiceImpl implements IssueService {
 
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
             comment.setId(commentId);
 
-            boolean isUpdated = commentDAO.editComment(comment, uniqueKey);
-            if(isUpdated){
+            boolean isUpdated = commentDAO.editComment(comment, uniqueKey, tenantId);
+            if (isUpdated) {
                 responseBean.setSuccess(true);
                 return Response.ok(responseBean).build();
             } else {
@@ -258,15 +256,16 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Deleted comment from DB
-     * @param tenantDomain      Tenant domain name
-     * @param uniqueKey         Issue id of comment, which need to delete
-     * @param commentId         Comment id of comment, which need to delete
-     * @return                  {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
-     *                          returns internal server error HTTP/1.1 500
+     *
+     * @param tenantDomain Tenant domain name
+     * @param uniqueKey    Issue id of comment, which need to delete
+     * @param commentId    Comment id of comment, which need to delete
+     * @return {@link Response}, Returns HTTP/1.1 200 for successfully edited comment else
+     *         returns internal server error HTTP/1.1 500
      */
     @Override
     public Response deleteComment(String tenantDomain, String uniqueKey, int commentId) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Executing deleteComment, commentID: " + commentId);
         }
 
@@ -277,17 +276,17 @@ public class IssueServiceImpl implements IssueService {
         CommentDAO commentDAO = DAODelegate.getCommentInstance();
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
             }
 
-            boolean result = commentDAO.deleteCommentByCommentId(uniqueKey, commentId);
+            boolean result = commentDAO.deleteCommentByCommentId(uniqueKey, commentId, tenantId);
             responseBean.setSuccess(result);
-            if(result){
-               return Response.ok().entity(responseBean).build();
-            } else{
+            if (result) {
+                return Response.ok().entity(responseBean).build();
+            } else {
                 responseBean.setMessage("Invalid credentials.");
                 return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(responseBean).build();
             }
@@ -304,13 +303,13 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * Search Issues of given project
-     * @param tenantDomain    Tenant domain name
-     * @param searchBean      {@link SearchBean}
+     *
+     * @param tenantDomain Tenant domain name
+     * @param searchBean   {@link SearchBean}
      * @return
      */
     @Override
     public Response searchIssue(String tenantDomain, SearchBean searchBean) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         SearchDAO searchDAO = DAODelegate.getSerarchInstance();
         List<SearchResponse> list = null;
 
@@ -319,19 +318,19 @@ public class IssueServiceImpl implements IssueService {
         String priority = searchBean.getPriority();
         String severity = searchBean.getSeverity();
 
-        if(StringUtils.isEmpty(status) || status.equals("-1"))
+        if (StringUtils.isEmpty(status) || status.equals("-1"))
             searchBean.setIssueStatus(null);
-        if(StringUtils.isEmpty(issueType) || issueType.equals("-1"))
+        if (StringUtils.isEmpty(issueType) || issueType.equals("-1"))
             searchBean.setIssueType(null);
-        if(StringUtils.isEmpty(priority) || priority.equals("-1"))
+        if (StringUtils.isEmpty(priority) || priority.equals("-1"))
             searchBean.setPriority(null);
-        if(StringUtils.isEmpty(severity) || severity.equals("-1"))
+        if (StringUtils.isEmpty(severity) || severity.equals("-1"))
             searchBean.setSeverity(null);
 
         try {
             int tenantId = TenantUtils.getTenantId(tenantDomain);
 
-            if (tenantId<=0) {
+            if (tenantId <= 0) {
                 throw new WebApplicationException(
                         new IllegalArgumentException(
                                 "invalid organization id"));
@@ -341,7 +340,7 @@ public class IssueServiceImpl implements IssueService {
 
             ResponseBean responseBean = new ResponseBean();
 
-            if(searchBean.getSearchType() == Constants.ALL_ISSUE){
+            if (searchBean.getSearchType() == Constants.ALL_ISSUE) {
                 responseBean.setSuccess(true);
                 list = searchDAO.searchIssueBySummaryContent(searchBean);
             } else {
@@ -353,7 +352,8 @@ public class IssueServiceImpl implements IssueService {
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
-        GenericEntity entity = new GenericEntity<List<SearchResponse>>(list){};
+        GenericEntity entity = new GenericEntity<List<SearchResponse>>(list) {
+        };
         return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 }

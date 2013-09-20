@@ -1,30 +1,25 @@
 <%
-    var caramel = require('caramel');
-    var log = new Log();
+var caramel = require('caramel');
+(function () {
+    var login = require('/modules/login.js');
+    if(!login.isLogged()){
+        return;
+    }
 
-    (function () {
-            issue = require('/modules/issue.js');
+    issue = require('/modules/issue.js');
 
-        var jsonobj = request.getParameter('jsonobj'),
-        projectId = request.getParameter('id'),
-        action = request.getParameter('action');
+    var jsonString = request.getParameter('jsonString'),
+    projectKey  = request.getParameter('projectKey'),
+    action      = request.getParameter('action');
 
+    var result;
+    if (action === 'addIssue') {
+        result = issue.addIssue(projectKey, jsonString);
+    } else if (action === 'editIssue') {
+        issueKey = request.getParameter('issueKey');
+        result = issue.editIssue(issueKey, jsonString);
+    }
+    print(stringify(result));
 
-         log.info('jsonobjaaa '+jsonobj);
-        var result;
-        if (action === 'addIssue') {
-            result = issue.addIssue(projectId, jsonobj);
-            log.info(">><<><>: " + stringify(result));
-            print(stringify(result));
-        } else if (action === 'editIssue') {
-            id = request.getParameter('projectId');
-            ukey = request.getParameter('ukey');
-
-                     log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+ukey);
-
-            result = issue.editIssue(ukey, jsonobj);
-            print(stringify(result));
-        }
-        return result;
-    }());
+}());
 %>

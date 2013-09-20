@@ -7,7 +7,7 @@
         <fieldset>
             <div class="input_row">
                 <label for="projectId" ><strong>Project</strong> </label>
-                {{data.issue.projectName}}
+                {{data.projectName}}
             </div>
 
             <div class="input_row">
@@ -60,10 +60,6 @@
 
 <hr>
 
-
-
-
-
 <div class="span12"><h3>Comments</h3></div>
 
 <table>
@@ -77,8 +73,8 @@
         {{/if}}
 
         comment - {{#if updatedTime}} {{updatedTime}} {{else}} {{createdTime}} {{/if}}</td> </tr>
-    <tr><td colspan="2" id="desc_{{id}}">{{commentDescription}}</td> </tr>
-    {{#if isowner}}
+    <tr><td colspan="2" id="desc_{{id}}">{{description}}</td> </tr>
+    {{#if isOwner}}
     <tr>
     <td> <a href="#" onclick="showCommentbox({{id}}, '{{creator}}')" >Edit</a> </td>
     <td><a href="#" onclick="deleteComment({{id}})">Delete</a></td>
@@ -105,58 +101,49 @@
 
 
 <div id="windowTitleDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
-				<div class="modal-header">
-					<a href="#" class="close" data-dismiss="modal">&times;</a>
-					<h3>Enter your comment.</h3>
-					</div>
-				<div class="modal-body">
-					<div class="divDialogElements">
-                           <textarea name="review-text" id="commentpopup" rows="4" cols="200" style="width: 500px; height: 100px;"></textarea>
-                           <input type="hidden" name="comment_id" id="comment_id" />
+    <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3>Enter your comment.</h3>
+    </div>
+    <div class="modal-body">
+        <div class="divDialogElements">
+           <textarea name="review-text" id="commentpopup" rows="4" cols="200" style="width: 500px; height: 100px;"></textarea>
+           <input type="hidden" name="comment_id" id="comment_id" />
 
-						</div>
-					</div>
-				<div class="modal-footer">
-					<a href="#" class="btn" onclick="closeDialog ();">Cancel</a>
-					<a href="#" class="btn btn-primary" onclick="okClicked ();" id="commentEdit">OK</a>
-					</div>
-				</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" onclick="closeDialog ();">Cancel</a>
+        <a href="#" class="btn btn-primary" onclick="okClicked ();" id="commentEdit">OK</a>
+    </div>
+</div>
 
 
-<script src="http://static.scripting.com/github/bootstrap2/js/jquery.js"></script>
-<script src="http://static.scripting.com/github/bootstrap2/js/bootstrap-modal.js"></script>
+<script src="{{url "/themes/issuetracker/js/jquery-1.8.3.min.js"}}"></script>
+<script src="{{url "/themes/issuetracker/js/bootstrap-modal.js"}}"></script>
 
 <script type="text/javascript">
-// {{url "/pages/comment/edit.jag"}}?key={{key}}&cid={{id}}
     function showCommentbox(id, creator){
         document.getElementById ("commentpopup").value = $("#desc_"+id).text();
         $("#comment_id").val(id);
         $("#reporter").val(creator);
-
         $("#windowTitleDialog").modal ("show");
     }
 
-            $(document).ready(function() {
+    $(document).ready(function() {
+        $("#windowTitleDialog").bind ('show', function () {});
+    });
 
-            $("#windowTitleDialog").bind ('show', function () {
-            });
+    function closeDialog () {
+        $('#windowTitleDialog').modal('hide');
+    };
 
-
-
-				});
-			function closeDialog () {
-				$('#windowTitleDialog').modal('hide');
-				};
-			function okClicked () {
-				//document.title = document.getElementById ("commentpopup").value;
-				var i = $("#comment_id").val();
-				//alert($("#desc_"+i).text());
-
-    var x  = $("#commentpopup").val();
-    $('#desc_'+i).text(x);
-
-				closeDialog ();
-				};
+    function okClicked () {
+        var commentId = $("#comment_id").val();
+        var popup  = $("#commentpopup").val();
+        $('#desc_'+commentId).text(popup);
+        closeDialog ();
+    };
 
 
 </script>

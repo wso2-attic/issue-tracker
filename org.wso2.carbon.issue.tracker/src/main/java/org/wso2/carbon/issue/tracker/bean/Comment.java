@@ -22,9 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Comment {
-
     private int id;
-    private String commentDescription;
+    private String description;
     private String createdTime;
     private String updatedTime;
     private String creator;
@@ -61,12 +60,12 @@ public class Comment {
         this.creator = creator;
     }
 
-    public String getCommentDescription() {
-        return commentDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCommentDescription(String commentDescription) {
-        this.commentDescription = commentDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

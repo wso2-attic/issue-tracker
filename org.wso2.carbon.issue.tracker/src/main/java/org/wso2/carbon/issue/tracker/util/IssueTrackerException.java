@@ -21,10 +21,10 @@ package org.wso2.carbon.issue.tracker.util;
 /**
  * Defines the Exceptions
  */
-public class IssueTrackerException extends Exception{
+public class IssueTrackerException extends Exception {
     private static final long serialVersionUID = 1L;
 
-	public IssueTrackerException(String msg) {
+    public IssueTrackerException(String msg) {
         super(msg);
     }
 

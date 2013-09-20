@@ -11,17 +11,15 @@ public class TenantUtils {
 
     /**
      * returns the tenant id given the tenant domain
-     * 
-     * @param tenantDomain
-     *            the tenant domain
+     *
+     * @param tenantDomain the tenant domain
      * @return the tenant id
-     * @throws IssueTrackerException
-     *             an error while accessing the user store.
+     * @throws IssueTrackerException an error while accessing the user store.
      */
     public static int getTenantId(String tenantDomain) throws UserStoreException {
         UserRealmService realmService =
-                                        (UserRealmService) PrivilegedCarbonContext.getCurrentContext()
-                                                                                  .getOSGiService(UserRealmService.class);
+                (UserRealmService) PrivilegedCarbonContext.getCurrentContext()
+                        .getOSGiService(UserRealmService.class);
 
         int tenantId = 0;
         try {

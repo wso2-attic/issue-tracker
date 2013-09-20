@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Version {
-
     private int id;
     private String version;
     private int projectId;

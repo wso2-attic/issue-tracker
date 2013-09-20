@@ -51,22 +51,4 @@ public class IssueTrackerCommonServiceComponent {
             log.debug("IssueTracker common bundle is deactivated");
         }
     }
-
-   /* public static SecretCallbackHandlerService getSecretCallbackHandlerService() {
-          return IssueTrackerCommonServiceComponent.secretCallbackHandlerService;
-      }
-
-      protected void setSecretCallbackHandlerService(
-              SecretCallbackHandlerService secretCallbackHandlerService) {
-          if (log.isDebugEnabled()) {
-              log.debug("SecretCallbackHandlerService acquired");
-          }
-          IssueTrackerCommonServiceComponent.secretCallbackHandlerService = secretCallbackHandlerService;
-
-      }
-       protected void unsetSecretCallbackHandlerService(
-            SecretCallbackHandlerService secretCallbackHandlerService) {
-        IssueTrackerCommonServiceComponent.secretCallbackHandlerService = null;
-    }*/
-
 }

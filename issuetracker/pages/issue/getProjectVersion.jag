@@ -1,18 +1,25 @@
 <%
     var caramel = require('caramel');
-    var log = new Log();
 
     (function () {
+        var login = require('/modules/login.js');
+        if(!login.isLogged()){
+            return;
+        }
+
          project = require('/modules/project.js'),
 
          projectKey = request.getParameter('projectKey');
-         //var result = project.getAllVersionOfProject1(pid);
-         var result = project.getAllVersionOfProject1(projectKey);
+         var result = project.getAllVersionOfProject(projectKey);
 
-         log.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ID '+stringify(result));
+         for(var i in result){
+            result[i].id = Number(result[i].id);
+         }
 
-         //result[0].id = Number(result[0].id);
          print(result);
 
     }());
 %>
+
+
+

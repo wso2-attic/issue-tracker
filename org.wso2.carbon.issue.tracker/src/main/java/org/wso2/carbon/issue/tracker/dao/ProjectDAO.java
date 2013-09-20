@@ -25,42 +25,39 @@ import org.wso2.carbon.issue.tracker.bean.Project;
 
 /**
  * Defines the contract for database operations for a {@link Project}
- * 
  */
 public interface ProjectDAO {
 
     /**
      * Adds a new project to database.
-     * 
-     * @param project
-     *            information about the project.
+     * @param project information about the project
+     * @return Created project id
+     * @throws SQLException
      */
-    public int add(Project project) throws SQLException ;
+    public int add(Project project) throws SQLException;
 
     /**
      * Modified a project information. given by the {@link Project}#id
-     * 
-     * @param project
-     *            new information about the project (except the id)
+     * @param project new information about the project (except the id)
+     * @return whether project is successfully updated or not
+     * @throws SQLException
      */
-    public boolean update(Project project) throws SQLException ;
+    public boolean update(Project project) throws SQLException;
 
     /**
      * Retrieves a Project specified by the id
-     * 
-     * @param key
-     *            id of the project
-     * @return a {@link Project} or null
+     * @param key key id of the project
+     * @param tenantId Tenant ID
+     * @return  a {@link Project} or null
+     * @throws SQLException
      */
     public Project get(String key, int tenantId) throws SQLException;
 
     /**
      * Returns projects owned by a particular organization (specified by
      * organization Id)
-     * 
-     * @param organizationId
-     *            Id of the organization
-     * 
+     *
+     * @param organizationId Id of the organization
      * @return a list of project. ( an empty list if there are no projects)
      */
     public List<Project> getProjectsByOrganizationId(int organizationId) throws SQLException;

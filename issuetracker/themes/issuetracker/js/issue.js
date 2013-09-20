@@ -1,239 +1,214 @@
 $().ready(function() {
 
-			$('#saveMe').click(function() {
+    // **checked**
+    $('#saveIssue').click(function() {
+        var projectKey = $("#projectKey").attr('value');
 
-                var projectId = $("#projectId").attr('value');
-                var projectName =  $("#projectId :selected").text();
+        var issue = new Object();
+        issue.summary       = $("#summary").attr('value');
+        issue.description   = $("#description").attr('value');
+        issue.type          = $("#type").attr('value');
+        issue.priority      = $("#priority").attr('value');
+        issue.status        = $("#issue_status").attr('value');
+        issue.assignee      = $("#assignee").attr('value');
+        issue.versionId     = $('#version').val();
+        issue.severity      = $("#severity").attr('value');
 
-                var pkey = $("#key").attr('value');
-                var json = new Object();
-                json.projectId=projectId;
-                json.key=pkey;
-                json.summary=$("#summary").attr('value');
-                json.description= $("#description").attr('value');
-                json.type=$("#type").attr('value');
-                json.priority=$("#priority").attr('value');
-                json.status=$("#status").attr('value');
-                json.assignee=$("#assignee").attr('value');
-                json.version=$('#version').val();
-                json.severity=$("#severity").attr('value');
-                json.projectName = projectName;
+        var jsonString = JSON.stringify(issue);
 
-                //var proj = new Object();
-                //proj.issue=json;
+        var response = "";
+        $.ajax({
+            type: 'POST',
+            url: "save",
+            data: {
+                action:"addIssue",
+                jsonString:jsonString,
+                projectKey:projectKey
+            },
+            success: function(result){
+                response = result.data;
+                window.location.href = "get?issuePkey="+response;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                window.location.href = "/issuetracker";
+            },
+            dataType: 'json',
+            async:false
+        });
+    });
 
-                var myString = JSON.stringify(json);
-
-                var isSuccess = false;
-                var message = "";
-                $.ajax({
-                    type: 'POST',
-                    url: "save.jag",
-                    data: {
-                        action:"addIssue",
-                        jsonobj:myString,
-                        id:projectId
-
-                    },
-                    success: function(result){
-                        isSuccess = result.data;
-
-                        window.location.href = "get.jag?pkey="+isSuccess;
-
-
-
-                    },
-                    dataType: 'json',
-                    async:false
-                });
-
-
-		});
-
-    $('#editMe').click(function() {
+    $('#editIssue').click(function() {
         var key = $("#key").attr('value');
 
-        var jsonObj = new Object();
-        jsonObj.projectId=$("#projectId").attr('value');
-        jsonObj.key=key;
-        jsonObj.summary=$("#summary").attr('value');
-        jsonObj.description= $("#description").attr('value');
-        jsonObj.type=$("#type").attr('value');
-        jsonObj.priority=$("#priority").attr('value');
-        jsonObj.status=$("#status").attr('value');
-        jsonObj.assignee=$("#assignee").attr('value');
-        jsonObj.version=$("#version").attr('value');
-        jsonObj.severity=$("#severity").attr('value');
+        var issue = new Object();
+        //issue.projectId=$("#projectId").attr('value');
+        issue.key=key;
+        issue.summary=$("#summary").attr('value');
+        issue.description= $("#description").attr('value');
+        issue.type=$("#type").attr('value');
+        issue.priority=$("#priority").attr('value');
+        issue.status=$("#issue_status").attr('value');
+        issue.assignee=$("#assignee").attr('value');
+        issue.versionId=$("#version").attr('value');
+        issue.severity=$("#severity").attr('value');
 
-
-        //var proj = new Object();
-        //proj.issue=jsonObj;
-
-        var myString = JSON.stringify(jsonObj);
+        var jsonString = JSON.stringify(issue);
         var isSuccess = false;
 
         $.ajax({
             type: 'POST',
-            url: "save.jag",
+            url: "save",
             data: {
                 action:"editIssue",
-                jsonobj:myString,
-                ukey: key
-
+                jsonString:jsonString,
+                issueKey: key
             },
             success: function(result){
                 isSuccess = result.data.responseBean.success;
             },
-            dataType: 'json',
-            async:false
-        });
-       // alert('dddd');
-        if(isSuccess)  {
-           // alert("Data successfully updated");
-            window.location.href = "index.jag";
-        }
-
-    });
-
-
-    $('#commentEdit').click(function() {
-
-        var key = $("#ukey").attr('value');
-        var id =  $("#comment_id").attr('value');
-        //var reporter =  session.get("LOGGED_IN_USER");
-        var jsonObj = new Object();
-        jsonObj.commentDescription=$("#commentpopup").attr('value');
-        //jsonObj.creator=reporter;  // TODO '
-        jsonObj.issueId=id;
-
-        //var proj = new Object();
-        //proj.comment=jsonObj;
-        var myString = JSON.stringify(jsonObj);
-        var isSuccess = false;
-        $.ajax({
-            type: 'POST',
-            url: "../comment/save.jag",
-            data: {
-                action:"editComment",
-                jsonobj:myString,
-                ukey: key,
-                id:id
-
-            },
-            success: function(result){
-                isSuccess = result.data.responseBean.success;
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                window.location.href = "/issuetracker";
             },
             dataType: 'json',
             async:false
         });
         if(isSuccess)  {
-            //alert("Data successfully updated");
-            window.location.href = "get.jag?pkey="+key;
+            window.location.href = "/issuetracker";
         }
 
     });
 
+    // **checked**
     $('#commentAdd').click(function() {
+        var issueUniqueKey = $("#ukey").attr('value');
+        var description = $("#commentVal").attr('value').trim();
 
-        var key = $("#ukey").attr('value');
-        var jsonObj = new Object();
-        jsonObj.commentDescription=$("#commentVal").attr('value');
+        if(description){
 
-        //var proj = new Object();
-        //proj.comment=jsonObj;
+            var comment = new Object();
+            comment.description=description;
 
-        var myString = JSON.stringify(jsonObj);
-        var isSuccess = false;
-
-
-        $.ajax({
-            type: 'POST',
-            url: "../comment/save.jag",
-            data: {
-                action:"addComment",
-                jsonobj:myString,
-                ukey: key
-
-            },
-            success: function(result){
-                isSuccess = result.data.responseBean.success;
-            },
-            dataType: 'json',
-            async:false
-        });
-        if(isSuccess)  {
-            //alert("Data successfully updated");
-            window.location.href = "get.jag?pkey="+key;
-
-        }
-
-    });
-
-    $( "#projectId" )
-        .change(function () {
-            $('#version').find('option').remove();
+            var commentString = JSON.stringify(comment);
+            var isSuccess = false;
 
             $.ajax({
-                type: 'GET',
-                url: "getProjectVersion.jag",
+                type: 'POST',
+                url: "../comment/save",
                 data: {
-                    pid:this.value
+                    action:"addComment",
+                    commentJsonString:commentString,
+                    issueUniqueKey: issueUniqueKey
                 },
                 success: function(result){
-                   $.each(result.version, function(i, obj) {
-                       $('#version')
-                           .append($("<option></option>")
-                               .attr("value",obj.projectVersionId)
-                               .text(obj.projectVersion));
-
-                    });
+                    isSuccess = result.data.responseBean.success;
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    window.location.href = "/issuetracker";
                 },
                 dataType: 'json',
                 async:false
             });
 
+            if(isSuccess)  {
+                window.location.href = "get?issuePkey="+issueUniqueKey;
+            }
+        }
+    });
 
+    // **checked**
+    $('#commentEdit').click(function() {
+        var issueUniqueKey = $("#ukey").attr('value');
+        var commentId =  $("#comment_id").attr('value');
 
+        var comment = new Object();
+        comment.description=$("#commentpopup").attr('value');
+        comment.id=commentId;
 
-            /*url = caramel.url('getProjectVersion.jag');
-            caramel.data({
-                body : ['projects', 'pagination']
-            }, {
-                url : url,
-                success : function(data, status, xhr) {
-                   alert("dddd");
-                }
-            });*/
-
-        });
-
-
-})
-
-function deleteComment(id){
-
-    var r=confirm("Do you want to delete comment?");
-    if (r==true)
-    {
-        var key = $("#ukey").attr('value');
+        var commentJsonString = JSON.stringify(comment);
+        var isSuccess = false;
         $.ajax({
             type: 'POST',
-            url: "../comment/save.jag",
+            url: "../comment/save",
+            data: {
+                action:"editComment",
+                commentJsonString:commentJsonString,
+                issueUniqueKey: issueUniqueKey,
+                commentId:commentId
+            },
+            success: function(result){
+                isSuccess = result.data.responseBean.success;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                window.location.href = "/issuetracker";
+            },
+            dataType: 'json',
+            async:false
+        });
+        if(isSuccess)  {
+            window.location.href = "get?issuePkey="+key;
+        }
+    });
+
+
+    // **checked**
+    $("#projectKey").change(function () {
+        //$('#version').find('option').remove();
+        $('#version').html('');
+            $.ajax({
+                type: 'GET',
+                url: "getProjectVersion",
+                data: {
+                    projectKey:this.value
+                },
+                success: function(result){
+                    var firstVersionId = 0;
+                    $.each(result, function(i, obj) {
+                       firstVersionId= obj.id;
+                       $('#version')
+                           .append($("<option></option>")
+                               .attr("value", firstVersionId)
+                               .text(obj.version));
+                    });
+                    $('#version').select2('val', userName);
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    window.location.href = "/issuetracker";
+                },
+            dataType: 'json',
+            async:false
+         });
+    });
+});
+
+// **checked**
+function deleteComment(commentId){
+    var msgBox=confirm("Do you want to delete comment?");
+    if (msgBox==true)
+    {
+        var issueUniqueKey = $("#ukey").attr('value');
+        $.ajax({
+            type: 'POST',
+            url: "../comment/save",
             data: {
                 action:"deleteComment",
-                ukey: key,
-                id:id
+                issueUniqueKey: issueUniqueKey,
+                commentId:commentId
 
             },
             success: function(result){
                 isSuccess = result.data.responseBean.success;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                window.location.href = "/issuetracker";
             },
             dataType: 'json',
             async:false
         });
         if(isSuccess)  {
             //alert("Data successfully updated");
-            window.location.href = "get.jag?pkey="+key;
+            window.location.href = "get?issuePkey="+issueUniqueKey;
         }
     }
 }

@@ -6,9 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ResponseBean {
     private boolean isSuccess;
-
     private String message;
-
 
     public String getMessage() {
         return message;

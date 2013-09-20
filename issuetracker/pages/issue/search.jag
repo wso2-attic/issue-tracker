@@ -3,7 +3,6 @@ var caramel;
 
 (function () {
     var login = require('/modules/login.js');
-    var log = new Log();
     if(!login.isLogged()){
         return;
     }
@@ -21,7 +20,7 @@ var caramel;
 
 
 	caramel.render({
-		title  : {text :'Issue Tracker'},
+		title  : {text :'Issue Tracker | Search'},
 		header : { domain : domain, userName : userName},
 		body   : {title: 'Issue',  data: issue.searchIssue(searchType, searchValue)}
 	});

@@ -91,28 +91,6 @@ public class IssueTrackerUtil {
         issueTrackerConfig = new IssueTrackerConfiguration(configurationMap);
     }
 
-    public static void sendNotification(final String applicationId,
-                                        final String version,
-                                        final String revision, final String epr,
-                                        final OMElement payload) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ignored) {
-                }
-                try {
-                    ServiceClient client = new ServiceClient();
-                    client.getOptions().setTo(new EndpointReference(epr));
-                    CarbonUtils.setBasicAccessSecurityHeaders(getAdminUsername(), getAdminPassword(), client);
-                    client.sendRobust(payload);
-                } catch (AxisFault e) {
-                    log.error(e);
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
     private static OMElement loadIssueTrackerXML() throws IssueTrackerException {
         String fileLocation =
@@ -265,34 +243,21 @@ public class IssueTrackerUtil {
         }
     }
 
-    public static String getAdminUsername() {
-        return issueTrackerConfig.getFirstProperty(IssueTrackerConstants.SERVER_ADMIN_NAME);
+
+    private static void secureVaultResolve(OMElement element) {
+        String secretAliasAttr = element.getAttributeValue(new QName(IssueTrackerConstants.SECURE_VAULT_NS,
+                IssueTrackerConstants.SECRET_ALIAS_ATTR_NAME));
+        if (secretAliasAttr != null) {
+            element.setText(loadFromSecureVault(secretAliasAttr));
+        }
     }
 
-    public static String getAdminPassword() {
-        return issueTrackerConfig.getFirstProperty(IssueTrackerConstants.SERVER_ADMIN_PASSWORD);
+    public static synchronized String loadFromSecureVault(String alias) {
+        if (secretResolver == null) {
+            secretResolver = SecretResolverFactory.create((OMElement) null, false);
+        }
+        return secretResolver.resolve(alias);
     }
-
-    	private static  void  secureVaultResolve(OMElement element) {
-    	String secretAliasAttr = element.getAttributeValue(new QName(IssueTrackerConstants.SECURE_VAULT_NS,
-                        		IssueTrackerConstants.SECRET_ALIAS_ATTR_NAME));
-    	if (secretAliasAttr != null) {
-    		element.setText(loadFromSecureVault(secretAliasAttr));
-    	}
-//    	Iterator<OMElement> childEls = (Iterator<OMElement>) dbsElement.getChildElements();
-//    	while (childEls.hasNext()) {
-//    		this.secureVaultResolve(childEls.next());
-//    	}
-    }
-
-    	public static synchronized String loadFromSecureVault(String alias) {
-		if (secretResolver == null) {
-		    secretResolver = SecretResolverFactory.create((OMElement) null, false);
-		    //secretResolver.init(IssueTrackerCommonServiceComponent.
-            //        getSecretCallbackHandlerService().getSecretCallbackHandler());
-		}
-		return secretResolver.resolve(alias);
-	}
 
 
 }

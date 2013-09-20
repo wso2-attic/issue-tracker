@@ -23,12 +23,13 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
+import org.wso2.carbon.issue.tracker.util.ISQLConstants;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VersionDAOImpl implements VersionDAO{
+public class VersionDAOImpl implements VersionDAO {
     private static final Log log = LogFactory.getLog(VersionDAOImpl.class);
 
     /**
@@ -38,10 +39,8 @@ public class VersionDAOImpl implements VersionDAO{
     public boolean addVersionForProject(Version version, String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = DBConfiguration.getDBConnection();
         PreparedStatement preparedStatement = null;
-        String insertTableSQL = "INSERT INTO VERSION (VERSION, PROJECT_ID) SELECT ?, p.PROJECT_ID FROM PROJECT p WHERE p.PROJECT_KEY=? AND p.ORGANIZATION_ID=?";
+        String insertTableSQL = ISQLConstants.ADD_VERSION_FOR_PROJECT;
 
-
-        // INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) SELECT ?, ?, ?, ?, ISSUE_ID FROM ISSUE WHERE PKEY = ?
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
@@ -53,7 +52,7 @@ public class VersionDAOImpl implements VersionDAO{
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Error while adding version to DB, version: "+ version.getVersion();
+            String msg = "Error while adding version to DB, version: " + version.getVersion();
             log.error(msg, e);
             throw e;
         } finally {
@@ -74,8 +73,8 @@ public class VersionDAOImpl implements VersionDAO{
     public List<Version> getVersionListOfProjectByProjectKey(String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = null;
         dbConnection = DBConfiguration.getDBConnection();
-        //String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projectId;
-        String sql = "SELECT v.VERSION_ID, v.VERSION, v.PROJECT_ID FROM VERSION v INNER JOIN PROJECT p ON v.PROJECT_ID = p.PROJECT_ID WHERE p.PROJECT_KEY=? AND p.ORGANIZATION_ID=?";
+
+        String sql = ISQLConstants.GET_VERSION_OF_PROJECTS_BY_PROJECT_KEY;
 
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
@@ -96,7 +95,7 @@ public class VersionDAOImpl implements VersionDAO{
             }
 
         } catch (SQLException e) {
-            String msg = "Error while getting versions from DB, project key: "+ projectKey;
+            String msg = "Error while getting versions from DB, project key: " + projectKey;
             log.error(msg, e);
             throw e;
         } finally {

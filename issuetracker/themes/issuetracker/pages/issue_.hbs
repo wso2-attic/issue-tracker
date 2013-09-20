@@ -11,18 +11,14 @@
 		<title>{{include title}}</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width">
+             <link href="{{url "/themes/issuetracker/css/font-awesome.min.css"}}" rel="stylesheet">
 
-        <link href="{{url "/themes/issuetracker/css/font-awesome.min.css"}}" rel="stylesheet">
+            		<!--[if IE 7]>
+            		<link href="{{url "/themes/issuetracker/css/font-awesome-ie7.min.css"}}" rel="stylesheet">
+            		<![endif]-->
 
-		<!--[if IE 7]>
-		<link href="{{url "/themes/issuetracker/css/font-awesome-ie7.min.css"}}" rel="stylesheet">
-		<![endif]-->
 				<link href="{{url "/themes/issuetracker/css/normalize.min.css"}}" rel="stylesheet">
-				<link href="{{url "/themes/issuetracker/css/jquery.qtip.min.css"}}" rel="stylesheet">
-				<link href="{{url "/themes/issuetracker/js/vendor/select2/select2.css"}}" rel="stylesheet">
 				<link href="{{url "/themes/issuetracker/css/main.css"}}" rel="stylesheet">
-				<link href="{{url "/themes/issuetracker/css/development.css"}}" rel="stylesheet">
-                <script src="{{url "/themes/issuetracker/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"}}"></script>
 
 		<style>
             .search_form_cont {
@@ -278,13 +274,13 @@ button.close {
 					<header class="separator">
 						<div class="content">
 							<div class="left">
-								<h1 class="inline_box">Issues</h1><a href="/issuetracker/pages/issue/add.jag" class="btn main head push_left_40">New Issue</a>
+								<h1 class="inline_box">Issues</h1><a href="/issuetracker/issue/add" class="btn main head push_left_40">New Issue</a>
 							</div>
 							<ul class="screen_option right search_form_cont">
-								<form class="right form-container search_form" action="/issuetracker/pages/issue/search.jag" method="post">
+								<form class="right form-container search_form" action="/issuetracker/issue/search" method="post">
 									<li class="screen_option_item">
 										<span>Search</span>
-										<select id="select_search" class="select_list" name="searchType">
+										<select id="select_search" class="select_list half big" name="searchType">
 											<option value="1">&nbsp;By Project Name</option>
 											<option value="2">&nbsp;By Reporter</option>
 											<option value="3">&nbsp;By Assignee</option>
@@ -313,20 +309,16 @@ button.close {
 			</div><!-- /container -->
 		</div><!-- /container -->
 		<footer></footer>
+<link href="{{url "/themes/issuetracker/js/select2/select2.css"}}" rel="stylesheet">
 <script src="{{url "/themes/issuetracker/js/jquery-1.8.3.min.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/vendor/bootstrap-dropdown.min.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/vendor/select2/select2.min.js"}}"></script>
+<script src="{{url "/themes/issuetracker/js/select2/select2.js"}}"></script>
+
 <script src="{{url "/themes/issuetracker/js/issue.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/bootstrap.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/async.min.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/handlebars.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/theme.js"}}"></script>
-<script src="{{url "/themes/issuetracker/js/elrte.min.js"}}" type="text/javascript" charset="utf-8"></script>
-    {{js .}}
-<script src="{{url "/themes/issuetracker/js/caramel-client.js"}}"></script>
-
-		    <script src="{{url "/themes/issuetracker/js/main.js"}}"></script>
-
+<script src="{{url "/themes/issuetracker/js/bootstrap.min.js"}}"></script>
+<script type="text/javascript">
+     $("#select_search").select2();
+</script>
+{{js .}}
 
 	</body>
 </html>

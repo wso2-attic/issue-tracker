@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Issue {
-
     private int id;
     private String key;
     private int projectId;
@@ -36,8 +35,6 @@ public class Issue {
     private String createdTime;
     private String updatedTime;
     private String severity;
-
-
 
 
     public int getId() {

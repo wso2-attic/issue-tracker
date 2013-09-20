@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.wso2.carbon.issue.tracker.dao.impl;
 
@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 import org.wso2.carbon.issue.tracker.bean.Project;
 import org.wso2.carbon.issue.tracker.dao.ProjectDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
+import org.wso2.carbon.issue.tracker.util.ISQLConstants;
 
 /**
  * Implementation of {@link ProjectDAO}
- * 
  */
 public class ProjectDAOImpl implements ProjectDAO {
 
@@ -29,10 +29,9 @@ public class ProjectDAOImpl implements ProjectDAO {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         boolean isInserted = false;
-        String insertTableSQL =
-                                "INSERT INTO PROJECT (PROJECT_NAME,OWNER,DESCRIPTION,ORGANIZATION_ID,PROJECT_KEY) VALUES (?,?,?,?,?)";
+        String insertTableSQL = ISQLConstants.ADD_PROJECT;
 
-        int projectId=0;
+        int projectId = 0;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL, Statement.RETURN_GENERATED_KEYS);
@@ -44,7 +43,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             preparedStatement.setString(5, project.getKey());
 
             // execute insert SQL stetement
-            isInserted = preparedStatement.executeUpdate()==1 ? true:false;
+            isInserted = preparedStatement.executeUpdate() == 1 ? true : false;
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             rs.next();
@@ -69,8 +68,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public boolean update(Project project) throws SQLException {
 
-        String updateTableSQL =
-                                "UPDATE PROJECT SET PROJECT_NAME = ?, OWNER = ?, DESCRIPTION = ? WHERE PROJECT_KEY = ? AND ORGANIZATION_ID = ?";
+        String updateTableSQL = ISQLConstants.UPDATE_PROJECT;
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         int effectedRows = -1;
@@ -86,8 +84,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 
             // execute update SQL stetement
             effectedRows = preparedStatement.executeUpdate();
-            
-            
+
+
         } catch (SQLException e) {
 
             logger.error(e.getMessage(), e);
@@ -113,8 +111,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public Project get(String key, int tenantId) throws SQLException {
 
-        String selectSQL =
-                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID FROM PROJECT WHERE PROJECT_KEY = ? AND ORGANIZATION_ID=?" ;
+        String selectSQL = ISQLConstants.GET_PROJECT;
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         Project project = null;
@@ -166,8 +163,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<Project> getProjectsByOrganizationId(int organizationId) throws SQLException {
 
-        String selectSQL =
-                           "SELECT PROJECT_ID, PROJECT_NAME, OWNER, DESCRIPTION, ORGANIZATION_ID, PROJECT_KEY FROM PROJECT WHERE ORGANIZATION_ID = ?";
+        String selectSQL = ISQLConstants.GET_PROJECTS_BY_ORGANIZATION_ID;
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
         List<Project> projects = new ArrayList<Project>();

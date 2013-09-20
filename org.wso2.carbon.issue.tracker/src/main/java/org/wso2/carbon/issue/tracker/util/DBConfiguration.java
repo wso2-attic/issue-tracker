@@ -31,57 +31,56 @@ import org.apache.tomcat.jdbc.pool.DataSource;
  * Represents Database configuration details
  */
 public class DBConfiguration {
-	static Logger log = Logger.getLogger(DBConfiguration.class);
-	private static DataSource dataSource = null;
+    static Logger log = Logger.getLogger(DBConfiguration.class);
+    private static DataSource dataSource = null;
 
-	private static void Initialize() {
-		// lookup for datasource and intialize datasource var
-		dataSource = lookupDataSource("jdbc/IssueTrackerDB");
+    private static void Initialize() {
+        // lookup for datasource and intialize datasource var
+        dataSource = lookupDataSource("jdbc/IssueTrackerDB");
 
-	}
+    }
 
-	/**
-	 * Lookup the data source, this datasource must be declared in the
-	 * master-datasources.xml
-	 * 
-	 * @param dataSourceName
-	 *            - name of the datasource
-	 * @return
-	 */
-	private static DataSource lookupDataSource(String dataSourceName) {
-		try {
-		    Context initCtx = new InitialContext();
-		    
-			return (DataSource) initCtx.lookup(dataSourceName);
-		} catch (Exception e) {
-			throw new RuntimeException("Error in looking up data source: "
-					+ e.getMessage(), e);
-		}
-	}
+    /**
+     * Lookup the data source, this datasource must be declared in the
+     * master-datasources.xml
+     *
+     * @param dataSourceName - name of the datasource
+     * @return
+     */
+    private static DataSource lookupDataSource(String dataSourceName) {
+        try {
+            Context initCtx = new InitialContext();
 
-	/**
-	 * Returns the db connection for the datasource
-	 * 
-	 * @return
-	 */
-	public static Connection getDBConnection() {
+            return (DataSource) initCtx.lookup(dataSourceName);
+        } catch (Exception e) {
+            throw new RuntimeException("Error in looking up data source: "
+                    + e.getMessage(), e);
+        }
+    }
 
-		if (dataSource == null) {
-			Initialize();
-		}
-		return doGetConnection();
-	}
+    /**
+     * Returns the db connection for the datasource
+     *
+     * @return
+     */
+    public static Connection getDBConnection() {
 
-	private static Connection doGetConnection() {
-		try {
-			return dataSource.getConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			String msg = "Error while getting Connection for Datasource "
-					+ dataSource.getName();
-			log.error(msg + " " + e.getMessage());
-		}
-		return null;
-	}
+        if (dataSource == null) {
+            Initialize();
+        }
+        return doGetConnection();
+    }
+
+    private static Connection doGetConnection() {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            String msg = "Error while getting Connection for Datasource "
+                    + dataSource.getName();
+            log.error(msg + " " + e.getMessage());
+        }
+        return null;
+    }
 
 }

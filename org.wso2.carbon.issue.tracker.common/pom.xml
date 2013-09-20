@@ -21,11 +21,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon</groupId>
-    <artifactId>org.wso2.carbon.issue.tracker.common</artifactId>
+    <artifactId>org.wso2.carbon.issue.tracker</artifactId>
     <version>1.1.0</version>
     <packaging>bundle</packaging>
-    <name>WSO2 IssueTracker - Common</name>
-    <description>IssueTracker common BE component for WSO2 IssueTracker</description>
+    <name>WSO2 IssueTracker</name>
+    <description>IssueTracker BE component for WSO2 IssueTracker</description>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -42,7 +42,25 @@
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.scriptengine</artifactId>
-	    <version>0.9.0.ALPHA3-wso2v6</version>
+            <version>0.9.0.ALPHA3-wso2v6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>rhino.wso2</groupId>
+            <artifactId>js</artifactId>
+            <version>1.7.0.R4-wso2v1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.governance.api</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
     </dependencies>
@@ -75,7 +93,7 @@
                             ${project.artifactId}
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            org.wso2.carbon.issue.tracker.common.*,
+                            org.wso2.carbon.issue.tracker.*
                         </Export-Package>
                         <Private-Package>
                             org.wso2.carbon.issue.tracker.common.internal.*,

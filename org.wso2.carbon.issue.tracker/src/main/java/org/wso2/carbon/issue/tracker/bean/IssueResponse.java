@@ -10,7 +10,6 @@ import java.util.List;
 public class IssueResponse {
     private List<Comment> comments;
     private Issue issue;
-
     private String version;
     private String projectName;
     private String projectKey;

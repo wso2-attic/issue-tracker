@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Project {
-
     private Integer id;
     private String name;
     private String owner;

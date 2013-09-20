@@ -3,7 +3,6 @@ var caramel;
 
 (function () {
     var login = require('/modules/login.js');
-    var log = new Log();
     if(!login.isLogged()){
         return;
     }
@@ -12,7 +11,7 @@ var caramel;
     project = require('/modules/project.js');
     var issuePkey = request.getParameter('issuePkey');
     var projectKey = request.getParameter('projectKey');
-    var issueRes = issue.getIssueByKey(issuePkey).issue;
+    var issueRes = issue.getIssueByKey(issuePkey);
 	caramel = require('caramel');
 
     include('/jagg/jagg.jag');
@@ -20,21 +19,17 @@ var caramel;
 	userName = context.get(LOGGED_IN_USER);
 	domain = context.get(DOMAIN);
 
-
-caramel.render({
-            title: 'Issue Tracker| Edit Issue',
+    caramel.render({
+            title  : { text : 'Issue Tracker | Edit Issue'},
             header : { domain : domain, userName : userName},
             body : {
-                            title: 'Edit Issue',
-                            project: project.getProjectsOfDomain(),
-                            issue : issueRes,
-                            projectKey: issueRes.projectKey,
-                            version : project.getAllVersionOfProject(projectKey),
-                            isSameUser : issueRes.reporter == userName
-                        }
+                        project: project.getProjectsOfDomain(),
+                        issue : issueRes.issue,
+                        projectKey: issueRes.projectKey,
+                        version : project.getAllVersionOfProject(projectKey),
+                        isSameUser : (issueRes.issue.reporter == userName)
+                    }
         });
-
-
 }());
 %>
 

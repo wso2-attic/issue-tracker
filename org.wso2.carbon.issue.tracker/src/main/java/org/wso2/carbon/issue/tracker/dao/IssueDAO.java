@@ -14,55 +14,47 @@ public interface IssueDAO {
 
 
     /**
-     *
+     * Add Issue to DB
      * @param issue {@link Issue}
-     * @return      Issue unique key
+     * @param projectKey Project Key
+     * @param tenantId Tenant ID
+     * @return Issue unique key
      * @throws SQLException
      */
     public String add(Issue issue, String projectKey, int tenantId) throws SQLException;
 
     /**
-     *
-     * @param issue  {@link Issue}
-     * @return       Is issue is successfully updated or not
+     * Update Issue to DB
+     * @param issue {@link Issue}
+     * @param tenantId Tenant ID
+     * @return Is issue is successfully updated or not
      * @throws SQLException
      */
-    public boolean update(Issue issue) throws SQLException;
+    public boolean update(Issue issue, int tenantId) throws SQLException;
 
     /**
-     * Any column of the issue can be updated using this method. REMEBER!! This
-     * is to use only one attribute of the issue is changed
-     *
-     * @param issue
-     *            {@link Issue}
-     * @param columnName
-     *            column name
-     * @param value
-     *            new value
-     * @return    Is attribute is successfully updated or not
-     */
-    public boolean updateAttribute(Issue issue, String columnName, String value) throws SQLException;
-
-    /**
-     *
+     * Get Issue by unique issue key
      * @param uniqueKey
-     * @return
+     * @param tenantId Tenant ID
+     * @return {@link IssueResponse}
      * @throws SQLException
      */
-    public IssueResponse getIssueByKey(String uniqueKey) throws SQLException;
+    public IssueResponse getIssueByKey(String uniqueKey, int tenantId) throws SQLException;
 
     /**
-     *
-     * @param id  Issue ID
-     * @return    {@link Issue}
+     * Get Issue By ID
+     * @param id Issue ID
+     * @param tenantId Tenant ID
+     * @return {@link Issue}
      * @throws SQLException
      */
-    public Issue getIssueById(int id) throws SQLException;
+    public Issue getIssueById(int id, int tenantId) throws SQLException;
 
     /**
-     *
-     * @param projectKey
-     * @return  {@link List<Issue>}
+     * Get All Issues of Project By project key
+     * @param projectKey Project Key
+     * @param tenantId Tenant ID
+     * @return {@link List<Issue>}
      * @throws SQLException
      */
     public List<IssueResponse> getAllIssuesOfProject(String projectKey, int tenantId) throws SQLException;

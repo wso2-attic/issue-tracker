@@ -1,9 +1,12 @@
+
+
+
 <section class="content push_top_40">
     <div class="form-container">
         <fieldset>
             <div class="input_row">
                 <label for="projectKey" ><strong>Project</strong> <em>*</em></label>
-                <select id="projectKey" class="select_list">
+                <select id="projectKey" class="select_list half big">
                 {{#each project}}
                   <option value="{{key}}">{{name}}</option>
                 {{/each}}
@@ -24,29 +27,38 @@
 
             <div class="input_row">
                 <label for="type" ><strong>Type</strong> <em>*</em></label>
-                <select id='type' class="select_list">
-                  <option value="BUG">Bug</option>
-                  <option value="QUERY">Query</option>
-                  <option value="FEATURE">Feature</option>
+                <select id='type' class="select_list half big">
+                    <option value="NEW_FEATURE">New Feature</option>
+                    <option value="BUG">Bug</option>
+                    <option value="TASK">Task</option>
+                    <option value="IMPROVEMENT">Improvement</option>
+                    <option value="WISH">Wish</option>
+                    <option value="MODERATION">Moderation</option>
+                    <option value="VULNERABILITY">Security Vulnerability</option>
+                    <option value="EPIC">Epic</option>
+                    <option value="STORY">Story</option>
+                    <option value="PATCH">Patch</option>
                 </select>
             </div>
 
             <div class="input_row">
                 <label for="priority" ><strong>Priority</strong> <em>*</em></label>
-                <select id="priority" class="select_list">
-                <option value="HIGHEST">Highest</option>
+                <select id="priority" class="select_list half big">
+                 <option value="HIGHEST">Highest</option>
                  <option value="HIGH">High</option>
                  <option value="NORMAL">Normal</option>
                  <option value="LOW">Low</option>
+                 <option value="LOWEST">Lowest</option>
                </select>
             </div>
 
             <div class="input_row">
                 <label for="status" ><strong>Status</strong> <em>*</em></label>
-                <select id="status" class="select_list">
+                <select id="status" class="select_list half big">
                    <option value="OPEN">Open</option>
                    <option value="RESOLVED">Resolved</option>
                    <option value="INPROGRESS">In Progress</option>
+                   <option value="CLOSED"">Closed</option>
                  </select>
             </div>
 
@@ -58,7 +70,7 @@
 
             <div class="input_row">
                 <label for="version" ><strong>Version</strong> <em>*</em></label>
-               <select id='version' class="select_list"></select>
+               <select id='version' class="select_list half big"></select>
 
             </div>
 
@@ -66,18 +78,20 @@
 
             <div class="input_row">
                 <label for="severity" ><strong>Severity</strong> <em>*</em></label>
-                <select id="severity" class="select_list">
-                   <option value="BLOCKER">Blocker</option>
-                   <option value="CRITICAL">Critical</option>
-                   <option value="TRIVIAL">Trivial</option>
-                   <option value="MINOR">Minor</option>
+                <select id="severity" class="select_list half big">
+                    <option value="NONE">None</option>
+                    <option value="BLOCKER">Blocker</option>
+                    <option value="CRITICAL">Critical</option>
+                    <option value="TRIVIAL">Trivial</option>
+                    <option value="MAJOR">Major</option>
+                    <option value="MINOR">Minor</option>
                  </select>
             </div>
 
         </fieldset>
 
         <div class="buttonrow">
-            <input type="button" value="Add Issue" class="btn main" id='saveMe' />
+            <input type="button" value="Add Issue" class="btn main" id='saveIssue' />
 
             <a href="/issuetracker/index.jag">Cancel</a>
         </div>
@@ -87,36 +101,7 @@
 
 
 
-<script src="{{url "/themes/issuetracker/js/jquery-1.8.3.min.js"}}"></script>
 
-<script type="text/javascript">
-
-           $(document).ready(function() {
-
-                $('#version').find('option').remove();
-
-                            $.ajax({
-                                type: 'GET',
-                                url: "getProjectVersion.jag",
-                                data: {
-                                    projectKey:$("#projectKey").attr('value')
-                                },
-                                success: function(result){
-                                   $.each(result, function(i, obj) {
-                                        alert(obj.version);
-                                       $('#version')
-                                           .append($("<option></option>")
-                                               .attr("value",obj.id)
-                                               .text(obj.version));
-
-                                    });
-                                },
-                                dataType: 'json',
-                                async:false
-                            });
-
-            });
-</script>
 
 
 
