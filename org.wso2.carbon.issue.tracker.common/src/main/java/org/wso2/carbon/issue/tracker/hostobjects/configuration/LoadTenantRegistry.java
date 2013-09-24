@@ -21,13 +21,7 @@ import javax.script.ScriptException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nihanth
- * Date: 9/15/13
- * Time: 4:48 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class LoadTenantRegistry extends ScriptableObject {
     private static final String hostObjectName = "LoadTenantRegistry";
     protected Registry registry;
