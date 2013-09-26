@@ -13,6 +13,7 @@ $().ready(function() {
         issue.assignee      = $("#assignee").attr('value');
         issue.versionId     = $('#version').val();
         issue.severity      = $("#severity").attr('value');
+        issue.version       = $( "#version option:selected" ).text();
 
         var jsonString = JSON.stringify(issue);
 
@@ -51,6 +52,7 @@ $().ready(function() {
         issue.assignee=$("#assignee").attr('value');
         issue.versionId=$("#version").attr('value');
         issue.severity=$("#severity").attr('value');
+        issue.version       = $( "#version option:selected" ).text();
 
         var jsonString = JSON.stringify(issue);
         var isSuccess = false;

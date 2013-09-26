@@ -43,51 +43,40 @@
                     <li class="list_col issue_comment">
                         <h2 class="list_col_heading">Comment</h2>
                     </li>
-
-
                 </ul>
-            </li>
-            <li class="list_row_item ">
                 {{#each data}}
                 <ul class="list_row ">
                     <li class="list_col issue_key">
-                        <h2 class="list_col_heading">KEY</h2>
                         <div class="list_col_content">
                             {{issuePkey}}
                         </div>
                     </li>
                     <li class="list_col issue_project">
-                        <h2 class="list_col_heading">Project</h2>
                         <div class="list_col_content">
                             {{projectName}}
                         </div>
                     </li>
                     <li class="list_col issue_summary">
-                        <h2 class="list_col_heading">Summary</h2>
                         <div class="list_col_content">
                             {{summary}}
                         </div>
                     </li>
                     <li class="list_col issue_type">
-                        <h2 class="list_col_heading">Type</h2>
                         <div class="list_col_content">
                             {{issueType}}
                         </div>
                     </li>
                     <li class="list_col issue_priority">
-                        <h2 class="list_col_heading">Priority</h2>
                         <div class="list_col_content">
                             {{priority}}
                         </div>
                     </li>
                     <li class="list_col issue_reporter">
-                        <h2 class="list_col_heading">Reporter</h2>
                         <div class="list_col_content">
                             {{owner}}
                         </div>
                     </li>
                      <li class="list_col issue_status">
-                        <h2 class="list_col_heading">Status</h2>
                         <div class="list_col_content">
                             {{status}}
                         </div>
@@ -95,42 +84,34 @@
 
 
                     <li class="list_col issue_assignee">
-                        <h2 class="list_col_heading">Assignee</h2>
                         <div class="list_col_content">
                             {{assignee}}
                         </div>
                     </li>
 
                     <li class="list_col issue_version">
-                        <h2 class="list_col_heading">Version</h2>
                         <div class="list_col_content">
                             {{version}}
                         </div>
                     </li>
 
                     <li class="list_col issue_severity">
-                        <h2 class="list_col_heading">Severity</h2>
                         <div class="list_col_content">
                             {{severity}}
                         </div>
                     </li>
 
                     <li class="list_col issue_edit">
-                        <h2 class="list_col_heading">Edit</h2>
-                        <div class="list_col_content">
-                            <a href="{{url "/issue/edit"}}?issuePkey={{issuePkey}}&projectKey={{projectKey}}" >edit</a>
-                        </div>
+                            <a style="margin:0 5px" class="icon-pencil" href="{{url "/issue/edit"}}?issuePkey={{issuePkey}}&projectKey={{projectKey}}" ></a>
                     </li>
                     <li class="list_col issue_comment">
-                        <h2 class="list_col_heading">Comment</h2>
                         <div class="list_col_content">
-                             <a href="{{url "/issue/get"}}?issuePkey={{issuePkey}}" >Comment</a>
+                             <a class="icon-comment" href="{{url "/issue/get"}}?issuePkey={{issuePkey}}" ></a>
                         </div>
                     </li>
 
                 </ul>
                 {{/each}}
-            </li>
 
         </ul>
     </div>
