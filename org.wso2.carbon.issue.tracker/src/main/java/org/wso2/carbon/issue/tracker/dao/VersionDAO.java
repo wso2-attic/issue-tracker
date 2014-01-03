@@ -24,10 +24,30 @@ import org.wso2.carbon.issue.tracker.util.IssueTrackerException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Defines the database operations for a {@link Version}
+ */
 public interface VersionDAO {
 
-    public boolean addVersionForProject(Version version) throws SQLException;
-    public List<Version> getVersionListOfProjectByProjectId(int projId) throws IssueTrackerException, SQLException;
+    /**
+     * Add new {@link Version} to DB
+     * @param version {@link Version}
+     * @param projectKey Project Key
+     * @param tenantId  tenant ID
+     * @return returns version is successfully added or not
+     * @throws SQLException
+     */
+    public boolean addVersionForProject(Version version, String projectKey, int tenantId) throws SQLException;
+
+    /**
+     * Get Version list of Project by project key
+     * @param projectKey  project key
+     * @param tenantId tenant id
+     * @return  {@link List<Version>}
+     * @throws IssueTrackerException
+     * @throws SQLException
+     */
+    public List<Version> getVersionListOfProjectByProjectKey(String projectKey, int tenantId) throws IssueTrackerException, SQLException;
 
 
 }

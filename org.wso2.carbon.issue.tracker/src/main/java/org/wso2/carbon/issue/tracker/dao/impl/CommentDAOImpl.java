@@ -10,10 +10,10 @@ import org.wso2.carbon.issue.tracker.bean.Comment;
 import org.wso2.carbon.issue.tracker.dao.CommentDAO;
 import org.wso2.carbon.issue.tracker.util.Constants;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
+import org.wso2.carbon.issue.tracker.util.ISQLConstants;
 
 /**
  * Implementation of {@link CommentDAO}
- *
  */
 public class CommentDAOImpl implements CommentDAO {
 
@@ -23,17 +23,18 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<Comment> getCommentsForIssue(int issueId) throws SQLException {
+    public List<Comment> getCommentsForIssue(int issueId, int tenantId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String selectSQL = "SELECT ID, DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID FROM COMMENT WHERE ISSUE_ID = ? ORDER BY ID ASC";
+        String selectSQL = ISQLConstants.GET_COMMENTS_FOR_ISSUE;
         List<Comment> comments = new ArrayList<Comment>();
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(selectSQL);
             preparedStatement.setInt(1, issueId);
+            preparedStatement.setInt(2, tenantId);
 
             // execute select SQL statement
             ResultSet rs = preparedStatement.executeQuery();
@@ -42,15 +43,17 @@ public class CommentDAOImpl implements CommentDAO {
 
                 Comment comment = new Comment();
                 comment.setId(rs.getInt("ID"));
-                comment.setCommentDescription(rs.getString("DESCRIPTION"));
+                comment.setDescription(rs.getString("DESCRIPTION"));
 
                 Timestamp createdTime = rs.getTimestamp("CREATED_TIME");
                 String createdTimeStr = Constants.DATE_FORMAT.format(createdTime);
                 comment.setCreatedTime(createdTimeStr);
 
                 Timestamp updatedTime = rs.getTimestamp("UPDATED_TIME");
-                String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
-                comment.setCreatedTime(updatedTimeStr);
+                if (updatedTime != null) {
+                    String updatedTimeStr = Constants.DATE_FORMAT.format(updatedTime);
+                    comment.setUpdatedTime(updatedTimeStr);
+                }
 
                 comment.setCreator(rs.getString("CREATOR"));
 
@@ -58,7 +61,7 @@ public class CommentDAOImpl implements CommentDAO {
             }
 
         } catch (SQLException e) {
-            String msg = "Error while getting comment from DB, issueID: "+ issueId;
+            String msg = "Error while getting comment from DB, issueID: " + issueId;
             log.error(msg, e);
             throw e;
         } finally {
@@ -79,32 +82,33 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean addCommentForIssue(Comment comment, String uniqueKey) throws SQLException {
+    public boolean addCommentForIssue(Comment comment, String uniqueKey, int tenantId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO COMMENT (DESCRIPTION, CREATED_TIME, UPDATED_TIME, CREATOR, ISSUE_ID) SELECT ?, ?, ?, ?, ISSUE_ID FROM ISSUE WHERE PKEY = ?";
+        String insertTableSQL = ISQLConstants.ADD_COMMENT_FOR_ISSUE;
 
         boolean isInserted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
-            preparedStatement.setString(1, comment.getCommentDescription());
+            preparedStatement.setString(1, comment.getDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setNull(3, Types.INTEGER);
             preparedStatement.setString(4, comment.getCreator());
-            preparedStatement.setString(5, uniqueKey);
+            preparedStatement.setInt(5, tenantId);
+            preparedStatement.setString(6, uniqueKey);
 
             // execute insert SQL statement
             isInserted = preparedStatement.executeUpdate() == 1 ? true : false;
 
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug("Record is inserted into COMMENT table!");
             }
 
         } catch (SQLException e) {
-            String msg = "Error while adding comment to DB, commentID: "+ comment.getId();
+            String msg = "Error while adding comment to DB, commentID: " + comment.getId();
             log.error(msg, e);
             throw e;
         } finally {
@@ -124,22 +128,21 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteCommentByCommentId(String issuePkey, int commentId) throws SQLException {
+    public boolean deleteCommentByCommentId(String issuePkey, int commentId, int tenantId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
-        String deleteSQL = "DELETE c FROM COMMENT c INNER JOIN ISSUE i ON i.ISSUE_ID = c.ISSUE_ID WHERE i.PKEY=? AND c.ID = ?";
+        String deleteSQL = ISQLConstants.DELETE_COMMENT_BY_COMMENT_ID;
         boolean isDeleted = false;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(deleteSQL);
-            preparedStatement.setString(1, issuePkey);
+            preparedStatement.setInt(1, tenantId);
             preparedStatement.setInt(2, commentId);
-
             // execute delete SQL statement
             isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
 
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug("Record is deleted from COMMENT table!");
             }
 
@@ -164,33 +167,32 @@ public class CommentDAOImpl implements CommentDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean editComment(Comment comment, String uniqueKey) throws SQLException {
+    public boolean editComment(Comment comment, String uniqueKey, int tenantId) throws SQLException {
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
 
         boolean isUpdated = false;
 
-        String updateTableSQL = "UPDATE COMMENT c INNER JOIN ISSUE i ON c.ISSUE_ID = i.ISSUE_ID SET i.DESCRIPTION = ?, i.UPDATED_TIME = ?  WHERE c.ID=? AND i.PKEY = ? AND c.CREATOR = ? ";
-
+        String updateTableSQL = ISQLConstants.UPDATE_COMMENT;
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(updateTableSQL);
 
-            preparedStatement.setString(1, comment.getCommentDescription());
+            preparedStatement.setString(1, comment.getDescription());
             preparedStatement.setTimestamp(2, getCurrentTimeStamp());
             preparedStatement.setInt(3, comment.getId());
-            preparedStatement.setString(4, uniqueKey);
-            preparedStatement.setString(5, comment.getCreator());
+            preparedStatement.setString(4, comment.getCreator());
+            preparedStatement.setInt(5, tenantId);
 
             // execute update SQL stetement
             isUpdated = preparedStatement.executeUpdate() == 1 ? true : false;
 
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug("Record is updated to COMMENT  table!");
             }
 
         } catch (SQLException e) {
-            String msg = "Error while editing comment to DB, commentID: "+ comment.getId();
+            String msg = "Error while editing comment to DB, commentID: " + comment.getId();
             log.error(msg, e);
             throw e;
         } finally {
@@ -208,7 +210,8 @@ public class CommentDAOImpl implements CommentDAO {
 
     /**
      * Get current time to log DB
-     * @return   {@link Timestamp}
+     *
+     * @return {@link Timestamp}
      */
     private static Timestamp getCurrentTimeStamp() {
         java.util.Date today = new java.util.Date();

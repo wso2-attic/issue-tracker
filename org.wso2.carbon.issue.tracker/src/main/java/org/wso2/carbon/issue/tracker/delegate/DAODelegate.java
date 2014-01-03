@@ -14,8 +14,10 @@ public class DAODelegate {
     private static ProjectDAO projectInstance = new ProjectDAOImpl();
     private static VersionDAO versionInstance = new VersionDAOImpl();
     private static SearchDAO searchInstance = new SearchDAOImpl();
+
     /**
      * Get CommentDAO object
+     *
      * @return {@link CommentDAO}
      */
     public static CommentDAO getCommentInstance() {
@@ -24,7 +26,8 @@ public class DAODelegate {
 
     /**
      * Get IssueDAOImpl object
-     * @return  {@link IssueDAOImpl}
+     *
+     * @return {@link IssueDAOImpl}
      */
     public static IssueDAO getIssueInstance() {
         return issueInstance;
@@ -32,6 +35,7 @@ public class DAODelegate {
 
     /**
      * Get ProjectDAO object
+     *
      * @return {@link ProjectDAO}
      */
     public static ProjectDAO getProjectInstance() {
@@ -40,13 +44,14 @@ public class DAODelegate {
 
     /**
      * Get VersionDAO object
+     *
      * @return {@link VersionDAO}
      */
     public static VersionDAO getVersionInstance() {
         return versionInstance;
     }
 
-    public static SearchDAO getSerarchInstance(){
+    public static SearchDAO getSerarchInstance() {
         return searchInstance;
     }
 

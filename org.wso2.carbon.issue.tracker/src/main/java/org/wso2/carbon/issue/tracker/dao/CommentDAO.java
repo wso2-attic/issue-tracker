@@ -25,43 +25,50 @@ import java.util.List;
 
 /**
  * Defines the database operations for a {@link Comment}
- *
  */
 public interface CommentDAO {
 
     /**
      * Get all comments for given Issue ID
-     * @param issueId       Issue ID
-     * @return              List of comments of given issue id
+     *
+     * @param issueId Issue ID
+     * @param tenantId Tenant ID
+     * @return List of comments of given issue id
      * @throws SQLException
      */
-    public List<Comment> getCommentsForIssue(int issueId) throws SQLException;
+    public List<Comment> getCommentsForIssue(int issueId, int tenantId) throws SQLException;
 
     /**
      * Add comment to a given issue
-     * @param comment {@link Comment}
+     *
+     * @param comment   {@link Comment}
      * @param uniqueKey Issue unique key of comment
-     * @return        Is comment successfully inserted or not
+     * @param tenantId Tenant ID
+     * @return Is comment successfully inserted or not
      * @throws SQLException
      */
-    public boolean addCommentForIssue(Comment comment, String uniqueKey) throws SQLException;
+    public boolean addCommentForIssue(Comment comment, String uniqueKey, int tenantId) throws SQLException;
 
     /**
      * Delete Comment by ID
-     * @param uniqueKey     Issue unique key of comment
-     * @param commentId     Comment ID
-     * @return              Comment is successfully deleted or not
+     *
+     * @param uniqueKey Issue unique key of comment
+     * @param commentId Comment ID
+     * @param tenantId Tenant ID
+     * @return Comment is successfully deleted or not
      * @throws SQLException
      */
-    public boolean deleteCommentByCommentId(String uniqueKey, int commentId) throws SQLException;
+    public boolean deleteCommentByCommentId(String uniqueKey, int commentId, int tenantId) throws SQLException;
 
     /**
      * Edit Comment based on given comment
-     * @param comment {@link Comment}
+     *
+     * @param comment   {@link Comment}
      * @param uniqueKey Issue unique key of comment
-     * @return        Comment is successfully updated or not
+     * @param tenantId Tenant ID
+     * @return Comment is successfully updated or not
      * @throws SQLException
      */
-    public boolean editComment(Comment comment, String uniqueKey) throws SQLException ;
+    public boolean editComment(Comment comment, String uniqueKey, int tenantId) throws SQLException;
 
 }

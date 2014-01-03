@@ -21,22 +21,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Issue {
-
     private int id;
-    private int projectId;
     private String key;
-    private String title;
+    private int projectId;
     private String summary;
     private String description;
     private String type;
     private String priority;
-    private String owner;
+    private String reporter;
     private String status;
     private String assignee;
-    private int version;
+    private int versionId;
     private String createdTime;
     private String updatedTime;
     private String severity;
+
 
     public int getId() {
         return id;
@@ -60,14 +59,6 @@ public class Issue {
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getSummary() {
@@ -94,12 +85,12 @@ public class Issue {
         this.priority = priority;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getReporter() {
+        return reporter;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
     }
 
     public String getStatus() {
@@ -118,12 +109,12 @@ public class Issue {
         this.assignee = assignee;
     }
 
-    public int getVersion() {
-        return version;
+    public int getVersionId() {
+        return versionId;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setVersionId(int versionId) {
+        this.versionId = versionId;
     }
 
     public String getCreatedTime() {
@@ -157,5 +148,4 @@ public class Issue {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

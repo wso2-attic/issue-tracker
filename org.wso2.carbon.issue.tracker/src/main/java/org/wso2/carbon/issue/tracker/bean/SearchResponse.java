@@ -3,20 +3,23 @@ package org.wso2.carbon.issue.tracker.bean;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Response Object for Search result
+ * ResponseID Object for Search result
  */
 @XmlRootElement
 public class SearchResponse {
     private int projectId;
     private String projectName;
     private String version;
-    private String pkey;
+    private String issuePkey;
     private String summary;
     private String issueType;
     private String priority;
     private String owner;
     private String status;
     private String assignee;
+    private String projectKey;
+    private String severity;
+
 
     public String getSeverity() {
         return severity;
@@ -74,12 +77,12 @@ public class SearchResponse {
         this.summary = summary;
     }
 
-    public String getPkey() {
-        return pkey;
+    public String getIssuePkey() {
+        return issuePkey;
     }
 
-    public void setPkey(String pkey) {
-        this.pkey = pkey;
+    public void setIssuePkey(String issuePkey) {
+        this.issuePkey = issuePkey;
     }
 
     public String getVersion() {
@@ -106,7 +109,11 @@ public class SearchResponse {
         this.projectId = projectId;
     }
 
-    private String severity;
+    public String getProjectKey() {
+        return projectKey;
+    }
 
-
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
 }

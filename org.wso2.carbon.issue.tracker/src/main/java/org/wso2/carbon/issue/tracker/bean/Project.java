@@ -22,18 +22,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Project {
-
-    private int id;
+    private Integer id;
     private String name;
     private String owner;
-    private int organizationId;
+    private Integer organizationId;
     private String description;
+    private String key;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -53,11 +53,11 @@ public class Project {
         this.owner = owner;
     }
 
-    public int getOrganizationId() {
+    public Integer getOrganizationId() {
         return organizationId;
     }
 
-    public void setOrganizationId(int organizationId) {
+    public void setOrganizationId(Integer organizationId) {
         this.organizationId = organizationId;
     }
 
@@ -68,6 +68,12 @@ public class Project {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

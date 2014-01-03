@@ -23,31 +23,36 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.issue.tracker.bean.Version;
 import org.wso2.carbon.issue.tracker.dao.VersionDAO;
 import org.wso2.carbon.issue.tracker.util.DBConfiguration;
+import org.wso2.carbon.issue.tracker.util.ISQLConstants;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VersionDAOImpl implements VersionDAO{
+public class VersionDAOImpl implements VersionDAO {
     private static final Log log = LogFactory.getLog(VersionDAOImpl.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean addVersionForProject(Version version) throws SQLException {
+    public boolean addVersionForProject(Version version, String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = DBConfiguration.getDBConnection();
         PreparedStatement preparedStatement = null;
-        String insertTableSQL = "INSERT INTO VERSION (VERSION,PROJECT_ID) VALUES (?, ?)";
+        String insertTableSQL = ISQLConstants.ADD_VERSION_FOR_PROJECT;
 
         try {
             dbConnection = DBConfiguration.getDBConnection();
             preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
-            preparedStatement.setString(1, version.getProjectVersion());
-            preparedStatement.setInt(2, version.getProjectId());
+            preparedStatement.setString(1, version.getVersion());
+            preparedStatement.setString(2, projectKey);
+            preparedStatement.setInt(3, tenantId);
 
             // execute insert SQL stetement
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Error while adding version to DB, version: "+ version.getProjectVersion();
+            String msg = "Error while adding version to DB, version: " + version.getVersion();
             log.error(msg, e);
             throw e;
         } finally {
@@ -61,33 +66,41 @@ public class VersionDAOImpl implements VersionDAO{
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Version> getVersionListOfProjectByProjectId(int projectId) throws SQLException {
+    public List<Version> getVersionListOfProjectByProjectKey(String projectKey, int tenantId) throws SQLException {
         Connection dbConnection = null;
         dbConnection = DBConfiguration.getDBConnection();
-        String sql = "SELECT * FROM VERSION where PROJECT_ID = " + projectId;
-        Statement stmt = null;
+
+        String sql = ISQLConstants.GET_VERSION_OF_PROJECTS_BY_PROJECT_KEY;
+
+        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         List<Version> versionList = new ArrayList<Version>();
         try {
-            stmt = dbConnection.createStatement();
-            rs = stmt.executeQuery(sql);
+            preparedStatement = dbConnection.prepareStatement(sql);
+            preparedStatement.setString(1, projectKey);
+            preparedStatement.setInt(2, tenantId);
+
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Version version = new Version();
-                version.setProjectVersionId(rs.getInt("VERSION_ID"));
-                version.setProjectVersion(rs.getString("VERSION"));
+                version.setId(rs.getInt("VERSION_ID"));
+                version.setVersion(rs.getString("VERSION"));
                 version.setProjectId(rs.getInt("PROJECT_ID"));
 
                 versionList.add(version);
             }
 
         } catch (SQLException e) {
-            String msg = "Error while getting versions from DB, project id: "+ projectId;
+            String msg = "Error while getting versions from DB, project key: " + projectKey;
             log.error(msg, e);
             throw e;
         } finally {
-            if (stmt != null) {
-                stmt.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
             if (dbConnection != null) {
                 dbConnection.close();

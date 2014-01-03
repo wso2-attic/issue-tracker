@@ -10,7 +10,7 @@ public class SearchBean {
     private String issueType;
     private String priority;
     private String severity;
-
+    private int organizationId;
 
     public int getSearchType() {
         return searchType;
@@ -58,5 +58,13 @@ public class SearchBean {
 
     public void setSeverity(String severity) {
         this.severity = severity;
+    }
+
+    public int getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(int organizationId) {
+        this.organizationId = organizationId;
     }
 }
